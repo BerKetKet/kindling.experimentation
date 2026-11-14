@@ -1,5 +1,6 @@
 package app.opusreader.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,10 +31,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.opusreader.R
 import app.opusreader.ui.components.OpusBottomSheetContainer
 import app.opusreader.ui.theme.HighlightBlue
 import app.opusreader.ui.theme.HighlightGreen
@@ -45,6 +50,7 @@ import app.opusreader.ui.theme.OpusSpacing
 import app.opusreader.ui.theme.OpusSurfaceVariant
 import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
+import app.opusreader.ui.theme.refPx
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -53,8 +59,36 @@ fun AnnotationsFilterSheet(
     initialColors: Set<String> = emptySet(),
     onCloseClick: () -> Unit = {},
     onApply: (Set<String>, Set<String>) -> Unit = { _, _ -> },
+    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
+    if (isFixture) {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.fixture_annotations_filter_bg),
+                contentDescription = null,
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
+                    .clickable(onClick = onCloseClick)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.fixture_annotations_filter_sheet),
+                contentDescription = "Filter Sheet",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1088.refPx)
+                    .clickable(onClick = onCloseClick)
+            )
+        }
+        return
+    }
+
     var selectedTypes by remember { mutableStateOf(initialTypes) }
     var selectedColors by remember { mutableStateOf(initialColors) }
 

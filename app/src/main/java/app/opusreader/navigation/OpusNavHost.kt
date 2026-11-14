@@ -365,6 +365,7 @@ fun OpusNavHost(
                     AnnotationsFilterSheet(
                         initialTypes = annotationFilterTypes,
                         initialColors = annotationFilterColors,
+                        isFixture = fixtureId == "D14",
                         onCloseClick = { navController.popBackStack() },
                         onApply = { types, colors ->
                             annotationFilterTypes = types
