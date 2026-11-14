@@ -29,3 +29,57 @@
 
 ### Inferred
 - Placeholder typography in the book cover thumbnail uses clean sans-serif when no cover image is supplied.
+
+---
+
+## Phase 1: Navigation Shell, Bottom Tabs, Floating Cover, and 20 Screen Routes
+
+### Done
+- Navigation shell built using Jetpack Navigation Compose (`OpusNavHost`) wiring all 20 screens defined in `docs/UI_SPEC.md`:
+  - 01 `LibraryGridScreen` (ref: `01_library-grid.png`)
+  - 02 `HomeScreen` (ref: `02_home.png`)
+  - 03 `MoreScreen` (ref: `03_more.png`)
+  - 04 `SettingsScreen` (ref: `04_settings.png`)
+  - 05 `LibraryFilterSheet` (ref: `05_library-filter-sheet.png`)
+  - 06 `LibraryViewSortSheet` (ref: `06_library-view-sort-sheet.png`)
+  - 07 `LibraryListScreen` (ref: `07_library-list.png`)
+  - 08 `CollectionsScreen` (ref: `08_collections.png`)
+  - 09 `NotificationsScreen` (ref: `09_notifications.png`)
+  - 10 `ReaderScreen` (ref: `10_reader-chrome-visible.png`)
+  - 11 `ContentsTocScreen` (ref: `11_contents-toc.png`)
+  - 12 `ReaderSearchScreen` (ref: `12_reader-search.png`)
+  - 13 `AnnotationsScreen` (ref: `13_annotations.png`)
+  - 14 `AnnotationsFilterSheet` (ref: `14_annotations-filter-sheet.png`)
+  - 15 `AnnotationsSortSheet` (ref: `15_annotations-sort-sheet.png`)
+  - 16 `AnnotationsShareSheet` (ref: `16_annotations-share-via-email.png`)
+  - 17 `DisplaySettingsFontTab` (ref: `17_display-settings-font-tab.png`)
+  - 18 `DisplaySettingsLayoutTab` (ref: `18_display-settings-layout-tab.png`)
+  - 19 `DisplaySettingsThemesTab` (ref: `19_display-settings-themes-tab.png`)
+  - 20 `DisplaySettingsMoreTab` (ref: `20_display-settings-more-tab.png`)
+  - Shared `DisplaySettingsSheet` hosting tabs 17-20 with common top tab row and bottom brightness slider.
+- Bottom Navigation Bar (`OpusBottomNavBar`):
+  - Fixed 56dp height bar in `#141414` with persistent tabs: Home | Library | More.
+  - Reserved 80dp start spacer for the floating resume cover.
+  - Active tab highlighting in `#EDEDED` and inactive in `#A8ABAD`.
+- Floating Resume Cover (`FloatingResumeCover`):
+  - Positioned at bottom-left (`offset(x = 16.dp, y = (-12).dp)`), overlapping the bottom bar exactly as in the Kindle references.
+  - Displays currently reading book cover thumbnail (52x72dp) with title, author, and reading progress percentage bar.
+  - Tapping opens the Reader screen (`10`) directly.
+- Tap map connectivity:
+  - Library Grid <-> Library List <-> Collections view switching via View & Sort sheet (`06`).
+  - Filter sheet (`05`) accessible from Library top bar.
+  - More screen (`03`) top bar settings action opens Settings screen (`04`).
+  - Reader screen (`10`) chrome buttons wire directly to Contents TOC (`11`), Search (`12`), Annotations (`13`), and Display Settings (`17-20`).
+  - Annotations screen (`13`) top bar actions wire directly to Filter sheet (`14`), Sort sheet (`15`), and Export/Share sheet (`16`).
+- Verification:
+  - `./gradlew assembleDebug testDebugUnitTest lintDebug` passed (52/52 tasks).
+  - Installed and verified on Samsung Galaxy M32 (1080x2340 @ 420 dpi). Tapped and verified live navigation through all primary and sub-screens via screenshots and OCR.
+
+### Differences from Reference
+- Kindle Store and Amazon Prime Reading shelves replaced with Project Gutenberg browse sections in Home and Library.
+- Kindle email send-to-device replaced with local storage import and system share sheet export.
+- Amazon account management in Settings replaced with local device reader preferences and font manager.
+
+### Inferred
+- Empty Collections state UI with folder icon and "+ CREATE A NEW COLLECTION" button (unillustrated in reference screenshots, inferred from Kindle Android convention).
+- Annotations export options: Markdown (.md), Plain Text (.txt), CSV spreadsheet.

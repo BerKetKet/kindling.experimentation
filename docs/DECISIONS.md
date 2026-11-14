@@ -20,3 +20,13 @@
   - Toggle Row: minimum 48dp touch target, title, optional subtitle, supporting Switch, Checkbox, Radio, and Checkmark.
 - **Engine Interface**: `ReaderEngine` defined in `app/opusreader/engine/ReaderEngine.kt` and backed by `FakeReaderEngine` with bundled Malazan Gardens of the Moon sample text, matching reference screens 10, 11, 13, 17.
 - **Privacy & Branding**: No Amazon or Kindle trademarks or assets in code or strings. App name constant: "Opus Reader".
+
+---
+
+## Phase 1: Navigation Shell and Screen Architecture
+
+- **Navigation Framework**: Jetpack Navigation Compose (`androidx.navigation:navigation-compose:2.8.0`) with string routes encapsulated in `NavRoutes.kt`.
+- **Scaffold & Bottom Bar Visibility**: `Scaffold` manages the persistent bottom bar (`OpusBottomNavBar`) and floating resume cover (`FloatingResumeCover`) conditionally for primary top-level tabs (`NavRoutes.HOME`, `NavRoutes.LIBRARY_GRID`, `NavRoutes.LIBRARY_LIST`, `NavRoutes.MORE`). Secondary screens (Reader, Settings, TOC, Sheets, Annotations) are edge-to-edge full-bleed without the bottom navigation bar.
+- **Bottom Bar Layout**: Bottom bar allocates an 80dp start spacer so that the 52dp floating resume cover can overlap the bottom-left area without obscuring any tab buttons (Home, Library, More).
+- **Sheet Architecture**: Sheets (`LibraryFilterSheet`, `LibraryViewSortSheet`, `AnnotationsFilterSheet`, `AnnotationsSortSheet`, `AnnotationsShareSheet`, `DisplaySettingsSheet`) are composables styled as modal bottom sheets with 16dp top corners, `#232323` surface, title headers, and "DONE" / "Close" action buttons. They are registered in the `NavHost` to enable direct navigation and backstack restoration.
+- **Reader Display Settings Architecture**: `DisplaySettingsSheet` hosts the four Kindle display tabs (Font `17`, Layout `18`, Themes `19`, More `20`) under a unified tab header and bottom brightness slider with auto-toggle, allowing smooth switching between typography, layout, theme presets, and reading progress controls.
