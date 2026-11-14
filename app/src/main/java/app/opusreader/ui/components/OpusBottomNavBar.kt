@@ -27,12 +27,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.opusreader.navigation.NavRoutes
-import app.opusreader.ui.theme.OpusBottomBar
+import app.opusreader.ui.theme.AmazonEmberFontFamily
+import app.opusreader.ui.theme.OpusAccentBlue
+import app.opusreader.ui.theme.OpusBackground
 import app.opusreader.ui.theme.OpusDivider
 import app.opusreader.ui.theme.OpusReaderTheme
 import app.opusreader.ui.theme.OpusSpacing
-import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
+import app.opusreader.ui.theme.refPx
 
 enum class MainTab(val title: String, val route: String, val icon: ImageVector) {
     HOME("Home", NavRoutes.HOME, Icons.Default.Home),
@@ -50,9 +52,13 @@ fun OpusBottomNavBar(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(OpusBottomBar)
+            .background(OpusBackground)
     ) {
-        HorizontalDivider(color = OpusDivider.copy(alpha = 0.5f), thickness = 0.5.dp)
+        // 3 px divider matching reference anchor (y: 2111-2113)
+        HorizontalDivider(
+            color = OpusDivider,
+            thickness = OpusSpacing.bottomNavDividerHeight
+        )
 
         Row(
             modifier = Modifier
@@ -60,13 +66,19 @@ fun OpusBottomNavBar(
                 .height(OpusSpacing.bottomNavHeight),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Space reserved for floating resume cover on bottom left
+            // Quadrant 0: 270 px reserved for floating resume cover (center 135)
             if (showCoverSpacer) {
-                Spacer(modifier = Modifier.width(80.dp))
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                )
             }
 
             MainTab.entries.forEach { tab ->
                 val isSelected = tab == selectedTab
+                val itemColor = if (isSelected) OpusAccentBlue else OpusTextSecondary
+
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -80,14 +92,16 @@ fun OpusBottomNavBar(
                         Icon(
                             imageVector = tab.icon,
                             contentDescription = tab.title,
-                            tint = if (isSelected) OpusTextPrimary else OpusTextSecondary,
+                            tint = itemColor,
                             modifier = Modifier.size(24.dp)
                         )
+                        Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = tab.title,
-                            color = if (isSelected) OpusTextPrimary else OpusTextSecondary,
-                            fontSize = 11.sp,
-                            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
+                            fontFamily = AmazonEmberFontFamily,
+                            fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal,
+                            color = itemColor,
+                            fontSize = 11.sp
                         )
                     }
                 }
@@ -96,7 +110,7 @@ fun OpusBottomNavBar(
     }
 }
 
-@Preview(name = "OpusBottomNavBar Preview", showBackground = true, backgroundColor = 0xFF141414)
+@Preview(name = "OpusBottomNavBar Preview", showBackground = true, backgroundColor = 0xFF101112)
 @Composable
 fun OpusBottomNavBarPreview() {
     OpusReaderTheme {

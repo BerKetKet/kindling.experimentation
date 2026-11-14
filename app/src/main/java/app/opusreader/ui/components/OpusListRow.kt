@@ -31,14 +31,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.opusreader.ui.theme.AmazonEmberFontFamily
+import app.opusreader.ui.theme.BookerlyFontFamily
 import app.opusreader.ui.theme.OpusAccentBlue
-import app.opusreader.ui.theme.OpusDivider
+import app.opusreader.ui.theme.OpusBorder
 import app.opusreader.ui.theme.OpusReaderTheme
 import app.opusreader.ui.theme.OpusSpacing
 import app.opusreader.ui.theme.OpusSurfaceVariant
 import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
 import app.opusreader.ui.theme.OpusTextTertiary
+import app.opusreader.ui.theme.refPx
 
 @Composable
 fun OpusListRow(
@@ -56,28 +59,32 @@ fun OpusListRow(
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .height(OpusSpacing.listRowPitch)
             .clickable { onClick() }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = OpusSpacing.standard, vertical = OpusSpacing.medium),
+                .weight(1f)
+                .padding(start = 53.refPx, end = OpusSpacing.screenMarginHorizontal),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Book cover thumbnail
+            // Book cover thumbnail (168px x 253px)
             Box(
                 modifier = Modifier
                     .width(OpusSpacing.listCoverWidth)
                     .height(OpusSpacing.listCoverHeight)
-                    .clip(RoundedCornerShape(4.dp))
+                    .clip(RoundedCornerShape(3.dp))
                     .background(coverColor),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                // Book title placeholder if no image
+                // Book title placeholder
                 Text(
                     text = title.take(24),
-                    color = OpusTextSecondary,
-                    fontSize = 11.sp,
+                    fontFamily = BookerlyFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    color = OpusTextPrimary.copy(alpha = 0.9f),
+                    fontSize = 10.sp,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
@@ -111,25 +118,28 @@ fun OpusListRow(
             ) {
                 Text(
                     text = title,
+                    fontFamily = AmazonEmberFontFamily,
+                    fontWeight = FontWeight.Medium,
                     color = OpusTextPrimary,
                     fontSize = 15.sp,
-                    fontWeight = FontWeight.Medium,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
 
-                Spacer(modifier = Modifier.height(OpusSpacing.xsmall))
+                Spacer(modifier = Modifier.height(3.dp))
 
                 Text(
                     text = author.uppercase(),
+                    fontFamily = AmazonEmberFontFamily,
+                    fontWeight = FontWeight.Normal,
                     color = OpusTextSecondary,
-                    fontSize = 13.sp,
+                    fontSize = 12.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
 
                 if (metaInfo != null || progressPercent > 0) {
-                    Spacer(modifier = Modifier.height(OpusSpacing.xsmall))
+                    Spacer(modifier = Modifier.height(3.dp))
                     val displayMeta = when {
                         metaInfo != null && progressPercent > 0 -> "$metaInfo · $progressPercent%"
                         metaInfo != null -> metaInfo
@@ -137,8 +147,10 @@ fun OpusListRow(
                     }
                     Text(
                         text = displayMeta,
+                        fontFamily = AmazonEmberFontFamily,
+                        fontWeight = FontWeight.Normal,
                         color = OpusTextTertiary,
-                        fontSize = 12.sp
+                        fontSize = 11.sp
                     )
                 }
             }
@@ -151,11 +163,20 @@ fun OpusListRow(
                     Icon(
                         imageVector = Icons.Filled.CheckCircle,
                         contentDescription = "Downloaded",
-                        tint = OpusTextSecondary,
-                        modifier = Modifier
-                            .size(20.dp)
-                            .clickable(enabled = onDownloadClick != null) { onDownloadClick?.invoke() }
+                        tint = OpusAccentBlue,
+                        modifier = Modifier.size(18.dp)
                     )
+                } else if (onDownloadClick != null) {
+                    IconButton(
+                        onClick = onDownloadClick,
+                        modifier = Modifier.size(OpusSpacing.minTouchTarget)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.CheckCircle,
+                            contentDescription = "Download book",
+                            tint = OpusTextSecondary
+                        )
+                    }
                 }
 
                 if (onMoreClick != null) {
@@ -165,14 +186,19 @@ fun OpusListRow(
                     ) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
-                            contentDescription = "Book options",
+                            contentDescription = "More options",
                             tint = OpusTextSecondary
                         )
                     }
                 }
             }
         }
-        HorizontalDivider(color = OpusDivider.copy(alpha = 0.5f), thickness = 0.5.dp)
+
+        // 3 px divider matching reference anchor (y: 318 row pitch)
+        HorizontalDivider(
+            color = OpusBorder,
+            thickness = OpusSpacing.listDividerHeight
+        )
     }
 }
 
@@ -181,14 +207,11 @@ fun OpusListRow(
 fun OpusListRowPreview() {
     OpusReaderTheme {
         OpusListRow(
-            title = "Gardens of the Moon: Book One of The Malazan Book of the Fallen",
-            author = "ERIKSON, STEVEN",
-            metaInfo = "15 MB",
+            title = "Gardens of the Moon",
+            author = "Steven Erikson",
+            metaInfo = "Read · Kindle Edition",
             progressPercent = 10,
-            isDownloaded = true,
-            coverColor = Color(0xFF384F38),
-            onClick = {},
-            onMoreClick = {}
+            isDownloaded = true
         )
     }
 }

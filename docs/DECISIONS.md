@@ -89,3 +89,24 @@
   - Initial masks registered in `docs/fidelity/MASKS.md` for in-book search keyboard (`D12`) and canvas reading text (`R03`-`R06`).
 
 
+
+---
+
+## V2 Phase 1: Measured Foundations, Typography, and Shared Components
+
+- **Typeface Integration**:
+  - Screen titles: Genuine Bookerly serif family (`bookerly_regular.ttf`, `bookerly_bold.ttf`, `bookerly_display.ttf`).
+  - UI Sans: Genuine Amazon Ember family (`amazon_ember_light.ttf`, `amazon_ember_regular.ttf`, `amazon_ember_medium.ttf`).
+  - Typography system configured with `includeFontPadding = false` via `PlatformTextStyle` to ensure zero vertical drift.
+- **Reference Measurement System (`RefPx`)**:
+  - Measured on target density 2.625 (1080x2340 @ 420 dpi, `dp = px / 2.625f`).
+  - Helper properties: `Int.refPx`, `Float.refPx`, `Int.refSp`.
+- **Component Geometry & Anchors**:
+  - `OpusTopBar`: Bookerly Bold title (22sp), left aligned at `44.refPx` (16.8dp) or `150.refPx` when back arrow present.
+  - `OpusSearchBar`: Full pill capsule (`RoundedCornerShape(50%)`), height `105.refPx` (40.0dp), horizontal margin `42.refPx` (16.0dp), border 1dp `#4A4B4D`, Amazon Ember Regular placeholder `#8E9194`.
+  - `OpusBottomNavBar`: Exactly 4 equal 270px quadrants across 1080px width (centers at 135, 405, 675, 945). Slot 0 reserved for floating cover; Home, Library, More occupy slots 1, 2, 3. Active tint `#2491FF`, inactive `#A8ABAD`. 3px divider `#3B3C3D`.
+  - `FloatingResumeCover`: 170px width, 258px height, centered in quadrant 0 (offset `50.refPx`, floating `126.refPx` above bottom nav divider).
+  - `OpusListRow`: Row pitch `318.refPx` (121.1dp), 3px divider `#404040`, cover thumbnail `168.refPx` x `253.refPx` at left offset `53.refPx`.
+  - `OpusCoverTile`: Cover block `279.refPx` x `427.refPx` (height 162.7dp), pitch `474.refPx`, row gap `47.refPx`, side margins `75.refPx`. Corner ribbons and bottom-right download badge.
+  - `OpusCheckboxRow` & `OpusChevronRow`: Dedicated flat rows matching Kindle Settings with `53.refPx` square checkbox (solid `#2491FF` checked, `#A8ABAD` outline unchecked) and `27.refPx` chevron (`#A8ABAD`).
+  - `OpusModalBottomSheet`: Scrim `#99000000`, surface `#232323`, 16dp top corners, Bookerly Bold title, cyan/blue "DONE" action button, 3px divider `#404040`.

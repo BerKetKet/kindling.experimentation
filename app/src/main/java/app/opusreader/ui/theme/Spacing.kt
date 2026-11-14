@@ -13,18 +13,31 @@ object OpusSpacing {
     val xlarge: Dp = 24.dp
     val xxlarge: Dp = 32.dp
 
-    // Component specific dimensions sampled from reference
+    // Measured component dimensions (1080x2340 @ 2.625 density)
+    val statusBandHeight: Dp = 58.refPx
+    val titleBandHeight: Dp = 52.refPx
     val topBarHeight: Dp = 56.dp
-    val bottomNavHeight: Dp = 64.dp
-    val searchBarHeight: Dp = 56.dp
+    val bottomNavHeight: Dp = 166.refPx // 63.24 dp (y: 2111-2277)
+    val bottomNavDividerHeight: Dp = 3.refPx // 1.14 dp
+    val searchBarHeight: Dp = 105.refPx // 40.0 dp (y: 254-358)
+    val searchBarRadius: Dp = 52.5.refPx // 20.0 dp
+    val searchBarMarginHorizontal: Dp = 42.refPx // 16.0 dp
+    val screenMarginHorizontal: Dp = 44.refPx // 16.8 dp
     val minTouchTarget: Dp = 48.dp
 
     // Cover dimensions
-    val gridCoverWidth: Dp = 106.dp
-    val gridCoverHeight: Dp = 152.dp
-    val listCoverWidth: Dp = 76.dp
-    val listCoverHeight: Dp = 108.dp
-    val floatingCoverWidth: Dp = 58.dp
-    val floatingCoverHeight: Dp = 88.dp
-    val listRowHeight: Dp = 124.dp
+    val gridCoverWidth: Dp = 279.refPx // 106.3 dp
+    val gridCoverHeight: Dp = 427.refPx // 162.7 dp
+    val gridRowPitch: Dp = 474.refPx // 180.6 dp
+    val gridRowGap: Dp = 47.refPx // 17.9 dp
+    val gridSideMargin: Dp = 75.refPx // 28.6 dp
+
+    val listCoverWidth: Dp = 168.refPx // 64.0 dp
+    val listCoverHeight: Dp = 253.refPx // 96.4 dp
+    val listRowPitch: Dp = 318.refPx // 121.1 dp
+    val listDividerHeight: Dp = 3.refPx // 1.14 dp
+
+    val floatingCoverWidth: Dp = 170.refPx // 64.8 dp
+    val floatingCoverHeight: Dp = 258.refPx // 98.3 dp
+    val floatingCoverFloatOffset: Dp = 126.refPx // 48.0 dp above bottom bar
 }

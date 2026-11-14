@@ -4,13 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -24,10 +25,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.opusreader.ui.theme.BookerlyFontFamily
 import app.opusreader.ui.theme.OpusReaderTheme
 import app.opusreader.ui.theme.OpusSpacing
 import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTopBar
+import app.opusreader.ui.theme.refPx
 
 @Composable
 fun OpusTopBar(
@@ -42,13 +45,17 @@ fun OpusTopBar(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(OpusSpacing.topBarHeight)
-            .background(backgroundColor)
-            .padding(horizontal = OpusSpacing.small),
+            .height(56.dp)
+            .background(backgroundColor),
         contentAlignment = Alignment.CenterStart
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = if (navigationIcon != null) 8.dp else OpusSpacing.screenMarginHorizontal,
+                    end = 8.dp
+                ),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (navigationIcon != null && onNavigationClick != null) {
@@ -62,18 +69,18 @@ fun OpusTopBar(
                         tint = OpusTextPrimary
                     )
                 }
+                Spacer(modifier = Modifier.width(4.dp))
             }
 
             Text(
                 text = title,
+                fontFamily = BookerlyFontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp,
                 color = OpusTextPrimary,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = OpusSpacing.small)
+                modifier = Modifier.weight(1f)
             )
 
             Row(

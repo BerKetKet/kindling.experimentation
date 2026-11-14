@@ -27,12 +27,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.opusreader.ui.theme.AmazonEmberFontFamily
+import app.opusreader.ui.theme.BookerlyFontFamily
 import app.opusreader.ui.theme.OpusAccentBlue
 import app.opusreader.ui.theme.OpusReaderTheme
 import app.opusreader.ui.theme.OpusSpacing
 import app.opusreader.ui.theme.OpusSurfaceVariant
 import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
+import app.opusreader.ui.theme.refPx
 
 @Composable
 fun OpusCoverTile(
@@ -42,82 +45,101 @@ fun OpusCoverTile(
     progressPercent: Int = 0,
     isDownloaded: Boolean = true,
     coverColor: Color = OpusSurfaceVariant,
+    ribbonText: String? = null,
     onClick: () -> Unit = {},
     onLongClick: (() -> Unit)? = null
 ) {
     val shape = RoundedCornerShape(4.dp)
 
-    Column(
+    Box(
         modifier = modifier
             .width(OpusSpacing.gridCoverWidth)
+            .height(OpusSpacing.gridCoverHeight)
+            .clip(shape)
+            .background(coverColor)
             .clickable { onClick() },
-        horizontalAlignment = Alignment.CenterHorizontally
+        contentAlignment = Alignment.Center
     ) {
-        Box(
+        // Book cover title placeholder
+        Column(
             modifier = Modifier
-                .width(OpusSpacing.gridCoverWidth)
-                .height(OpusSpacing.gridCoverHeight)
-                .clip(shape)
-                .background(coverColor),
-            contentAlignment = Alignment.Center
+                .fillMaxSize()
+                .padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Book cover title placeholder
-            Column(
+            Text(
+                text = title,
+                fontFamily = BookerlyFontFamily,
+                fontWeight = FontWeight.Bold,
+                color = OpusTextPrimary,
+                fontSize = 12.sp,
+                textAlign = TextAlign.Center,
+                maxLines = 4,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f)
+            )
+
+            Text(
+                text = author,
+                fontFamily = AmazonEmberFontFamily,
+                fontWeight = FontWeight.Normal,
+                color = OpusTextSecondary,
+                fontSize = 10.sp,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+
+        // Ribbon in top corner (e.g. SAMPLE or NEW)
+        if (ribbonText != null) {
+            Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(OpusSpacing.small),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .align(Alignment.TopStart)
+                    .background(
+                        Color(0xFFCC8800),
+                        RoundedCornerShape(bottomEnd = 4.dp)
+                    )
+                    .padding(horizontal = 6.dp, vertical = 2.dp)
             ) {
                 Text(
-                    text = title,
-                    color = OpusTextPrimary,
-                    fontSize = 12.sp,
+                    text = ribbonText.uppercase(),
+                    fontFamily = AmazonEmberFontFamily,
                     fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    maxLines = 4,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f)
-                )
-
-                Text(
-                    text = author,
-                    color = OpusTextSecondary,
-                    fontSize = 10.sp,
-                    textAlign = TextAlign.Center,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    color = Color.White,
+                    fontSize = 8.sp
                 )
             }
+        }
 
-            // Downloaded badge at bottom-right
-            if (isDownloaded) {
-                Icon(
-                    imageVector = Icons.Filled.CheckCircle,
-                    contentDescription = "Downloaded",
-                    tint = OpusTextSecondary,
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(4.dp)
-                        .size(16.dp)
-                )
-            }
+        // Downloaded badge at bottom-right
+        if (isDownloaded) {
+            Icon(
+                imageVector = Icons.Filled.CheckCircle,
+                contentDescription = "Downloaded",
+                tint = OpusAccentBlue,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(6.dp)
+                    .size(16.dp)
+            )
+        }
 
-            // Progress bar at very bottom
-            if (progressPercent > 0) {
+        // Progress bar at very bottom
+        if (progressPercent > 0) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .height(3.dp)
+                    .background(Color(0xFF333333))
+            ) {
                 Box(
                     modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .height(3.dp)
-                        .background(Color(0xFF333333))
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .fillMaxWidth(progressPercent / 100f)
-                            .background(OpusAccentBlue)
-                    )
-                }
+                        .fillMaxHeight()
+                        .fillMaxWidth(progressPercent / 100f)
+                        .background(OpusAccentBlue)
+                )
             }
         }
     }

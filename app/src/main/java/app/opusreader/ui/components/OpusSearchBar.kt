@@ -5,10 +5,12 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -24,10 +26,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.opusreader.ui.theme.AmazonEmberFontFamily
 import app.opusreader.ui.theme.OpusBackground
 import app.opusreader.ui.theme.OpusReaderTheme
 import app.opusreader.ui.theme.OpusSearchBarBorder
@@ -35,31 +39,32 @@ import app.opusreader.ui.theme.OpusSpacing
 import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
 import app.opusreader.ui.theme.OpusTextTertiary
+import app.opusreader.ui.theme.refPx
 
 @Composable
 fun OpusSearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    placeholder: String = "Search",
+    placeholder: String = "Search Opus",
     enabled: Boolean = true,
     onClick: (() -> Unit)? = null,
     onSearch: (() -> Unit)? = null
 ) {
-    val shape = RoundedCornerShape(8.dp)
+    val shape = RoundedCornerShape(percent = 50)
 
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = OpusSpacing.standard, vertical = OpusSpacing.small)
-            .height(48.dp)
+            .padding(horizontal = OpusSpacing.searchBarMarginHorizontal)
+            .height(OpusSpacing.searchBarHeight)
             .background(OpusBackground, shape)
             .border(1.dp, OpusSearchBarBorder, shape)
             .then(
                 if (onClick != null && !enabled) Modifier.clickable { onClick() }
                 else Modifier
             )
-            .padding(horizontal = OpusSpacing.medium),
+            .padding(horizontal = 14.dp),
         contentAlignment = Alignment.CenterStart
     ) {
         Row(
@@ -70,10 +75,10 @@ fun OpusSearchBar(
                 imageVector = Icons.Default.Search,
                 contentDescription = "Search",
                 tint = OpusTextSecondary,
-                modifier = Modifier
-                    .size(22.dp)
-                    .padding(end = OpusSpacing.small)
+                modifier = Modifier.size(20.dp)
             )
+
+            Spacer(modifier = Modifier.width(10.dp))
 
             Box(
                 modifier = Modifier.weight(1f),
@@ -82,6 +87,8 @@ fun OpusSearchBar(
                 if (query.isEmpty()) {
                     Text(
                         text = placeholder,
+                        fontFamily = AmazonEmberFontFamily,
+                        fontWeight = FontWeight.Normal,
                         color = OpusTextTertiary,
                         fontSize = 15.sp
                     )
@@ -93,6 +100,8 @@ fun OpusSearchBar(
                         onValueChange = onQueryChange,
                         singleLine = true,
                         textStyle = TextStyle(
+                            fontFamily = AmazonEmberFontFamily,
+                            fontWeight = FontWeight.Normal,
                             color = OpusTextPrimary,
                             fontSize = 15.sp
                         ),

@@ -25,11 +25,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.opusreader.ui.theme.AmazonEmberFontFamily
+import app.opusreader.ui.theme.BookerlyFontFamily
 import app.opusreader.ui.theme.OpusAccentBlue
 import app.opusreader.ui.theme.OpusReaderTheme
 import app.opusreader.ui.theme.OpusSpacing
 import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
+import app.opusreader.ui.theme.refPx
 
 @Composable
 fun FloatingResumeCover(
@@ -44,7 +47,7 @@ fun FloatingResumeCover(
 
     Box(
         modifier = modifier
-            .offset(x = OpusSpacing.standard, y = (-12).dp)
+            .offset(x = 50.refPx, y = (-48).dp)
             .shadow(elevation = 8.dp, shape = shape)
             .width(OpusSpacing.floatingCoverWidth)
             .height(OpusSpacing.floatingCoverHeight)
@@ -56,14 +59,15 @@ fun FloatingResumeCover(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(4.dp),
+                .padding(6.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = title,
-                color = OpusTextPrimary,
-                fontSize = 9.sp,
+                fontFamily = BookerlyFontFamily,
                 fontWeight = FontWeight.Bold,
+                color = OpusTextPrimary,
+                fontSize = 10.sp,
                 textAlign = TextAlign.Center,
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
@@ -72,6 +76,8 @@ fun FloatingResumeCover(
 
             Text(
                 text = author,
+                fontFamily = AmazonEmberFontFamily,
+                fontWeight = FontWeight.Normal,
                 color = OpusTextSecondary,
                 fontSize = 8.sp,
                 textAlign = TextAlign.Center,
