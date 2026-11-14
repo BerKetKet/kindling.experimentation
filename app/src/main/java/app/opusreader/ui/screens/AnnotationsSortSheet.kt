@@ -41,16 +41,20 @@ enum class SortDirection(val displayName: String) {
 
 @Composable
 fun AnnotationsSortSheet(
+    initialField: AnnotationSortField = AnnotationSortField.LOCATION,
+    initialDirection: SortDirection = SortDirection.ASCENDING,
     onDismiss: () -> Unit = {},
+    onApply: (AnnotationSortField, SortDirection) -> Unit = { _, _ -> },
     modifier: Modifier = Modifier
 ) {
-    var selectedField by remember { mutableStateOf(AnnotationSortField.LOCATION) }
-    var selectedDirection by remember { mutableStateOf(SortDirection.ASCENDING) }
+    var selectedField by remember { mutableStateOf(initialField) }
+    var selectedDirection by remember { mutableStateOf(initialDirection) }
 
     OpusBottomSheetContainer(
         title = "Sort",
         doneButtonText = "DONE",
-        onDoneClick = onDismiss,
+        onDoneClick = { onApply(selectedField, selectedDirection) },
+        onCloseClick = onDismiss,
         modifier = modifier
     ) {
         SectionTitle("Sort by")
@@ -129,7 +133,7 @@ private fun SectionTitle(title: String) {
     )
 }
 
-@Preview(name = "15 Annotations Sort Sheet Preview", showBackground = true, backgroundColor = 0xFF232323)
+@Preview(name = "15 Annotations Sort Preview", showBackground = true, backgroundColor = 0xFF232323)
 @Composable
 fun AnnotationsSortSheetPreview() {
     OpusReaderTheme {

@@ -7,9 +7,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -19,11 +23,13 @@ import androidx.navigation.compose.rememberNavController
 import app.opusreader.data.BookRepository
 import app.opusreader.data.FakeBookRepository
 import app.opusreader.data.LibraryViewMode
+import app.opusreader.data.ReaderSettingsDataStore
 import app.opusreader.engine.FakeReaderEngine
 import app.opusreader.engine.ReaderEngine
 import app.opusreader.ui.components.FloatingResumeCover
 import app.opusreader.ui.components.MainTab
 import app.opusreader.ui.components.OpusBottomNavBar
+import app.opusreader.ui.screens.AnnotationSortField
 import app.opusreader.ui.screens.AnnotationsFilterSheet
 import app.opusreader.ui.screens.AnnotationsScreen
 import app.opusreader.ui.screens.AnnotationsShareSheet
@@ -41,6 +47,7 @@ import app.opusreader.ui.screens.NotificationsScreen
 import app.opusreader.ui.screens.ReaderScreen
 import app.opusreader.ui.screens.ReaderSearchScreen
 import app.opusreader.ui.screens.SettingsScreen
+import app.opusreader.ui.screens.SortDirection
 import app.opusreader.ui.screens.ViewSortState
 import app.opusreader.ui.theme.OpusBackground
 
@@ -48,9 +55,15 @@ import app.opusreader.ui.theme.OpusBackground
 fun OpusNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    bookRepository: BookRepository = remember { FakeBookRepository() },
-    readerEngine: ReaderEngine = remember { FakeReaderEngine() }
+    bookRepository: BookRepository = remember { FakeBookRepository() }
 ) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val settingsDataStore = remember { ReaderSettingsDataStore(context) }
+    val readerEngine: ReaderEngine = remember {
+        FakeReaderEngine(settingsDataStore = settingsDataStore, scope = coroutineScope)
+    }
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: NavRoutes.LIBRARY_GRID
 
@@ -76,6 +89,12 @@ fun OpusNavHost(
     val notifications by bookRepository.notifications.collectAsState()
 
     val currentBook = allBooks.firstOrNull { it.id == "gardens_of_the_moon" } ?: allBooks.first()
+
+    // Annotation filter and sort states
+    var annotationFilterTypes by remember { mutableStateOf(emptySet<String>()) }
+    var annotationFilterColors by remember { mutableStateOf(emptySet<String>()) }
+    var annotationSortField by remember { mutableStateOf(AnnotationSortField.LOCATION) }
+    var annotationSortDirection by remember { mutableStateOf(SortDirection.ASCENDING) }
 
     Box(modifier = modifier.fillMaxSize()) {
         Scaffold(
@@ -235,6 +254,10 @@ fun OpusNavHost(
                 composable(NavRoutes.ANNOTATIONS) {
                     AnnotationsScreen(
                         engine = readerEngine,
+                        filterTypes = annotationFilterTypes,
+                        filterColors = annotationFilterColors,
+                        sortField = annotationSortField,
+                        sortDirection = annotationSortDirection,
                         onBackClick = { navController.popBackStack() },
                         onFilterClick = { navController.navigate(NavRoutes.ANNOTATIONS_FILTER) },
                         onSortClick = { navController.navigate(NavRoutes.ANNOTATIONS_SORT) },
@@ -246,14 +269,28 @@ fun OpusNavHost(
                 // 14 Annotations Filter Sheet
                 composable(NavRoutes.ANNOTATIONS_FILTER) {
                     AnnotationsFilterSheet(
-                        onCloseClick = { navController.popBackStack() }
+                        initialTypes = annotationFilterTypes,
+                        initialColors = annotationFilterColors,
+                        onCloseClick = { navController.popBackStack() },
+                        onApply = { types, colors ->
+                            annotationFilterTypes = types
+                            annotationFilterColors = colors
+                            navController.popBackStack()
+                        }
                     )
                 }
 
                 // 15 Annotations Sort Sheet
                 composable(NavRoutes.ANNOTATIONS_SORT) {
                     AnnotationsSortSheet(
-                        onDismiss = { navController.popBackStack() }
+                        initialField = annotationSortField,
+                        initialDirection = annotationSortDirection,
+                        onDismiss = { navController.popBackStack() },
+                        onApply = { field, direction ->
+                            annotationSortField = field
+                            annotationSortDirection = direction
+                            navController.popBackStack()
+                        }
                     )
                 }
 

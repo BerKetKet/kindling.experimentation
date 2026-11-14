@@ -1,32 +1,30 @@
 # Development Notes — Opus Reader
 
 ## Current State
-- **Phase**: Phase 2 Complete. Starting Phase 3.
-- **Git Branch**: `phase-2`
+- **Phase**: Phase 3 Complete. Starting Phase 4.
+- **Git Branch**: `phase-3`
 - **Gradle & Toolchain**: Gradle 8.7, AGP 8.5.2, Kotlin 2.0.21, Compose BOM 2024.09.00, compileSdk 35, minSdk 26.
 - **Test Device**: Samsung Galaxy M32 (1080x2340 @ 420 dpi, density 2.625) connected via adb (`32001776e8e82623`).
 
 ## What is Verified
 - `./gradlew assembleDebug testDebugUnitTest lintDebug` passes cleanly (52/52 tasks).
-- Unit tests (`FakeReaderEngineTest` and `FakeBookRepositoryTest`) passing.
+- All unit tests pass in `FakeReaderEngineTest` and `FakeBookRepositoryTest`.
 - Debug APK (`app-debug.apk`) installed and running on Galaxy M32.
-- Phase 2 features verified on physical device:
-  - Dynamic filtering in Library (Read/Unread, Content type) with live count badges.
-  - Dynamic sorting in Library (Most Recent, Title, Author A-Z, Author Z-A).
-  - View switching (Grid <-> List <-> Collections).
-  - Collections creation dialog and reactive collection list updates.
-  - Notifications list, clear all, and individual item deletion.
-  - Settings device name dialog, push notification, SD card, and sync toggles.
-  - More screen dynamic "Sync now" action with formatted timestamp.
+- Phase 3 features verified on physical device:
+  - Reader edge-to-edge full screen with page pagination (left/right tap zones) and chrome toggle (center tap zone).
+  - Bookmark ribbon toggle and visual state update.
+  - Table of Contents hierarchical display and chapter location jump.
+  - Reader search with keyword match preview context and location jump.
+  - Annotations screen with favorite starring, type/color filtering, multi-field sorting, and Android share sheet export.
+  - Display settings tabs (Font, Layout, Themes, More) with real-time typography, margins, and page color updates.
+  - DataStore persistence across complete process restart: verified Sepia `#F7F1E3` persisted.
 
 ## What is Broken / Blockers
 - None.
 
 ## Next Steps
-- **Phase 3**: Reader Chrome & Settings Persistence:
-  - Reader chrome: top bar, bottom scrubber slider, bookmark ribbon, tap zones (25% prev, 50% toggle chrome, 25% next).
-  - Contents (TOC) jump to chapter in `ReaderEngine`.
-  - Search in reader with highlighted occurrences and jump to match.
-  - Annotations screen with real filter, sort, and export sheets (Markdown/text export).
-  - Four display settings tabs (Font, Layout, Themes, More) wired to `ReaderEngine` and persisted via `DataStore`.
-  - Verify on device with screenshots, update docs, and commit `phase-3`.
+- **Phase 4**: Project Gutenberg Catalog & Local Import:
+  - Replace the store and recommendations shelves with Project Gutenberg browse using the `gutenberg-catalog` skill (Gutendex API: `https://gutendex.com/books`).
+  - Implement Gutenberg catalog repository with search debounce, topic browsing, and book details.
+  - Implement Import: local file picker (`ActivityResultContracts.OpenDocument`) and share intent (`ACTION_SEND` / `ACTION_VIEW`) in place of Send-to-Kindle.
+  - Verify on device with screenshots, update docs, and commit `phase-4`.

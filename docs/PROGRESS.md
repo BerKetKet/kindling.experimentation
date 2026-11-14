@@ -126,3 +126,45 @@
 ### Inferred
 - Collection creation dialog with text entry and validation.
 - Per-item delete action on notification rows.
+
+---
+
+## Phase 3: Reader Chrome, Contents, Search, Annotations & Display Settings Persistence
+
+### Done
+- Reader Chrome & Tap Zones (`ReaderScreen`):
+  - Left 25% tap zone turns to previous page. Verified on device.
+  - Right 25% tap zone turns to next page. Verified on device.
+  - Center 50% tap zone toggles reader chrome visibility with fade animation.
+  - Interactive scrubber slider updating `currentLocation`.
+  - Dynamic bookmark ribbon indicator (toggles `#D8232A` red state and persists in engine).
+- Contents Table of Contents (`ContentsTocScreen`):
+  - Hierarchical TOC tree with chapter indentations and active chapter marker.
+  - Chapter tap jumps directly to targetLocation in `ReaderEngine` and returns to reader. Verified on device jumping to Location 330 (Chapter One).
+- Reader Search (`ReaderSearchScreen`):
+  - Search query matching inside book text.
+  - Match cards showing preview context snippet and chapter information.
+  - Tapping a search result jumps directly to match location in `ReaderScreen`. Verified on device with "Bridgeburners" query jumping to Location 331.
+- Annotations Management (`AnnotationsScreen`):
+  - Star icon toggles favorite state reactively.
+  - Tap on annotation row jumps to exact location in `ReaderScreen`.
+  - Filter sheet (`AnnotationsFilterSheet`): filter by type (Favorite, Note, Highlight, Bookmark) and highlight colors (Yellow, Blue, Pink, Orange, Green).
+  - Sort sheet (`AnnotationsSortSheet`): sort by Location, Date created, Date modified; Ascending or Descending.
+  - Share sheet (`AnnotationsShareSheet`): exports annotations to Markdown (.md), Plain Text (.txt), or CSV via Android system share sheet (`ACTION_SEND`).
+- Display Settings & DataStore Persistence:
+  - `ReaderSettingsDataStore` implemented using `androidx.datastore:datastore-preferences:1.1.1`.
+  - Four display tabs (Font, Layout, Themes, More) wired to `ReaderEngine.settings`.
+  - Font carousel (Bookerly, Caecilia, Georgia, Amazon Ember, Droid Serif) and font size slider (12-32sp).
+  - Palette selector (White `#FFFFFF`, Sepia `#F7F1E3`, Green `#CEE5D8`, Black `#141414`).
+  - Margins presets (Narrow, Normal, Wide), alignment (Justified / Left), continuous scroll, visible clock, and volume key pagination.
+  - Verified on device: switched Page Color to Sepia (`#F7F1E3`), verified background pixel color `#F7F1E3`, force stopped the app, restarted it, and verified `#F7F1E3` persisted across process death!
+- Verification:
+  - Unit test suite (`FakeReaderEngineTest` and `FakeBookRepositoryTest`) passing.
+  - `./gradlew assembleDebug testDebugUnitTest lintDebug` passed cleanly.
+  - Verified on Samsung Galaxy M32 (1080x2340 @ 420 dpi).
+
+### Differences from Reference
+- None in styling. Android system share sheet replaces Kindle email export.
+
+### Inferred
+- Search result card format and chapter tags (inferred from Kindle standard reader UI).

@@ -47,3 +47,16 @@
   - `AUTHOR_ZA`: sorts descending case-insensitively by `author`.
 - **Collections Lifecycle**: Collections maintain an internal list of member book IDs and a dynamically computed `bookCount`. Adding or deleting a collection persists in the in-memory repository for the session.
 - **Dialog Architecture**: In-place `AlertDialog`s for collection creation and device renaming, styled with `#232323` container, `#2491FF` confirm actions, and outlined input fields.
+
+---
+
+## Phase 3: Reader Engine, Chrome, and Settings Persistence
+
+- **DataStore Preferences Integration**: Reader settings are serialized into Android Jetpack Preferences DataStore (`reader_settings.preferences_pb`). `FakeReaderEngine` collects the settings flow upon initialization and asynchronously saves updates on every `updateSettings` call, ensuring non-blocking persistence that survives app process death.
+- **Reader Tap Geometry**:
+  - Left 25% width: previous page trigger (`prevPage()`).
+  - Right 25% width: next page trigger (`nextPage()`).
+  - Center 50% width: chrome toggle (`chromeVisible = !chromeVisible`).
+- **Scrubber & Progress**: Scrubber uses `currentLocation.current` over `currentLocation.total`, formatted as "Location X of Y · Z%".
+- **Bookmark State**: Stored as a reactive boolean in `ReaderEngine`, reflected visually via a top-right ribbon using `#D8232A` (Kindle bookmark red) when active and 60% opacity secondary text when inactive.
+- **Annotations Flow**: Annotations support in-memory search, type/color filtering, multi-field sorting, and dynamic export into Markdown or text formatted strings delivered via `Intent.ACTION_SEND`.

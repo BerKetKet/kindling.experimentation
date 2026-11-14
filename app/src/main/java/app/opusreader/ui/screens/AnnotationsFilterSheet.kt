@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -16,7 +15,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,14 +49,16 @@ import app.opusreader.ui.theme.OpusTextSecondary
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AnnotationsFilterSheet(
+    initialTypes: Set<String> = emptySet(),
+    initialColors: Set<String> = emptySet(),
     onCloseClick: () -> Unit = {},
+    onApply: (Set<String>, Set<String>) -> Unit = { _, _ -> },
     modifier: Modifier = Modifier
 ) {
-    var selectedTypes by remember { mutableStateOf(setOf("All")) }
-    var selectedColors by remember { mutableStateOf(setOf("All")) }
+    var selectedTypes by remember { mutableStateOf(initialTypes) }
+    var selectedColors by remember { mutableStateOf(initialColors) }
 
     val types = listOf(
-        "All" to 3,
         "Favorite" to 2,
         "Note" to 1,
         "Highlight" to 2,
@@ -71,7 +75,8 @@ fun AnnotationsFilterSheet(
 
     OpusBottomSheetContainer(
         title = "Filter",
-        doneButtonText = null,
+        doneButtonText = "DONE",
+        onDoneClick = { onApply(selectedTypes, selectedColors) },
         onCloseClick = onCloseClick,
         modifier = modifier
     ) {
@@ -118,13 +123,14 @@ fun AnnotationsFilterSheet(
             verticalArrangement = Arrangement.spacedBy(OpusSpacing.small)
         ) {
             colors.forEach { (name, color) ->
-                val isSelected = selectedColors.contains(name)
+                val isSelected = selectedColors.contains(name.uppercase())
                 Row(
                     modifier = Modifier
                         .clip(RoundedCornerShape(16.dp))
                         .background(if (isSelected) OpusSurfaceVariant else Color.Transparent)
                         .clickable {
-                            selectedColors = if (isSelected) selectedColors - name else selectedColors + name
+                            val upper = name.uppercase()
+                            selectedColors = if (isSelected) selectedColors - upper else selectedColors + upper
                         }
                         .padding(horizontal = 10.dp, vertical = 6.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -139,7 +145,8 @@ fun AnnotationsFilterSheet(
                     Text(
                         text = name,
                         color = OpusTextPrimary,
-                        fontSize = 13.sp
+                        fontSize = 13.sp,
+                        fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
                     )
                 }
             }
@@ -163,7 +170,7 @@ private fun SectionTitle(title: String) {
     )
 }
 
-@Preview(name = "14 Annotations Filter Sheet Preview", showBackground = true, backgroundColor = 0xFF232323)
+@Preview(name = "14 Annotations Filter Preview", showBackground = true, backgroundColor = 0xFF232323)
 @Composable
 fun AnnotationsFilterSheetPreview() {
     OpusReaderTheme {

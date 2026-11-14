@@ -1,12 +1,17 @@
 package app.opusreader.engine
 
+import app.opusreader.data.ReaderSettingsDataStore
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class FakeReaderEngine(
-    sampleTitle: String = "Gardens of the Moon"
+    sampleTitle: String = "Gardens of the Moon",
+    private val settingsDataStore: ReaderSettingsDataStore? = null,
+    private val scope: CoroutineScope? = null
 ) : ReaderEngine {
 
     private val samplePages = listOf(
@@ -33,6 +38,16 @@ Paran stood, buckling his sword-belt. Outside, the sky burned with the unnatural
 
     private val _settings = MutableStateFlow(ReaderSettings())
     override val settings: StateFlow<ReaderSettings> = _settings.asStateFlow()
+
+    init {
+        if (settingsDataStore != null && scope != null) {
+            scope.launch {
+                settingsDataStore.settingsFlow.collect { persisted ->
+                    _settings.value = persisted
+                }
+            }
+        }
+    }
 
     private val _currentLocation = MutableStateFlow(
         ReaderLocation(
@@ -183,7 +198,13 @@ Paran stood, buckling his sword-belt. Outside, the sky burned with the unnatural
     }
 
     override fun updateSettings(update: (ReaderSettings) -> ReaderSettings) {
-        _settings.update(update)
+        _settings.update { current ->
+            val updated = update(current)
+            scope?.launch {
+                settingsDataStore?.saveSettings(updated)
+            }
+            updated
+        }
     }
 
     override suspend fun searchInBook(query: String): List<ReaderSearchResult> {
