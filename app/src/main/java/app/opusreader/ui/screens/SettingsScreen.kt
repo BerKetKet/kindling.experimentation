@@ -1,5 +1,10 @@
 package app.opusreader.ui.screens
 
+import android.net.Uri
+import android.provider.OpenableColumns
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,10 +26,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.opusreader.data.Book
+import app.opusreader.data.ContentType
 import app.opusreader.ui.components.OpusToggleRow
 import app.opusreader.ui.components.OpusTopBar
 import app.opusreader.ui.components.ToggleType
@@ -40,10 +49,11 @@ import app.opusreader.ui.theme.OpusTextSecondary
 @Composable
 fun SettingsScreen(
     onBackClick: () -> Unit = {},
-    onImportFilesClick: () -> Unit = {},
+    onImportBook: (Book) -> Unit = {},
     onFontManagerClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     var deviceName by remember { mutableStateOf("Opus Android Reader") }
     var showDeviceNameDialog by remember { mutableStateOf(false) }
     var editedName by remember { mutableStateOf(deviceName) }
@@ -51,6 +61,31 @@ fun SettingsScreen(
     var downloadToSdCard by remember { mutableStateOf(false) }
     var syncEnabled by remember { mutableStateOf(true) }
     var pushNotificationsEnabled by remember { mutableStateOf(true) }
+
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            val fileName = queryDisplayName(context, uri) ?: "Imported Document"
+            val cleanTitle = fileName.substringBeforeLast('.')
+            val newBook = Book(
+                id = "import_${System.currentTimeMillis()}",
+                title = cleanTitle,
+                author = "Imported File",
+                series = null,
+                progressPercent = 0,
+                isDownloaded = true,
+                fileSize = "2.8 MB",
+                coverColor = Color(0xFF2E4034),
+                isRead = false,
+                contentType = if (fileName.endsWith(".pdf", ignoreCase = true)) ContentType.DOC else ContentType.BOOK,
+                collectionIds = emptyList(),
+                lastReadTimestamp = System.currentTimeMillis()
+            )
+            onImportBook(newBook)
+            Toast.makeText(context, "Imported: $cleanTitle", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     if (showDeviceNameDialog) {
         AlertDialog(
@@ -147,7 +182,16 @@ fun SettingsScreen(
             title = "Import EPUB / PDF books",
             subtitle = "Select local book files from device storage",
             toggleType = ToggleType.CHEVRON,
-            onClick = onImportFilesClick
+            onClick = {
+                filePickerLauncher.launch(
+                    arrayOf(
+                        "application/epub+zip",
+                        "application/pdf",
+                        "application/octet-stream",
+                        "*/*"
+                    )
+                )
+            }
         )
 
         HorizontalDivider(color = OpusDivider.copy(alpha = 0.5f), thickness = 0.5.dp)
@@ -169,6 +213,17 @@ fun SettingsScreen(
             onClick = onFontManagerClick
         )
     }
+}
+
+private fun queryDisplayName(context: android.content.Context, uri: Uri): String? {
+    return runCatching {
+        context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+            val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            if (nameIndex != -1 && cursor.moveToFirst()) {
+                cursor.getString(nameIndex)
+            } else null
+        } ?: uri.lastPathSegment
+    }.getOrNull()
 }
 
 @Composable

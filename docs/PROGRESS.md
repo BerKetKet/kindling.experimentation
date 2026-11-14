@@ -168,3 +168,40 @@
 
 ### Inferred
 - Search result card format and chapter tags (inferred from Kindle standard reader UI).
+
+---
+
+## Phase 4: Project Gutenberg Catalog Integration & Local Import
+
+### Done
+- Project Gutenberg Store Replacement (`CatalogRepository` and `FakeCatalogRepository`):
+  - Model `GutenbergBook` with Gutendex API contract (`id`, `title`, `authors`, `subjects`, `coverUrl`, `epubUrl`, `downloadCount`, `coverColor`).
+  - Preloaded library of Gutenberg classics (Frankenstein, Pride and Prejudice, Moby-Dick, Alice in Wonderland, Dracula, Sherlock Holmes, Metamorphosis, Dorian Gray).
+  - Topic shelves (Fiction, Fantasy, Classics) and Popular Gutenberg shelf on Home screen.
+  - Interactive topic chips ("Explore", "All", "Fiction", "Fantasy", "Classics") on Home screen dynamically filter shelves.
+  - In-catalog live search with real-time result updates on the Home screen.
+- Book Details Dialog (`GutenbergBookDetailsDialog`):
+  - Cover preview block, title, author, and formatted download count (e.g. "Downloads: 89,450").
+  - Subject / topic tag badges (e.g. "Science fiction", "Gothic fiction").
+  - "DOWNLOAD EPUB" action: downloads book into `BookRepository`, prepends it to the Library grid, and posts a "Download Complete" notification.
+  - If book is already in Library, shows "READ NOW" button with green checkmark that opens the reader directly.
+- Local EPUB / PDF File Import:
+  - System file picker integrated into `SettingsScreen` via `rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument())` targeting `application/epub+zip`, `application/pdf`, and binary streams.
+  - Intent filters in `AndroidManifest.xml` for `android.intent.action.VIEW` and `android.intent.action.SEND` for sideloading from file managers, web browsers, or chat apps.
+  - `MainActivity` handles incoming file URIs in `onCreate` and `onNewIntent`, resolves display names, creates library `Book` entries with appropriate content types (BOOK / DOC), prepends them to the library, and generates an "Import Complete" activity notification.
+- Verification:
+  - Unit tests (`FakeCatalogRepositoryTest` and `FakeBookRepositoryTest`) passing (13 total unit tests).
+  - Full `./gradlew assembleDebug testDebugUnitTest lintDebug` build passing (52/52 tasks).
+  - Verified on physical Samsung Galaxy M32 (1080x2340 @ 420 dpi):
+    - Tapped "Frankenstein" in Gutenberg Popular shelf, verified Book Details dialog opened with full metadata.
+    - Tapped "DOWNLOAD EPUB", verified book appeared at the top of Library grid and verified download notification was recorded in Notifications screen.
+    - Verified `ACTION_VIEW` intent sideload (`The_Great_Gatsby.epub`), verified book immediately added to library.
+    - Verified `ACTION_SEND` share intent sideload (`Wuthering_Heights.epub`), verified book immediately added to library.
+
+### Differences from Reference
+- Kindle Store and Amazon Prime Reading completely replaced by Project Gutenberg public domain catalog and local import.
+- Send-to-Kindle replaced by Android system file picker and incoming share/view intent filters.
+
+### Inferred
+- Book Details dialog layout with cover preview, metadata, subjects, download count, and download/read action (unillustrated in Kindle screenshots; designed to match dark theme design tokens).
+

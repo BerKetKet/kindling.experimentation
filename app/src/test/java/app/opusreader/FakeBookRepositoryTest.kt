@@ -97,4 +97,30 @@ class FakeBookRepositoryTest {
         assertTrue(book.isRead)
         assertEquals(100, book.progressPercent)
     }
+
+    @Test
+    fun testAddBookAndNotification() {
+        val newBook = app.opusreader.data.Book(
+            id = "test_custom_book",
+            title = "Test Novel",
+            author = "Test Author",
+            progressPercent = 0,
+            isDownloaded = true
+        )
+        val initialSize = repository.allBooks.value.size
+        repository.addBook(newBook)
+        assertEquals(initialSize + 1, repository.allBooks.value.size)
+        assertEquals("test_custom_book", repository.allBooks.value.first().id)
+
+        val newNotif = app.opusreader.data.NotificationItem(
+            id = "test_notif",
+            title = "Imported",
+            description = "Test Novel imported",
+            dateText = "Just now"
+        )
+        val initialNotifs = repository.notifications.value.size
+        repository.addNotification(newNotif)
+        assertEquals(initialNotifs + 1, repository.notifications.value.size)
+        assertEquals("test_notif", repository.notifications.value.first().id)
+    }
 }

@@ -21,6 +21,8 @@ interface BookRepository {
     fun toggleBookInCollection(bookId: String, collectionId: String)
     fun toggleDownload(bookId: String)
     fun updateProgress(bookId: String, progress: Int)
+    fun addBook(book: Book)
+    fun addNotification(notification: NotificationItem)
     fun deleteNotification(id: String)
     fun clearAllNotifications()
 }
@@ -110,6 +112,17 @@ class FakeBookRepository(
             }
         }
         refreshFilteredBooks()
+    }
+
+    override fun addBook(book: Book) {
+        if (_allBooks.value.none { it.id == book.id }) {
+            _allBooks.value = listOf(book) + _allBooks.value
+            refreshFilteredBooks()
+        }
+    }
+
+    override fun addNotification(notification: NotificationItem) {
+        _notifications.value = listOf(notification) + _notifications.value
     }
 
     override fun deleteNotification(id: String) {

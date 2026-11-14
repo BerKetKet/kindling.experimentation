@@ -21,8 +21,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import app.opusreader.data.BookRepository
+import app.opusreader.data.CatalogRepository
 import app.opusreader.data.FakeBookRepository
+import app.opusreader.data.FakeCatalogRepository
 import app.opusreader.data.LibraryViewMode
+import app.opusreader.data.NotificationItem
 import app.opusreader.data.ReaderSettingsDataStore
 import app.opusreader.engine.FakeReaderEngine
 import app.opusreader.engine.ReaderEngine
@@ -55,7 +58,8 @@ import app.opusreader.ui.theme.OpusBackground
 fun OpusNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    bookRepository: BookRepository = remember { FakeBookRepository() }
+    bookRepository: BookRepository = remember { FakeBookRepository() },
+    catalogRepository: CatalogRepository = remember { FakeCatalogRepository() }
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -137,6 +141,8 @@ fun OpusNavHost(
                 composable(NavRoutes.HOME) {
                     HomeScreen(
                         books = allBooks,
+                        catalogRepository = catalogRepository,
+                        bookRepository = bookRepository,
                         onBookClick = { navController.navigate(NavRoutes.READER) },
                         onSeeAllLibraryClick = { navController.navigate(NavRoutes.LIBRARY_GRID) },
                         onNotificationsClick = { navController.navigate(NavRoutes.NOTIFICATIONS) }
@@ -153,7 +159,19 @@ fun OpusNavHost(
                 // 04 Settings
                 composable(NavRoutes.SETTINGS) {
                     SettingsScreen(
-                        onBackClick = { navController.popBackStack() }
+                        onBackClick = { navController.popBackStack() },
+                        onImportBook = { newBook ->
+                            bookRepository.addBook(newBook)
+                            bookRepository.addNotification(
+                                NotificationItem(
+                                    id = "notif_${System.currentTimeMillis()}",
+                                    title = "Import Complete",
+                                    description = "${newBook.title} has been imported into your library.",
+                                    dateText = "Just now",
+                                    isRead = false
+                                )
+                            )
+                        }
                     )
                 }
 

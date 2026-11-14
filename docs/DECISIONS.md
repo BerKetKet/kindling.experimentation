@@ -60,3 +60,16 @@
 - **Scrubber & Progress**: Scrubber uses `currentLocation.current` over `currentLocation.total`, formatted as "Location X of Y · Z%".
 - **Bookmark State**: Stored as a reactive boolean in `ReaderEngine`, reflected visually via a top-right ribbon using `#D8232A` (Kindle bookmark red) when active and 60% opacity secondary text when inactive.
 - **Annotations Flow**: Annotations support in-memory search, type/color filtering, multi-field sorting, and dynamic export into Markdown or text formatted strings delivered via `Intent.ACTION_SEND`.
+
+---
+
+## Phase 4: Project Gutenberg Catalog & Sideloading Architecture
+
+- **Catalog Abstraction**: `CatalogRepository` interface defines asynchronous methods for popular books, topic-based queries, text search, and downloading to the local library. `FakeCatalogRepository` backs the UI with preloaded Gutenberg classics and fast offline-first responses.
+- **Store Replacement Policy**: Amazon store shelves, purchase options, and Kindle Unlimited/Prime Reading badges are replaced with Project Gutenberg public domain books (Gutendex API contract). Home chips map to Gutenberg topics ("Explore", "All", "Fiction", "Fantasy", "Classics").
+- **Book Details & Download UX**: Tapping a Gutenberg book opens `GutenbergBookDetailsDialog` with cover preview, full title/author, subjects, and download statistics. Tapping "DOWNLOAD EPUB" downloads the book into `BookRepository`, prepends it to the Library grid, and generates an activity notification. If the book already exists in the library, a "READ NOW" action is shown instead.
+- **Import & Sideloading**:
+  - File picker: uses `ActivityResultContracts.OpenDocument` with MIME types `application/epub+zip`, `application/pdf`, and binary streams in `SettingsScreen`.
+  - Intent filters: `MainActivity` registers for `android.intent.action.VIEW` and `android.intent.action.SEND` for EPUB and PDF MIME types, allowing books to be opened or shared directly from file managers or browsers into Opus Reader.
+  - Sideloaded books extract their clean title from `OpenableColumns.DISPLAY_NAME` or the URI path segment and are assigned appropriate content types (`ContentType.BOOK` or `ContentType.DOC`).
+
