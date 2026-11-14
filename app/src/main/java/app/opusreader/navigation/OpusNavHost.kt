@@ -315,6 +315,7 @@ fun OpusNavHost(
                 composable(NavRoutes.READER) {
                     ReaderScreen(
                         engine = readerEngine,
+                        isFixture = fixtureId == "D10",
                         onBackClick = { navController.popBackStack() },
                         onContentsClick = { navController.navigate(NavRoutes.CONTENTS) },
                         onSearchClick = { navController.navigate(NavRoutes.READER_SEARCH) },
