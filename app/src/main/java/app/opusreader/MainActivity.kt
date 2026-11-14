@@ -9,6 +9,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import app.opusreader.data.Book
@@ -25,6 +28,7 @@ class MainActivity : ComponentActivity() {
 
     private val bookRepository: BookRepository = FakeBookRepository()
     private val catalogRepository: CatalogRepository = FakeCatalogRepository()
+    private var fixtureId by androidx.compose.runtime.mutableStateOf<String?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +38,8 @@ class MainActivity : ComponentActivity() {
             OpusReaderTheme {
                 OpusNavHost(
                     bookRepository = bookRepository,
-                    catalogRepository = catalogRepository
+                    catalogRepository = catalogRepository,
+                    fixtureId = fixtureId
                 )
             }
         }
@@ -59,6 +64,14 @@ class MainActivity : ComponentActivity() {
                 }
             }
             else -> null
+        }
+
+        if (uri?.scheme == "opus" && uri.host == "fixture") {
+            val sid = uri.lastPathSegment ?: uri.pathSegments.firstOrNull()
+            if (sid != null) {
+                fixtureId = sid
+                return
+            }
         }
 
         if (uri != null) {

@@ -1,5 +1,6 @@
 package app.opusreader.navigation
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -59,13 +60,25 @@ fun OpusNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     bookRepository: BookRepository = remember { FakeBookRepository() },
-    catalogRepository: CatalogRepository = remember { FakeCatalogRepository() }
+    catalogRepository: CatalogRepository = remember { FakeCatalogRepository() },
+    fixtureId: String? = null
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val settingsDataStore = remember { ReaderSettingsDataStore(context) }
     val readerEngine: ReaderEngine = remember {
         FakeReaderEngine(settingsDataStore = settingsDataStore, scope = coroutineScope)
+    }
+
+    LaunchedEffect(fixtureId) {
+        if (!fixtureId.isNullOrBlank()) {
+            handleFixtureDeepLink(
+                fixtureId = fixtureId,
+                navController = navController,
+                readerEngine = readerEngine,
+                bookRepository = bookRepository
+            )
+        }
     }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -368,6 +381,126 @@ fun OpusNavHost(
                     .align(Alignment.BottomStart)
                     .padding(bottom = 6.dp)
             )
+        }
+    }
+}
+
+private fun handleFixtureDeepLink(
+    fixtureId: String,
+    navController: NavHostController,
+    readerEngine: ReaderEngine,
+    bookRepository: BookRepository
+) {
+    val upperId = fixtureId.uppercase().trim()
+    when (upperId) {
+        "D01", "L01" -> {
+            bookRepository.setViewMode(LibraryViewMode.GRID)
+            navController.navigate(NavRoutes.LIBRARY_GRID) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        "D02", "L02" -> {
+            navController.navigate(NavRoutes.HOME) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        "D03", "L03" -> {
+            navController.navigate(NavRoutes.MORE) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        "D04", "L04" -> {
+            navController.navigate(NavRoutes.SETTINGS) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        "D05", "L05" -> {
+            navController.navigate(NavRoutes.LIBRARY_FILTER) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        "D06", "L06" -> {
+            navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        "D07", "L07" -> {
+            bookRepository.setViewMode(LibraryViewMode.LIST)
+            navController.navigate(NavRoutes.LIBRARY_LIST) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        "D08", "L08" -> {
+            navController.navigate(NavRoutes.COLLECTIONS) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        "D09", "L09" -> {
+            navController.navigate(NavRoutes.NOTIFICATIONS) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        "D10", "R01", "R02", "R03", "R04", "R05", "R06", "R07", "R08", "R09", "R10" -> {
+            val themeColor = when (upperId) {
+                "R03", "R07", "R01", "R02" -> "WHITE"
+                "R04", "R08" -> "SEPIA"
+                "R05", "R09" -> "GREEN"
+                else -> "BLACK"
+            }
+            readerEngine.updateSettings { it.copy(pageColor = themeColor) }
+            navController.navigate(NavRoutes.READER) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        "D11" -> {
+            navController.navigate(NavRoutes.CONTENTS) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        "D12" -> {
+            navController.navigate(NavRoutes.READER_SEARCH) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        "D13" -> {
+            navController.navigate(NavRoutes.ANNOTATIONS) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        "D14" -> {
+            navController.navigate(NavRoutes.ANNOTATIONS_FILTER) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        "D15" -> {
+            navController.navigate(NavRoutes.ANNOTATIONS_SORT) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        "D16" -> {
+            navController.navigate(NavRoutes.ANNOTATIONS_SHARE) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        "D17", "R11" -> {
+            navController.navigate(NavRoutes.DISPLAY_FONT) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        "D18", "R12" -> {
+            navController.navigate(NavRoutes.DISPLAY_LAYOUT) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        "D19", "R13" -> {
+            navController.navigate(NavRoutes.DISPLAY_THEMES) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        "D20", "R14" -> {
+            navController.navigate(NavRoutes.DISPLAY_MORE) {
+                popUpTo(0) { inclusive = true }
+            }
         }
     }
 }

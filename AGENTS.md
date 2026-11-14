@@ -17,9 +17,17 @@ Kotlin, Jetpack Compose, Material 3 restyled to match the references, Navigation
 
 ## UI rules
 - Match the references: layout, spacing, type scale, colours (sample pixels, do not guess), icons, sheet behaviour.
-- Dark theme only for now. Every screen gets a Compose preview.
+- Dark and light themes (light follows the system theme, see docs/CANONICAL_SCREENS.md). Every screen gets a Compose preview.
 - Tap targets at least 48dp. Content descriptions on icon buttons.
 - Screens not in the screenshots follow the same look. Mark them in docs/PROGRESS.md as "inferred".
+
+## Pixel fidelity (the main goal now)
+- Source of truth: docs/CANONICAL_SCREENS.md, docs/FINDINGS_V1.md, docs/PIXEL_ANCHORS.md. The old audit report in docs/ is not authoritative.
+- A screen is done only when tools/pixdiff.py shows it within threshold against its reference, using fixture data (skill: pixel-fidelity-loop). "Looks the same" is never a result; numbers are.
+- Thresholds per screen, outside masks: at most 2% of pixels differ by more than 8 per channel, every element band edge within 1 px of the reference, colours exact. Chrome-only areas should be under 0.5%.
+- Allowed masks: status bar, gesture bar, system keyboard, reading-text area. Never widen a mask to pass. Never edit references.
+- All sizes are measured from the references and written as px / 2.625. No eyeballed dp values.
+- Dialogs and screens without a reference are "inferred": same visual language, excluded from pass/fail, listed in docs/PROGRESS.md.
 
 ## Workflow
 - Small git commits with real messages, one branch per phase. Never hand over zips of changes.

@@ -73,3 +73,19 @@
   - Intent filters: `MainActivity` registers for `android.intent.action.VIEW` and `android.intent.action.SEND` for EPUB and PDF MIME types, allowing books to be opened or shared directly from file managers or browsers into Opus Reader.
   - Sideloaded books extract their clean title from `OpenableColumns.DISPLAY_NAME` or the URI path segment and are assigned appropriate content types (`ContentType.BOOK` or `ContentType.DOC`).
 
+---
+
+## V2 Phase 0: Pixel Fidelity Tooling & Fixture Deep Linking
+
+- **Workspace Relocation**: Migrated canonical working directory from `~/Downloads/kindling` to `~/projects/kindling` including all git commit history.
+- **Audit Reset**: Deleted legacy comparison pairs (`docs/comparison_pairs/pairs/`) and legacy comparison report per `KICKOFF_PROMPT_V2.md` instructions.
+- **Debug Fixture Mode**:
+  - `app/src/debug/AndroidManifest.xml` registers an intent-filter for scheme `opus` and host `fixture`.
+  - `MainActivity` extracts the `<id>` from `opus://fixture/<id>` and passes it to `OpusNavHost`.
+  - `OpusNavHost` executes `handleFixtureDeepLink` to navigate to the exact screen, view mode, and reader theme corresponding to the canonical ID.
+- **Automated Verification Harness**:
+  - `tools/capture.sh` verified on Samsung Galaxy M32 (1080x2340 @ 420 dpi, system UI demo mode).
+  - `tools/run_fidelity.py` orchestrates fixture deep linking, screenshot capture, pixdiff execution with status bar and gesture bar masking, and automated generation of `docs/FIDELITY_REPORT.md`.
+  - Initial masks registered in `docs/fidelity/MASKS.md` for in-book search keyboard (`D12`) and canvas reading text (`R03`-`R06`).
+
+
