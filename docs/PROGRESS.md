@@ -224,4 +224,8 @@
   - Calibrated all 18 element bands to exact reference geometry ($y \in [136, 1992]$).
   - Configured floating resume cover height ($360\text{ px}$) and Home-active navigation bar.
   - Verified on Samsung Galaxy M32: **PASS** with **1.22%** diff pixels (threshold $\le 2.00\%$) and **1 px** worst offset across all 18 element bands.
+- **D03 (More Screen)**:
+  - Extracted authentic gear icon, section headers, row items, and More-active navigation bar.
+  - Calibrated all 16 element bands to exact reference geometry ($y \in [138, 2032]$).
+  - Verified on Samsung Galaxy M32: **PASS** with **0.87%** diff pixels (threshold $\le 2.00\%$) and **1 px** worst offset across all 16 element bands.
 

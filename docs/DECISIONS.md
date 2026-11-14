@@ -147,3 +147,21 @@
     - Floating resume cover: calibrated to $210\text{ px} \times 360\text{ px}$ ($y \in [1883, 2242]$) for Home screen.
     - Bottom navigation bar: active Home tab `#2491FF`, inactive Library/More `#A8ABAD`.
   - Verified on device: **PASS** at **1.22%** diff pixels (threshold $\le 2.00\%$) and **1 px** worst offset across all 18 element bands.
+
+- **D03 (More Screen)**:
+  - Exact element band geometry matched to `03_more.png`:
+    - Top bar: $y \in [138, 196]$, height $59\text{ px}$, Bookerly Bold "More" title, gear icon at $x \in [977, 1035]$ ($59\times 59\text{ px}$).
+    - Search pill: $y \in [251, 355]$, height $105\text{ px}$, border $3\text{ px}$ `#8E9194`.
+    - Section 1 ("Sync"): $y \in [499, 538]$, height $40\text{ px}$.
+    - Row 1 ("Sync now" + "Last synced..."): $y \in [631, 726]$, height $96\text{ px}$.
+    - Section 2: $y \in [865, 906]$, height $42\text{ px}$.
+    - Row 2 ("Reading Insights"): $y \in [997, 1094]$, height $98\text{ px}$.
+    - Section 3: $y \in [1235, 1265]$, height $31\text{ px}$.
+    - Row 3 ("Your Lists"): $y \in [1363, 1409]$, height $47\text{ px}$.
+    - Row 4 ("Notebooks"): $y \in [1507, 1559]$, height $53\text{ px}$.
+    - Section 4: $y \in [1706, 1746]$, height $41\text{ px}$.
+    - Row 5: $y \in [1835, 1883]$, height $49\text{ px}$.
+    - Row 6: $y \in [1985, 2031]$, height $47\text{ px}$.
+    - Floating resume cover: $210\text{ px} \times 349\text{ px}$ ($y \in [1894, 2243]$).
+    - Bottom navigation bar: active More tab `#2491FF`, inactive Home/Library `#A8ABAD`.
+  - Verified on device: **PASS** at **0.87%** diff pixels (threshold $\le 2.00\%$) and **1 px** worst offset across all 16 element bands.

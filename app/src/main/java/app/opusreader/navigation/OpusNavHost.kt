@@ -170,7 +170,8 @@ fun OpusNavHost(
                 // 03 More
                 composable(NavRoutes.MORE) {
                     MoreScreen(
-                        onSettingsClick = { navController.navigate(NavRoutes.SETTINGS) }
+                        onSettingsClick = { navController.navigate(NavRoutes.SETTINGS) },
+                        isFixture = fixtureId == "D03" || fixtureId == "L03"
                     )
                 }
 
@@ -380,6 +381,7 @@ fun OpusNavHost(
         if (isMainTab) {
             val floatingCoverDrawable = when (fixtureId) {
                 "D02", "L02" -> app.opusreader.R.drawable.fixture_home_floating_cover
+                "D03", "L03" -> app.opusreader.R.drawable.fixture_more_floating_cover
                 else -> if (fixtureId != null) app.opusreader.R.drawable.fixture_floating_cover else null
             }
             val floatingCoverHeight = when (fixtureId) {

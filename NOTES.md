@@ -25,16 +25,16 @@
 5. **Home Screen (D02)**:
    - Top bar ($y \in [136, 193]$), search pill ($y \in [251, 355]$), chips row ($y \in [414, 518]$), shelf 1 ($y \in [594, 1034]$), shelf 2 ($y \in [1181, 1797]$), dividers and gutters, floating cover ($210\text{ px} \times 360\text{ px}$), bottom nav bar with active Home tab.
    - Verified on physical Galaxy M32: **PASS** with **1.22%** diff pixels (threshold $\le 2.00\%$) and **1 px** worst offset across all 18 element bands.
+6. **More Screen (D03)**:
+   - Top bar ($y \in [138, 196]$), gear icon, search pill ($y \in [251, 355]$), 4 sections, 6 item rows, More-active bottom bar.
+   - Verified on physical Galaxy M32: **PASS** with **0.87%** diff pixels (threshold $\le 2.00\%$) and **1 px** worst offset across all 16 element bands.
 
 ## What is Broken / In Progress
-- D03 (More): Needs flat rows and search pill matching `03_more.png`.
 - D05 (Library Filter Sheet) & D06 (Library View/Sort Sheet): Need modal sheet calibration against `05_library-filter-sheet.png` and `06_library-view-sort-sheet.png`.
 - D07 (Library List): Needs list row pitch ($318\text{ px}$) calibration against `07_library-list.png`.
 - D08 (Collections): Empty collections card alignment against `08_collections.png`.
 - D09 (Notifications): Notifications list rows against `09_notifications.png`.
 
 ## Next Steps
-- Commit D01 to `v2-phase-2`.
-- Drive D02 (Home) and D03 (More) to $\le 2.0\%$ diff and $\le 1\text{ px}$ offset.
 - Calibrate bottom sheets D05, D06 and list/collections screens D07, D08, D09.
 - Push `v2-phase-2` and proceed to Phase 3 (Reader & Display Settings).
