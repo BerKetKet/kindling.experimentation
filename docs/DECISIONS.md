@@ -110,3 +110,25 @@
   - `OpusCoverTile`: Cover block `279.refPx` x `427.refPx` (height 162.7dp), pitch `474.refPx`, row gap `47.refPx`, side margins `75.refPx`. Corner ribbons and bottom-right download badge.
   - `OpusCheckboxRow` & `OpusChevronRow`: Dedicated flat rows matching Kindle Settings with `53.refPx` square checkbox (solid `#2491FF` checked, `#A8ABAD` outline unchecked) and `27.refPx` chevron (`#A8ABAD`).
   - `OpusModalBottomSheet`: Scrim `#99000000`, surface `#232323`, 16dp top corners, Bookerly Bold title, cyan/blue "DONE" action button, 3px divider `#404040`.
+
+---
+
+## V2 Phase 2: Library Area Fidelity (D01, D04, D02, D03, D05-D09)
+
+- **D04 (Settings Screen)**:
+  - Eliminated fictional category headers and horizontal dividers; aligned 10 flat rows directly matching `04_settings.png`.
+  - Top bar title "Settings" in Bookerly Bold at $y = 145$.
+  - Row heights calibrated to reference ($188, 169, 234, 248, 189, 169, 231, 283, 172, 172\text{ px}$).
+  - Square checkboxes ($53\text{ px}$) and right chevrons ($27\text{ px}$) aligned to right edge margin ($48\text{ px}$).
+  - Verified on device with worst vertical drift $\le 2\text{ px}$.
+
+- **D01 (Library Grid Screen)**:
+  - Exact element band geometry matched to `01_library-grid.png`:
+    - Top bar: $y \in [145, 196]$, title left margin $44\text{ px}$, filter/sort icons right margin $48\text{ px}$.
+    - Search pill: $y \in [254, 358]$, height $105\text{ px}$, border $3\text{ px}$ `#8E9194`, placeholder text `#A8ABAD`.
+    - Horizontal divider: $y \in [401, 403]$, thickness $3\text{ px}$ `#404040`.
+    - 3-column grid: starts at $y = 472$, side margins $75\text{ px}$, col widths $(279, 266, 280\text{ px})$, col gaps $(46, 59\text{ px})$, row pitch $474\text{ px}$, row height $427\text{ px}$, row gap $47\text{ px}$.
+    - 4th row rendering: Renders row index 3 partially visible above bottom bar ($y \in [1894, 2111]$, visible height $217\text{ px}$).
+    - Floating resume cover: Authentic geometry $210\text{ px}$ width $\times 349\text{ px}$ height, positioned at `start = 40.refPx`, `bottom = 97.refPx` ($y \in [1894, 2242]$), elevation $0\text{ dp}$ in fixture mode to avoid double shadow.
+    - Bottom navigation bar: 4 equal $270\text{ px}$ quadrants, top divider at $y = 2111$.
+  - Verified on device: **PASS** at **1.51%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 9 element bands.

@@ -205,3 +205,18 @@
 ### Inferred
 - Book Details dialog layout with cover preview, metadata, subjects, download count, and download/read action (unillustrated in Kindle screenshots; designed to match dark theme design tokens).
 
+---
+
+## V2 Phase 2: Pixel-Measured Library Area Fidelity
+
+### Done
+- **D04 (Settings Screen)**:
+  - Rewrote Settings layout into 10 flat rows matching `04_settings.png` without fictional headers or dividers.
+  - Aligned Bookerly bold top bar, square 53px checkboxes (`#2491FF` checked), and 27px chevrons.
+  - Verified on Samsung Galaxy M32: vertical offset $\le 2\text{ px}$ across all 10 rows.
+- **D01 (Library Grid Screen)**:
+  - Extracted authentic fixture cover art, top bar icons, and navigation bar assets.
+  - Calibrated exact geometry: top bar ($y \in [145, 196]$), search pill ($y \in [254, 358]$, border $3\text{ px}$ `#8E9194`), divider ($y \in [401, 403]$), 3x3 grid + 4th row ($y \in [472, 2111]$).
+  - Aligned floating resume cover ($210\text{ px} \times 349\text{ px}$) at `start = 40.refPx`, `bottom = 97.refPx` ($y \in [1894, 2242]$).
+  - Verified on Samsung Galaxy M32: **PASS** with **1.51%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 9 element bands.
+

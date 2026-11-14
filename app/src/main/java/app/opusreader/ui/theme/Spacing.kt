@@ -37,7 +37,7 @@ object OpusSpacing {
     val listRowPitch: Dp = 318.refPx // 121.1 dp
     val listDividerHeight: Dp = 3.refPx // 1.14 dp
 
-    val floatingCoverWidth: Dp = 170.refPx // 64.8 dp
-    val floatingCoverHeight: Dp = 258.refPx // 98.3 dp
+    val floatingCoverWidth: Dp = 210.refPx // 80.0 dp (x: 40-250)
+    val floatingCoverHeight: Dp = 349.refPx // 132.95 dp (y: 1894-2243)
     val floatingCoverFloatOffset: Dp = 126.refPx // 48.0 dp above bottom bar
 }

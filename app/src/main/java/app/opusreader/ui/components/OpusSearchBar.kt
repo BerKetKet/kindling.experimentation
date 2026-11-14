@@ -59,7 +59,7 @@ fun OpusSearchBar(
             .padding(horizontal = OpusSpacing.searchBarMarginHorizontal)
             .height(OpusSpacing.searchBarHeight)
             .background(OpusBackground, shape)
-            .border(1.dp, OpusSearchBarBorder, shape)
+            .border(3.refPx, OpusSearchBarBorder, shape)
             .then(
                 if (onClick != null && !enabled) Modifier.clickable { onClick() }
                 else Modifier
@@ -89,7 +89,7 @@ fun OpusSearchBar(
                         text = placeholder,
                         fontFamily = AmazonEmberFontFamily,
                         fontWeight = FontWeight.Normal,
-                        color = OpusTextTertiary,
+                        color = OpusTextSecondary,
                         fontSize = 15.sp
                     )
                 }

@@ -24,7 +24,7 @@ val OpusTextTertiary = Color(0xFF8E9194)
 // Dividers & borders
 val OpusDivider = Color(0xFF3B3C3D)
 val OpusBorder = Color(0xFF404040)
-val OpusSearchBarBorder = Color(0xFF4A4B4D)
+val OpusSearchBarBorder = Color(0xFF8E9194)
 
 // Brand and Accent colors
 val OpusAccentBlue = Color(0xFF2491FF) // Active tab icons & checkmarks

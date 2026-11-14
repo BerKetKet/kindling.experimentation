@@ -54,6 +54,7 @@ import app.opusreader.ui.screens.SettingsScreen
 import app.opusreader.ui.screens.SortDirection
 import app.opusreader.ui.screens.ViewSortState
 import app.opusreader.ui.theme.OpusBackground
+import app.opusreader.ui.theme.refPx
 
 @Composable
 fun OpusNavHost(
@@ -120,6 +121,7 @@ fun OpusNavHost(
                 if (isMainTab) {
                     OpusBottomNavBar(
                         selectedTab = currentTab,
+                        isFixture = fixtureId != null,
                         onTabSelected = { tab ->
                             if (tab.route != currentRoute) {
                                 navController.navigate(tab.route) {
@@ -144,6 +146,7 @@ fun OpusNavHost(
                 composable(NavRoutes.LIBRARY_GRID) {
                     LibraryGridScreen(
                         books = filteredBooks,
+                        isFixture = fixtureId == "D01" || fixtureId == "L01",
                         onBookClick = { navController.navigate(NavRoutes.READER) },
                         onFilterClick = { navController.navigate(NavRoutes.LIBRARY_FILTER) },
                         onSortClick = { navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) }
@@ -377,10 +380,11 @@ fun OpusNavHost(
                 title = currentBook.title,
                 author = currentBook.author,
                 progressPercent = currentBook.progressPercent,
+                coverDrawableRes = if (fixtureId != null) app.opusreader.R.drawable.fixture_floating_cover else null,
                 onClick = { navController.navigate(NavRoutes.READER) },
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(bottom = 6.dp)
+                    .padding(start = 40.refPx, bottom = 97.refPx)
             )
         }
     }
