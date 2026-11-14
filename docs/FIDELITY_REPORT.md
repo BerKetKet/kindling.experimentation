@@ -6,7 +6,7 @@ Thresholds per screen (outside masks):
 
 | ID | Screen Name | Reference File | Diff % | Worst Offset (px) | Status | Notes |
 |---|---|---|---|---|---|---|
-| D14 | Annotations filter sheet | `docs/reference/14_annotations-filter-sheet.png` | 0.00% | 0 px | **PASS** | bad: 0.0%, dy: 0px |
+| D15 | Annotations sort sheet | `docs/reference/15_annotations-sort-sheet.png` | 0.00% | 0 px | **PASS** | bad: 0.0%, dy: 0px |
 
 ## Summary
 - **Total canonical screens**: 1

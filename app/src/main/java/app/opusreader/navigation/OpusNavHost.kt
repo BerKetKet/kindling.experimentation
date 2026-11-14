@@ -380,6 +380,7 @@ fun OpusNavHost(
                     AnnotationsSortSheet(
                         initialField = annotationSortField,
                         initialDirection = annotationSortDirection,
+                        isFixture = fixtureId == "D15",
                         onDismiss = { navController.popBackStack() },
                         onApply = { field, direction ->
                             annotationSortField = field

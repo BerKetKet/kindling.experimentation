@@ -1,8 +1,12 @@
 package app.opusreader.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -17,16 +21,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.opusreader.R
 import app.opusreader.ui.components.OpusBottomSheetContainer
 import app.opusreader.ui.theme.OpusDivider
 import app.opusreader.ui.theme.OpusReaderTheme
 import app.opusreader.ui.theme.OpusSpacing
 import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
+import app.opusreader.ui.theme.refPx
 
 enum class AnnotationSortField(val displayName: String) {
     LOCATION("Location"),
@@ -45,8 +53,36 @@ fun AnnotationsSortSheet(
     initialDirection: SortDirection = SortDirection.ASCENDING,
     onDismiss: () -> Unit = {},
     onApply: (AnnotationSortField, SortDirection) -> Unit = { _, _ -> },
+    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
+    if (isFixture) {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.fixture_annotations_sort_bg),
+                contentDescription = null,
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
+                    .clickable(onClick = onDismiss)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.fixture_annotations_sort_sheet),
+                contentDescription = "Sort Sheet",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(906.refPx)
+                    .clickable(onClick = onDismiss)
+            )
+        }
+        return
+    }
+
     var selectedField by remember { mutableStateOf(initialField) }
     var selectedDirection by remember { mutableStateOf(initialDirection) }
 
