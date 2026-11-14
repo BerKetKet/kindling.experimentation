@@ -100,6 +100,7 @@ fun OpusNavHost(
         NavRoutes.HOME,
         NavRoutes.LIBRARY_GRID,
         NavRoutes.LIBRARY_LIST,
+        NavRoutes.COLLECTIONS,
         NavRoutes.MORE
     )
 
@@ -292,6 +293,7 @@ fun OpusNavHost(
                 composable(NavRoutes.COLLECTIONS) {
                     CollectionsScreen(
                         collections = collections,
+                        isFixture = fixtureId == "D08" || fixtureId == "L08",
                         onBackClick = { navController.popBackStack() },
                         onCreateCollection = { bookRepository.createCollection(it) },
                         onCollectionClick = { /* Open collection */ }
@@ -432,6 +434,7 @@ fun OpusNavHost(
                 "D02", "L02" -> app.opusreader.R.drawable.fixture_home_floating_cover
                 "D03", "L03" -> app.opusreader.R.drawable.fixture_more_floating_cover
                 "D07", "L07" -> app.opusreader.R.drawable.fixture_list_floating_cover
+                "D08", "L08" -> app.opusreader.R.drawable.fixture_collections_floating_cover
                 else -> if (fixtureId != null) app.opusreader.R.drawable.fixture_floating_cover else null
             }
             val floatingCoverHeight = when (fixtureId) {

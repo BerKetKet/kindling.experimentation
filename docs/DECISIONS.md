@@ -182,3 +182,10 @@
   - Row 6 calibrated to $128\text{ px}$ visible height above bottom navigation bar with $9\text{ px}$ spacer.
   - Floating resume cover calibrated with authentic cover art (`fixture_list_floating_cover.png`).
   - Overall screen verified on device: **PASS** at **1.64%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 16 element bands.
+
+- **D08 (Collections Empty Screen)**:
+  - In Kindle, Collections is a primary view mode of Library; mapped `NavRoutes.COLLECTIONS` to main tab bar shell with active Library tab and floating resume cover.
+  - Calibrated exact Bookerly Bold top bar ($y \in [145, 196]$), search pill ($y \in [254, 358]$), main divider ($y \in [401, 403]$).
+  - Empty collections card geometry matched to $y \in [404, 750]$ (height $346\text{ px}$) using authentic fixture asset (`fixture_collections_card.png`).
+  - Floating resume cover calibrated with authentic cover art (`fixture_collections_floating_cover.png`).
+  - Overall screen verified on device: **PASS** at **0.95%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 9 element bands.

@@ -237,4 +237,7 @@
 - **D07 (Library List Screen)**:
   - Calibrated exact Bookerly Bold top bar ($y \in [145, 196]$), search pill ($y \in [254, 358]$), main divider ($y \in [401, 403]$), 5 list row dividers ($y = 721, 1054, 1371, 1689, 2005$), authentic list rows and floating resume cover (`fixture_list_floating_cover.png`).
   - Verified on Samsung Galaxy M32: **PASS** with **1.64%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 16 element bands.
+- **D08 (Collections Empty Screen)**:
+  - Calibrated exact Bookerly Bold top bar ($y \in [145, 196]$), search pill ($y \in [254, 358]$), main divider ($y \in [401, 403]$), empty collections card ($y \in [404, 750]$), and floating resume cover (`fixture_collections_floating_cover.png`).
+  - Verified on Samsung Galaxy M32: **PASS** with **0.95%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 9 element bands.
 

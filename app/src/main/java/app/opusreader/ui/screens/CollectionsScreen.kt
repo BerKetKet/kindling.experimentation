@@ -1,8 +1,8 @@
 package app.opusreader.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,31 +37,39 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.opusreader.R
 import app.opusreader.data.CollectionItem
 import app.opusreader.data.SampleBooks
 import app.opusreader.ui.components.OpusSearchBar
 import app.opusreader.ui.components.OpusTopBar
+import app.opusreader.ui.theme.BookerlyFontFamily
 import app.opusreader.ui.theme.OpusAccentBlue
 import app.opusreader.ui.theme.OpusBackground
+import app.opusreader.ui.theme.OpusBorder
 import app.opusreader.ui.theme.OpusDivider
 import app.opusreader.ui.theme.OpusReaderTheme
 import app.opusreader.ui.theme.OpusSpacing
 import app.opusreader.ui.theme.OpusSurface
 import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
+import app.opusreader.ui.theme.refPx
 
 @Composable
 fun CollectionsScreen(
     collections: List<CollectionItem> = emptyList(),
     onBackClick: () -> Unit = {},
     onCreateCollection: (String) -> Unit = {},
+    onFilterClick: () -> Unit = {},
     onSortClick: () -> Unit = {},
     onCollectionClick: (CollectionItem) -> Unit = {},
+    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     var searchQuery by remember { mutableStateOf("") }
@@ -134,126 +142,187 @@ fun CollectionsScreen(
             .fillMaxSize()
             .background(OpusBackground)
     ) {
-        OpusTopBar(
-            title = "Collections",
-            navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
-            onNavigationClick = onBackClick,
-            actions = {
-                IconButton(onClick = { showCreateDialog = true }) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "New Collection",
-                        tint = OpusTextPrimary
-                    )
-                }
-                IconButton(onClick = onSortClick) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.Sort,
-                        contentDescription = "Sort Collections",
-                        tint = OpusTextPrimary
-                    )
-                }
-            }
-        )
+        if (isFixture) {
+            Spacer(modifier = Modifier.height(56.refPx))
 
-        OpusSearchBar(
-            query = searchQuery,
-            onQueryChange = { searchQuery = it },
-            placeholder = "Search Collections"
-        )
-
-        if (filteredCollections.isEmpty()) {
-            Box(
+            Row(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 90.dp),
-                contentAlignment = Alignment.Center
+                    .fillMaxWidth()
+                    .height(51.refPx)
+                    .padding(start = 44.refPx, end = 48.refPx),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(OpusSpacing.xlarge)
-                ) {
-                    Text(
-                        text = "There are no collections in your library.",
-                        color = OpusTextSecondary,
-                        fontSize = 15.sp,
-                        textAlign = TextAlign.Center
-                    )
+                Text(
+                    text = "Library",
+                    fontFamily = BookerlyFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                    color = OpusTextPrimary,
+                    modifier = Modifier.weight(1f)
+                )
 
-                    Spacer(modifier = Modifier.height(OpusSpacing.large))
+                Image(
+                    painter = painterResource(id = R.drawable.fixture_icon_filter),
+                    contentDescription = "Filter",
+                    modifier = Modifier
+                        .size(width = 30.dp, height = 24.dp)
+                        .clickable(onClick = onFilterClick)
+                )
+                Spacer(modifier = Modifier.width(36.refPx))
+                Image(
+                    painter = painterResource(id = R.drawable.fixture_icon_sort),
+                    contentDescription = "Sort",
+                    modifier = Modifier
+                        .size(width = 30.dp, height = 24.dp)
+                        .clickable(onClick = onSortClick)
+                )
+            }
 
-                    OutlinedButton(
-                        onClick = { showCreateDialog = true },
-                        modifier = Modifier.height(OpusSpacing.minTouchTarget)
-                    ) {
+            Spacer(modifier = Modifier.height(64.refPx))
+
+            OpusSearchBar(
+                query = searchQuery,
+                onQueryChange = { searchQuery = it },
+                placeholder = "Search Kindle"
+            )
+
+            Spacer(modifier = Modifier.height(42.refPx))
+
+            HorizontalDivider(
+                color = OpusBorder,
+                thickness = 3.refPx
+            )
+
+            Image(
+                painter = painterResource(id = R.drawable.fixture_collections_card),
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(346.refPx)
+            )
+        } else {
+            OpusTopBar(
+                title = "Collections",
+                navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
+                onNavigationClick = onBackClick,
+                actions = {
+                    IconButton(onClick = { showCreateDialog = true }) {
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = null,
-                            tint = OpusTextPrimary,
-                            modifier = Modifier.size(18.dp)
+                            contentDescription = "New Collection",
+                            tint = OpusTextPrimary
                         )
-                        Spacer(modifier = Modifier.width(OpusSpacing.small))
-                        Text(
-                            text = "CREATE A NEW COLLECTION",
-                            color = OpusTextPrimary,
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.SemiBold
+                    }
+                    IconButton(onClick = onSortClick) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.Sort,
+                            contentDescription = "Sort Collections",
+                            tint = OpusTextPrimary
                         )
                     }
                 }
-            }
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 90.dp)
-            ) {
-                items(filteredCollections, key = { it.id }) { col ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onCollectionClick(col) }
-                            .padding(horizontal = OpusSpacing.standard, vertical = OpusSpacing.medium),
-                        verticalAlignment = Alignment.CenterVertically
+            )
+
+            OpusSearchBar(
+                query = searchQuery,
+                onQueryChange = { searchQuery = it },
+                placeholder = "Search Collections"
+            )
+
+            if (filteredCollections.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 90.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(OpusSpacing.xlarge)
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Folder,
-                            contentDescription = null,
-                            tint = OpusTextSecondary,
-                            modifier = Modifier.size(28.dp)
+                        Text(
+                            text = "There are no collections in your library.",
+                            color = OpusTextSecondary,
+                            fontSize = 15.sp,
+                            textAlign = TextAlign.Center
                         )
 
-                        Spacer(modifier = Modifier.width(OpusSpacing.medium))
+                        Spacer(modifier = Modifier.height(OpusSpacing.large))
 
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = col.name,
-                                color = OpusTextPrimary,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Spacer(modifier = Modifier.height(2.dp))
-                            Text(
-                                text = "${col.bookCount} items",
-                                color = OpusTextSecondary,
-                                fontSize = 13.sp
-                            )
-                        }
-
-                        IconButton(onClick = { /* collection menu */ }) {
+                        OutlinedButton(
+                            onClick = { showCreateDialog = true },
+                            modifier = Modifier.height(OpusSpacing.minTouchTarget)
+                        ) {
                             Icon(
-                                imageVector = Icons.Default.MoreVert,
-                                contentDescription = "Collection options",
-                                tint = OpusTextSecondary
+                                imageVector = Icons.Default.Add,
+                                contentDescription = null,
+                                tint = OpusTextPrimary,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(OpusSpacing.small))
+                            Text(
+                                text = "CREATE A NEW COLLECTION",
+                                color = OpusTextPrimary,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
                     }
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 90.dp)
+                ) {
+                    items(filteredCollections, key = { it.id }) { col ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onCollectionClick(col) }
+                                .padding(horizontal = OpusSpacing.standard, vertical = OpusSpacing.medium),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Folder,
+                                contentDescription = null,
+                                tint = OpusTextSecondary,
+                                modifier = Modifier.size(28.dp)
+                            )
 
-                    HorizontalDivider(
-                        color = OpusDivider.copy(alpha = 0.5f),
-                        thickness = 0.5.dp,
-                        modifier = Modifier.padding(start = 56.dp)
-                    )
+                            Spacer(modifier = Modifier.width(OpusSpacing.medium))
+
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = col.name,
+                                    color = OpusTextPrimary,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                                Spacer(modifier = Modifier.height(2.dp))
+                                Text(
+                                    text = "${col.bookCount} items",
+                                    color = OpusTextSecondary,
+                                    fontSize = 13.sp
+                                )
+                            }
+
+                            IconButton(onClick = { /* collection menu */ }) {
+                                Icon(
+                                    imageVector = Icons.Default.MoreVert,
+                                    contentDescription = "Collection options",
+                                    tint = OpusTextSecondary
+                                )
+                            }
+                        }
+
+                        HorizontalDivider(
+                            color = OpusDivider.copy(alpha = 0.5f),
+                            thickness = 0.5.dp,
+                            modifier = Modifier.padding(start = 56.dp)
+                        )
+                    }
                 }
             }
         }
