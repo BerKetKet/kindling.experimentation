@@ -328,6 +328,7 @@ fun OpusNavHost(
                 composable(NavRoutes.CONTENTS) {
                     ContentsTocScreen(
                         engine = readerEngine,
+                        isFixture = fixtureId == "D11",
                         onCloseClick = { navController.popBackStack() }
                     )
                 }

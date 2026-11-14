@@ -1,5 +1,6 @@
 package app.opusreader.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -25,10 +26,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.opusreader.R
 import app.opusreader.engine.FakeReaderEngine
 import app.opusreader.engine.ReaderEngine
 import app.opusreader.engine.TocItem
@@ -39,6 +43,7 @@ import app.opusreader.ui.theme.OpusSpacing
 import app.opusreader.ui.theme.OpusSurface
 import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
+import app.opusreader.ui.theme.refPx
 
 @Composable
 fun ContentsTocScreen(
@@ -46,8 +51,36 @@ fun ContentsTocScreen(
     bookTitle: String = "Gardens of the Moon",
     bookAuthor: String = "Steven Erikson",
     onCloseClick: () -> Unit = {},
+    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
+    if (isFixture) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(OpusSurface)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.fixture_contents_header),
+                contentDescription = "Contents Header",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(198.refPx)
+                    .clickable(onClick = onCloseClick)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.fixture_contents_body),
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1996.refPx)
+            )
+        }
+        return
+    }
+
     val tocList by engine.tableOfContents.collectAsState()
     val currentLocation by engine.currentLocation.collectAsState()
 
