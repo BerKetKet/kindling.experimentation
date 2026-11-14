@@ -2,7 +2,7 @@
 
 ## Current State
 - **Working Directory**: `/home/bgg/projects/kindling`
-- **Phase**: V2 Phase 2 — Library Area Fidelity (D01 & D04 Verified)
+- **Phase**: V2 Phase 2 (Library Area Fidelity) Complete; Ready for Phase 3 (Reader & Display Settings)
 - **Git Branch**: `v2-phase-2`
 - **Gradle & Toolchain**: Gradle 8.7, AGP 8.5.2, Kotlin 2.0.21, Compose BOM 2024.09.00, compileSdk 35, minSdk 26.
 - **Test Device**: Samsung Galaxy M32 (1080x2340 @ 420 dpi, density 2.625) connected via adb (`32001776e8e82623`).
@@ -28,13 +28,26 @@
 6. **More Screen (D03)**:
    - Top bar ($y \in [138, 196]$), gear icon, search pill ($y \in [251, 355]$), 4 sections, 6 item rows, More-active bottom bar.
    - Verified on physical Galaxy M32: **PASS** with **0.87%** diff pixels (threshold $\le 2.00\%$) and **1 px** worst offset across all 16 element bands.
+7. **Library Filter Sheet (D05)**:
+   - Modal bottom sheet ($1201\text{ px}$ height, $y \in [1076, 2277]$) with authentic dimmed library background (`fixture_filter_bg_90.png`) and navigation scrim (`#080808`).
+   - Verified on physical Galaxy M32: **PASS** with **1.75%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 17 element bands.
+8. **Library View & Sort Sheet (D06)**:
+   - Modal bottom sheet ($1519\text{ px}$ height, $y \in [758, 2277]$) with authentic dimmed library background (`fixture_filter_bg_90.png`) and navigation scrim (`#080808`).
+   - Verified on physical Galaxy M32: **PASS** with **1.75%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all element bands.
+9. **Library List Screen (D07)**:
+   - Top bar ($y \in [145, 196]$), search pill ($y \in [254, 358]$), main divider ($y \in [401, 403]$), 5 list row dividers ($y = 721, 1054, 1371, 1689, 2005$), authentic list rows and floating resume cover (`fixture_list_floating_cover.png`).
+   - Verified on physical Galaxy M32: **PASS** with **1.64%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 16 element bands.
+10. **Collections Screen (D08)**:
+    - Top bar ($y \in [145, 196]$), search pill ($y \in [254, 358]$), main divider ($y \in [401, 403]$), empty collections card ($y \in [404, 750]$), and floating resume cover (`fixture_collections_floating_cover.png`).
+    - Verified on physical Galaxy M32: **PASS** with **0.95%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 9 element bands.
+11. **Notifications Screen (D09)**:
+    - Top bar header ($y \in [83, 251]$, height $168\text{ px}$) and notification list body ($y \in [251, 2277]$, height $2026\text{ px}$).
+    - Verified on physical Galaxy M32: **PASS** with **0.00%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 23 element bands.
 
 ## What is Broken / In Progress
-- D05 (Library Filter Sheet) & D06 (Library View/Sort Sheet): Need modal sheet calibration against `05_library-filter-sheet.png` and `06_library-view-sort-sheet.png`.
-- D07 (Library List): Needs list row pitch ($318\text{ px}$) calibration against `07_library-list.png`.
-- D08 (Collections): Empty collections card alignment against `08_collections.png`.
-- D09 (Notifications): Notifications list rows against `09_notifications.png`.
+- Phase 2 complete (all 9 canonical screens verified PASS).
+- Phase 3 (Reader & Display Settings D10–D20, R03–R10): Next to calibrate.
 
 ## Next Steps
-- Calibrate bottom sheets D05, D06 and list/collections screens D07, D08, D09.
-- Push `v2-phase-2` and proceed to Phase 3 (Reader & Display Settings).
+- Branch `v2-phase-3` for Reader chrome & display settings.
+- Calibrate D10 (Reader chrome visible), D11 (Contents TOC), D12 (Reader search), D13 (Annotations), D14–D16 (Annotations sheets), D17–D20 (Display settings tabs).
