@@ -1,0 +1,22 @@
+# Architectural and Design Decisions
+
+## Phase 0: Project Setup, Theme, and Shared Components
+
+- **Build System**: Android Gradle Plugin 8.5.2 with Gradle 8.7, Kotlin 2.0.21 and Jetpack Compose compiler plugin `org.jetbrains.kotlin.plugin.compose`.
+- **Target & SDK**: minSdk 26 (Android 8.0 Oreo), targetSdk 35, compileSdk 35. Fits Samsung Galaxy M32 test device and reference specs.
+- **Theme Sampling**: Direct pixel sampling from 20 reference screenshots (1080x2340 px at 2.625 density):
+  - Screen background: `#101112`
+  - Bottom bar & navigation background: `#141414`
+  - Surface & bottom sheet background: `#232323`
+  - Borders & dividers: `#404040`
+  - Text primary: `#EDEDED`, secondary: `#A8ABAD`, tertiary: `#8E9194`
+  - Accent blue: `#2491FF`, Accent gold: `#D29648`, Bookmark red: `#D8232A`
+- **Component Geometry**:
+  - Top Bar: 56dp height, 16dp horizontal padding, 20sp semi-bold title.
+  - Search Bar: 48dp height (within 56dp container), 1dp outline border `#404040`, 8dp corner radius.
+  - Bottom Sheet: 16dp top corner radius, `#232323` surface, sticky header with Title on left and "DONE" button on right, 1dp divider.
+  - List Row: 124dp row height, 76x108dp book cover thumbnail with progress bar, title, author, file size/percentage, download checkmark, overflow menu.
+  - Cover Tile: 3-column grid, 106x152dp cover thumbnail (~1:1.43 aspect ratio), title, author, progress bar, download checkmark badge.
+  - Toggle Row: minimum 48dp touch target, title, optional subtitle, supporting Switch, Checkbox, Radio, and Checkmark.
+- **Engine Interface**: `ReaderEngine` defined in `app/opusreader/engine/ReaderEngine.kt` and backed by `FakeReaderEngine` with bundled Malazan Gardens of the Moon sample text, matching reference screens 10, 11, 13, 17.
+- **Privacy & Branding**: No Amazon or Kindle trademarks or assets in code or strings. App name constant: "Opus Reader".
