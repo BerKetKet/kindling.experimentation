@@ -83,3 +83,46 @@
 ### Inferred
 - Empty Collections state UI with folder icon and "+ CREATE A NEW COLLECTION" button (unillustrated in reference screenshots, inferred from Kindle Android convention).
 - Annotations export options: Markdown (.md), Plain Text (.txt), CSV spreadsheet.
+
+---
+
+## Phase 2: Library, Home, More, Settings, Notifications Interactivity
+
+### Done
+- In-memory data architecture implemented with `BookRepository` interface and `FakeBookRepository`:
+  - Reactive `StateFlow` streams for `allBooks`, `filteredBooks`, `filterState`, `sortOrder`, `viewMode`, `collections`, and `notifications`.
+  - Realistic initial library of 10 diverse titles spanning Books, Samples, and Docs, with read (100%), in-progress, and unread states.
+- Real dynamic filtering (`LibraryFilterSheet`):
+  - Dynamic item counts computed directly from library data: Read (3), Unread (7), Books (6), Samples (2), Docs (2).
+  - Toggling read state or content type filters re-filters library books in real-time. Verified on device (filtering to Read only displays 3 items).
+- Real dynamic sorting (`LibraryViewSortSheet`):
+  - Supports Most Recent, Title (A-Z), Author (A-Z), and Author (Z-A).
+  - Selecting a sort option immediately reorders the library in both Grid and List views. Verified on device with Author A-Z sorting (Austen -> Dostoevsky -> Erikson ...).
+- Real view switching (`LibraryViewSortSheet`):
+  - Seamlessly toggles between Grid (`01`), List (`07`), and Collections (`08`) with backstack consistency.
+- Collections management (`CollectionsScreen`):
+  - Pre-populated collections: "All-Time Favorites" (3 items), "Gutenberg Classics" (4 items), "Science Fiction" (1 item).
+  - Interactive "New Collection" creation dialog with text input. Verified on device by creating new "Cyberpunk" collection live.
+- Home screen interactivity (`HomeScreen`):
+  - Displays "From Your Library" shelf populated with user's reading list.
+  - "Project Gutenberg Classics" discovery shelf.
+  - Category chips ("Explore", "All", "Fiction", "Nonfiction", "Fantasy", "Classics").
+  - Notification badge linking to activity feed.
+- Notifications (`NotificationsScreen`):
+  - Activity feed with real sync, download, and milestone alerts.
+  - Per-item dismissal and "Clear All" action.
+- Settings & More screens (`SettingsScreen`, `MoreScreen`):
+  - Interactive dialog for renaming device.
+  - Toggles for push notifications, SD card downloads, and library sync.
+  - Dynamic "Sync now" action with real-time timestamp formatting.
+- Verification:
+  - Unit test suite (`FakeBookRepositoryTest`) passing with 8 tests covering filtering, sorting, collection CRUD, and progress updates.
+  - `./gradlew assembleDebug testDebugUnitTest lintDebug` passed cleanly (52/52 tasks).
+  - Verified on physical Samsung Galaxy M32 (1080x2340 @ 420 dpi) across all interactions.
+
+### Differences from Reference
+- None in layout or visuals. Kindle account settings replaced with local reader preferences as specified in `docs/UI_SPEC.md`.
+
+### Inferred
+- Collection creation dialog with text entry and validation.
+- Per-item delete action on notification rows.

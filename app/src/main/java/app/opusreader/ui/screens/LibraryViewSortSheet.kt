@@ -1,6 +1,7 @@
 package app.opusreader.ui.screens
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,12 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.automirrored.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Folder
-import androidx.compose.material.icons.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -33,6 +32,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.opusreader.data.LibrarySortOrder
+import app.opusreader.data.LibraryViewMode
 import app.opusreader.ui.components.OpusBottomSheetContainer
 import app.opusreader.ui.theme.OpusAccentBlue
 import app.opusreader.ui.theme.OpusDivider
@@ -40,17 +41,6 @@ import app.opusreader.ui.theme.OpusReaderTheme
 import app.opusreader.ui.theme.OpusSpacing
 import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
-
-enum class LibraryViewMode {
-    GRID, LIST, COLLECTIONS
-}
-
-enum class LibrarySortOrder(val displayName: String) {
-    MOST_RECENT("Most Recent"),
-    TITLE("Title"),
-    AUTHOR_AZ("Author (A-Z)"),
-    AUTHOR_ZA("Author (Z-A)")
-}
 
 data class ViewSortState(
     val groupBySeries: Boolean = true,
@@ -110,7 +100,7 @@ fun LibraryViewSortSheet(
             onClick = { state = state.copy(viewMode = LibraryViewMode.GRID) }
         )
         ViewOptionRow(
-            icon = Icons.Default.FormatListBulleted,
+            icon = Icons.AutoMirrored.Filled.FormatListBulleted,
             label = "List",
             selected = state.viewMode == LibraryViewMode.LIST,
             onClick = { state = state.copy(viewMode = LibraryViewMode.LIST) }
@@ -138,31 +128,26 @@ fun LibraryViewSortSheet(
             )
         )
 
-        LibrarySortOrder.entries.forEach { sortOption ->
-            val isSelected = state.sortOrder == sortOption
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { state = state.copy(sortOrder = sortOption) }
-                    .padding(horizontal = OpusSpacing.standard, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = sortOption.displayName,
-                    color = OpusTextPrimary,
-                    fontSize = 15.sp,
-                    modifier = Modifier.weight(1f)
-                )
-                if (isSelected) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = "Selected",
-                        tint = OpusTextPrimary,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-            }
-        }
+        SortOptionRow(
+            label = LibrarySortOrder.MOST_RECENT.displayName,
+            selected = state.sortOrder == LibrarySortOrder.MOST_RECENT,
+            onClick = { state = state.copy(sortOrder = LibrarySortOrder.MOST_RECENT) }
+        )
+        SortOptionRow(
+            label = LibrarySortOrder.TITLE.displayName,
+            selected = state.sortOrder == LibrarySortOrder.TITLE,
+            onClick = { state = state.copy(sortOrder = LibrarySortOrder.TITLE) }
+        )
+        SortOptionRow(
+            label = LibrarySortOrder.AUTHOR_AZ.displayName,
+            selected = state.sortOrder == LibrarySortOrder.AUTHOR_AZ,
+            onClick = { state = state.copy(sortOrder = LibrarySortOrder.AUTHOR_AZ) }
+        )
+        SortOptionRow(
+            label = LibrarySortOrder.AUTHOR_ZA.displayName,
+            selected = state.sortOrder == LibrarySortOrder.AUTHOR_ZA,
+            onClick = { state = state.copy(sortOrder = LibrarySortOrder.AUTHOR_ZA) }
+        )
     }
 }
 
@@ -183,16 +168,19 @@ private fun ViewOptionRow(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = OpusTextSecondary,
+            tint = OpusTextPrimary,
             modifier = Modifier.size(24.dp)
         )
-        Spacer(modifier = Modifier.width(OpusSpacing.standard))
+
         Text(
             text = label,
             color = OpusTextPrimary,
             fontSize = 15.sp,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = OpusSpacing.medium)
         )
+
         if (selected) {
             Icon(
                 imageVector = Icons.Default.Check,
@@ -204,7 +192,38 @@ private fun ViewOptionRow(
     }
 }
 
-@Preview(name = "06 View & Sort Sheet Preview", showBackground = true, backgroundColor = 0xFF232323)
+@Composable
+private fun SortOptionRow(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(horizontal = OpusSpacing.standard, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            color = OpusTextPrimary,
+            fontSize = 15.sp,
+            modifier = Modifier.weight(1f)
+        )
+
+        if (selected) {
+            Icon(
+                imageVector = Icons.Default.Check,
+                contentDescription = "Selected",
+                tint = OpusTextPrimary,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
+}
+
+@Preview(name = "06 Library View and Sort Sheet Preview", showBackground = true, backgroundColor = 0xFF232323)
 @Composable
 fun LibraryViewSortSheetPreview() {
     OpusReaderTheme {

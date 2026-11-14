@@ -15,14 +15,17 @@ import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import app.opusreader.data.Book
 import app.opusreader.data.SampleBooks
 import app.opusreader.ui.components.OpusCoverTile
@@ -32,6 +35,7 @@ import app.opusreader.ui.theme.OpusBackground
 import app.opusreader.ui.theme.OpusReaderTheme
 import app.opusreader.ui.theme.OpusSpacing
 import app.opusreader.ui.theme.OpusTextPrimary
+import app.opusreader.ui.theme.OpusTextSecondary
 
 @Composable
 fun LibraryGridScreen(
@@ -82,28 +86,43 @@ fun LibraryGridScreen(
             placeholder = "Search Library"
         )
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            contentPadding = PaddingValues(
-                start = OpusSpacing.standard,
-                end = OpusSpacing.standard,
-                top = OpusSpacing.small,
-                bottom = 90.dp
-            ),
-            horizontalArrangement = Arrangement.spacedBy(OpusSpacing.medium),
-            verticalArrangement = Arrangement.spacedBy(OpusSpacing.standard),
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(filteredBooks, key = { it.id }) { book ->
-                OpusCoverTile(
-                    title = book.title,
-                    author = book.author,
-                    progressPercent = book.progressPercent,
-                    isDownloaded = book.isDownloaded,
-                    coverColor = book.coverColor,
-                    onClick = { onBookClick(book) },
-                    onLongClick = { onBookLongClick(book) }
+        if (filteredBooks.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 90.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "No items match your filter",
+                    color = OpusTextSecondary,
+                    fontSize = 15.sp
                 )
+            }
+        } else {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                contentPadding = PaddingValues(
+                    start = OpusSpacing.standard,
+                    end = OpusSpacing.standard,
+                    top = OpusSpacing.small,
+                    bottom = 90.dp
+                ),
+                horizontalArrangement = Arrangement.spacedBy(OpusSpacing.medium),
+                verticalArrangement = Arrangement.spacedBy(OpusSpacing.standard),
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(filteredBooks, key = { it.id }) { book ->
+                    OpusCoverTile(
+                        title = book.title,
+                        author = book.author,
+                        progressPercent = book.progressPercent,
+                        isDownloaded = book.isDownloaded,
+                        coverColor = book.coverColor,
+                        onClick = { onBookClick(book) },
+                        onLongClick = { onBookLongClick(book) }
+                    )
+                }
             }
         }
     }

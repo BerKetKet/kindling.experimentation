@@ -1,16 +1,10 @@
 package app.opusreader.ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.HorizontalDivider
@@ -23,35 +17,36 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.opusreader.data.Book
+import app.opusreader.data.ContentType
+import app.opusreader.data.LibraryFilterState
+import app.opusreader.data.SampleBooks
 import app.opusreader.ui.components.OpusBottomSheetContainer
 import app.opusreader.ui.theme.OpusDivider
 import app.opusreader.ui.theme.OpusReaderTheme
 import app.opusreader.ui.theme.OpusSpacing
-import app.opusreader.ui.theme.OpusSurface
 import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
-
-data class LibraryFilterState(
-    val showRead: Boolean = true,
-    val showUnread: Boolean = true,
-    val showBooks: Boolean = true,
-    val showSamples: Boolean = true,
-    val showDocs: Boolean = true
-)
 
 @Composable
 fun LibraryFilterSheet(
     initialState: LibraryFilterState = LibraryFilterState(),
+    allBooks: List<Book> = emptyList(),
     onCloseClick: () -> Unit = {},
     onApplyFilter: (LibraryFilterState) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var state by remember { mutableStateOf(initialState) }
+
+    val readCount = if (allBooks.isNotEmpty()) allBooks.count { it.isRead } else 16
+    val unreadCount = if (allBooks.isNotEmpty()) allBooks.count { !it.isRead } else 59
+    val booksCount = if (allBooks.isNotEmpty()) allBooks.count { it.contentType == ContentType.BOOK } else 6
+    val samplesCount = if (allBooks.isNotEmpty()) allBooks.count { it.contentType == ContentType.SAMPLE } else 5
+    val docsCount = if (allBooks.isNotEmpty()) allBooks.count { it.contentType == ContentType.DOC } else 70
 
     OpusBottomSheetContainer(
         title = "Filter",
@@ -63,12 +58,12 @@ fun LibraryFilterSheet(
         SectionTitle("Read state")
 
         FilterItemRow(
-            label = "Read (16)",
+            label = "Read ($readCount)",
             selected = state.showRead,
             onClick = { state = state.copy(showRead = !state.showRead) }
         )
         FilterItemRow(
-            label = "Unread (59)",
+            label = "Unread ($unreadCount)",
             selected = state.showUnread,
             onClick = { state = state.copy(showUnread = !state.showUnread) }
         )
@@ -78,17 +73,17 @@ fun LibraryFilterSheet(
         SectionTitle("Content type")
 
         FilterItemRow(
-            label = "Books (6)",
+            label = "Books ($booksCount)",
             selected = state.showBooks,
             onClick = { state = state.copy(showBooks = !state.showBooks) }
         )
         FilterItemRow(
-            label = "Samples (5)",
+            label = "Samples ($samplesCount)",
             selected = state.showSamples,
             onClick = { state = state.copy(showSamples = !state.showSamples) }
         )
         FilterItemRow(
-            label = "Docs (70)",
+            label = "Docs ($docsCount)",
             selected = state.showDocs,
             onClick = { state = state.copy(showDocs = !state.showDocs) }
         )
@@ -146,6 +141,6 @@ private fun FilterItemRow(
 @Composable
 fun LibraryFilterSheetPreview() {
     OpusReaderTheme {
-        LibraryFilterSheet()
+        LibraryFilterSheet(allBooks = SampleBooks.sampleList)
     }
 }

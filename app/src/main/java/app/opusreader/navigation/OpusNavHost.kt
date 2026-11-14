@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -15,7 +16,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import app.opusreader.data.SampleBooks
+import app.opusreader.data.BookRepository
+import app.opusreader.data.FakeBookRepository
+import app.opusreader.data.LibraryViewMode
 import app.opusreader.engine.FakeReaderEngine
 import app.opusreader.engine.ReaderEngine
 import app.opusreader.ui.components.FloatingResumeCover
@@ -32,19 +35,20 @@ import app.opusreader.ui.screens.HomeScreen
 import app.opusreader.ui.screens.LibraryFilterSheet
 import app.opusreader.ui.screens.LibraryGridScreen
 import app.opusreader.ui.screens.LibraryListScreen
-import app.opusreader.ui.screens.LibraryViewMode
 import app.opusreader.ui.screens.LibraryViewSortSheet
 import app.opusreader.ui.screens.MoreScreen
 import app.opusreader.ui.screens.NotificationsScreen
 import app.opusreader.ui.screens.ReaderScreen
 import app.opusreader.ui.screens.ReaderSearchScreen
 import app.opusreader.ui.screens.SettingsScreen
+import app.opusreader.ui.screens.ViewSortState
 import app.opusreader.ui.theme.OpusBackground
 
 @Composable
 fun OpusNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
+    bookRepository: BookRepository = remember { FakeBookRepository() },
     readerEngine: ReaderEngine = remember { FakeReaderEngine() }
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -63,7 +67,15 @@ fun OpusNavHost(
         else -> MainTab.LIBRARY
     }
 
-    val currentBook = SampleBooks.sampleList.first()
+    val allBooks by bookRepository.allBooks.collectAsState()
+    val filteredBooks by bookRepository.filteredBooks.collectAsState()
+    val filterState by bookRepository.filterState.collectAsState()
+    val sortOrder by bookRepository.sortOrder.collectAsState()
+    val viewMode by bookRepository.viewMode.collectAsState()
+    val collections by bookRepository.collections.collectAsState()
+    val notifications by bookRepository.notifications.collectAsState()
+
+    val currentBook = allBooks.firstOrNull { it.id == "gardens_of_the_moon" } ?: allBooks.first()
 
     Box(modifier = modifier.fillMaxSize()) {
         Scaffold(
@@ -95,6 +107,7 @@ fun OpusNavHost(
                 // 01 Library Grid
                 composable(NavRoutes.LIBRARY_GRID) {
                     LibraryGridScreen(
+                        books = filteredBooks,
                         onBookClick = { navController.navigate(NavRoutes.READER) },
                         onFilterClick = { navController.navigate(NavRoutes.LIBRARY_FILTER) },
                         onSortClick = { navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) }
@@ -104,6 +117,7 @@ fun OpusNavHost(
                 // 02 Home
                 composable(NavRoutes.HOME) {
                     HomeScreen(
+                        books = allBooks,
                         onBookClick = { navController.navigate(NavRoutes.READER) },
                         onSeeAllLibraryClick = { navController.navigate(NavRoutes.LIBRARY_GRID) },
                         onNotificationsClick = { navController.navigate(NavRoutes.NOTIFICATIONS) }
@@ -127,16 +141,27 @@ fun OpusNavHost(
                 // 05 Library Filter Sheet
                 composable(NavRoutes.LIBRARY_FILTER) {
                     LibraryFilterSheet(
+                        initialState = filterState,
+                        allBooks = allBooks,
                         onCloseClick = { navController.popBackStack() },
-                        onApplyFilter = { navController.popBackStack() }
+                        onApplyFilter = { newFilter ->
+                            bookRepository.setFilter(newFilter)
+                            navController.popBackStack()
+                        }
                     )
                 }
 
                 // 06 Library View & Sort Sheet
                 composable(NavRoutes.LIBRARY_VIEW_SORT) {
                     LibraryViewSortSheet(
+                        initialState = ViewSortState(
+                            viewMode = viewMode,
+                            sortOrder = sortOrder
+                        ),
                         onCloseClick = { navController.popBackStack() },
                         onApplyViewSort = { viewSortState ->
+                            bookRepository.setSortOrder(viewSortState.sortOrder)
+                            bookRepository.setViewMode(viewSortState.viewMode)
                             navController.popBackStack()
                             when (viewSortState.viewMode) {
                                 LibraryViewMode.GRID -> navController.navigate(NavRoutes.LIBRARY_GRID)
@@ -150,6 +175,7 @@ fun OpusNavHost(
                 // 07 Library List
                 composable(NavRoutes.LIBRARY_LIST) {
                     LibraryListScreen(
+                        books = filteredBooks,
                         onBookClick = { navController.navigate(NavRoutes.READER) },
                         onFilterClick = { navController.navigate(NavRoutes.LIBRARY_FILTER) },
                         onSortClick = { navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) }
@@ -159,15 +185,20 @@ fun OpusNavHost(
                 // 08 Collections
                 composable(NavRoutes.COLLECTIONS) {
                     CollectionsScreen(
+                        collections = collections,
                         onBackClick = { navController.popBackStack() },
-                        onCollectionClick = { /* Open collection books */ }
+                        onCreateCollection = { bookRepository.createCollection(it) },
+                        onCollectionClick = { /* Open collection */ }
                     )
                 }
 
                 // 09 Notifications
                 composable(NavRoutes.NOTIFICATIONS) {
                     NotificationsScreen(
-                        onBackClick = { navController.popBackStack() }
+                        notifications = notifications,
+                        onBackClick = { navController.popBackStack() },
+                        onClearAll = { bookRepository.clearAllNotifications() },
+                        onDeleteNotification = { bookRepository.deleteNotification(it) }
                     )
                 }
 

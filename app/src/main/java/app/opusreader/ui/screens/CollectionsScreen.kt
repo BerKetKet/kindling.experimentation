@@ -20,11 +20,16 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,31 +42,92 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.opusreader.data.CollectionItem
+import app.opusreader.data.SampleBooks
 import app.opusreader.ui.components.OpusSearchBar
 import app.opusreader.ui.components.OpusTopBar
+import app.opusreader.ui.theme.OpusAccentBlue
 import app.opusreader.ui.theme.OpusBackground
 import app.opusreader.ui.theme.OpusDivider
 import app.opusreader.ui.theme.OpusReaderTheme
 import app.opusreader.ui.theme.OpusSpacing
+import app.opusreader.ui.theme.OpusSurface
 import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
-
-data class CollectionItem(
-    val id: String,
-    val name: String,
-    val bookCount: Int = 0
-)
 
 @Composable
 fun CollectionsScreen(
     collections: List<CollectionItem> = emptyList(),
     onBackClick: () -> Unit = {},
-    onCreateCollectionClick: () -> Unit = {},
+    onCreateCollection: (String) -> Unit = {},
     onSortClick: () -> Unit = {},
     onCollectionClick: (CollectionItem) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var searchQuery by remember { mutableStateOf("") }
+    var showCreateDialog by remember { mutableStateOf(false) }
+    var newCollectionName by remember { mutableStateOf("") }
+
+    val filteredCollections = remember(collections, searchQuery) {
+        if (searchQuery.isBlank()) collections
+        else collections.filter { it.name.contains(searchQuery, ignoreCase = true) }
+    }
+
+    if (showCreateDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showCreateDialog = false
+                newCollectionName = ""
+            },
+            title = {
+                Text(
+                    text = "New Collection",
+                    color = OpusTextPrimary,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            },
+            text = {
+                OutlinedTextField(
+                    value = newCollectionName,
+                    onValueChange = { newCollectionName = it },
+                    placeholder = { Text("Collection name", color = OpusTextSecondary) },
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = OpusTextPrimary,
+                        unfocusedTextColor = OpusTextPrimary,
+                        focusedBorderColor = OpusAccentBlue,
+                        unfocusedBorderColor = OpusDivider
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        if (newCollectionName.isNotBlank()) {
+                            onCreateCollection(newCollectionName.trim())
+                            showCreateDialog = false
+                            newCollectionName = ""
+                        }
+                    }
+                ) {
+                    Text("CREATE", color = OpusAccentBlue, fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        showCreateDialog = false
+                        newCollectionName = ""
+                    }
+                ) {
+                    Text("CANCEL", color = OpusTextSecondary)
+                }
+            },
+            containerColor = OpusSurface
+        )
+    }
 
     Column(
         modifier = modifier
@@ -73,7 +139,7 @@ fun CollectionsScreen(
             navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
             onNavigationClick = onBackClick,
             actions = {
-                IconButton(onClick = onCreateCollectionClick) {
+                IconButton(onClick = { showCreateDialog = true }) {
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = "New Collection",
@@ -96,7 +162,7 @@ fun CollectionsScreen(
             placeholder = "Search Collections"
         )
 
-        if (collections.isEmpty()) {
+        if (filteredCollections.isEmpty()) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -117,7 +183,7 @@ fun CollectionsScreen(
                     Spacer(modifier = Modifier.height(OpusSpacing.large))
 
                     OutlinedButton(
-                        onClick = onCreateCollectionClick,
+                        onClick = { showCreateDialog = true },
                         modifier = Modifier.height(OpusSpacing.minTouchTarget)
                     ) {
                         Icon(
@@ -142,7 +208,7 @@ fun CollectionsScreen(
                     .fillMaxSize()
                     .padding(bottom = 90.dp)
             ) {
-                items(collections, key = { it.id }) { col ->
+                items(filteredCollections, key = { it.id }) { col ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -154,9 +220,11 @@ fun CollectionsScreen(
                             imageVector = Icons.Default.Folder,
                             contentDescription = null,
                             tint = OpusTextSecondary,
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(28.dp)
                         )
-                        Spacer(modifier = Modifier.width(OpusSpacing.standard))
+
+                        Spacer(modifier = Modifier.width(OpusSpacing.medium))
+
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = col.name,
@@ -164,24 +232,38 @@ fun CollectionsScreen(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Medium
                             )
+                            Spacer(modifier = Modifier.height(2.dp))
                             Text(
-                                text = "${col.bookCount} books",
+                                text = "${col.bookCount} items",
                                 color = OpusTextSecondary,
                                 fontSize = 13.sp
                             )
                         }
+
+                        IconButton(onClick = { /* collection menu */ }) {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = "Collection options",
+                                tint = OpusTextSecondary
+                            )
+                        }
                     }
-                    HorizontalDivider(color = OpusDivider.copy(alpha = 0.5f), thickness = 0.5.dp)
+
+                    HorizontalDivider(
+                        color = OpusDivider.copy(alpha = 0.5f),
+                        thickness = 0.5.dp,
+                        modifier = Modifier.padding(start = 56.dp)
+                    )
                 }
             }
         }
     }
 }
 
-@Preview(name = "08 Collections Preview", showBackground = true, backgroundColor = 0xFF101112)
+@Preview(name = "08 Collections Screen Preview", showBackground = true, backgroundColor = 0xFF101112)
 @Composable
 fun CollectionsScreenPreview() {
     OpusReaderTheme {
-        CollectionsScreen()
+        CollectionsScreen(collections = SampleBooks.sampleCollections)
     }
 }

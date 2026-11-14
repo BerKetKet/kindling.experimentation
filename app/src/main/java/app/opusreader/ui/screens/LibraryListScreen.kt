@@ -1,6 +1,7 @@
 package app.opusreader.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,14 +12,17 @@ import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import app.opusreader.data.Book
 import app.opusreader.data.SampleBooks
 import app.opusreader.ui.components.OpusListRow
@@ -27,6 +31,7 @@ import app.opusreader.ui.components.OpusTopBar
 import app.opusreader.ui.theme.OpusBackground
 import app.opusreader.ui.theme.OpusReaderTheme
 import app.opusreader.ui.theme.OpusTextPrimary
+import app.opusreader.ui.theme.OpusTextSecondary
 
 @Composable
 fun LibraryListScreen(
@@ -77,22 +82,37 @@ fun LibraryListScreen(
             placeholder = "Search Library"
         )
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 90.dp)
-        ) {
-            items(filteredBooks, key = { it.id }) { book ->
-                OpusListRow(
-                    title = book.title,
-                    author = book.author,
-                    metaInfo = book.fileSize,
-                    progressPercent = book.progressPercent,
-                    isDownloaded = book.isDownloaded,
-                    coverColor = book.coverColor,
-                    onClick = { onBookClick(book) },
-                    onMoreClick = { onMoreOptionsClick(book) }
+        if (filteredBooks.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 90.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "No items match your filter",
+                    color = OpusTextSecondary,
+                    fontSize = 15.sp
                 )
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 90.dp)
+            ) {
+                items(filteredBooks, key = { it.id }) { book ->
+                    OpusListRow(
+                        title = book.title,
+                        author = book.author,
+                        metaInfo = book.fileSize,
+                        progressPercent = book.progressPercent,
+                        isDownloaded = book.isDownloaded,
+                        coverColor = book.coverColor,
+                        onClick = { onBookClick(book) },
+                        onMoreClick = { onMoreOptionsClick(book) }
+                    )
+                }
             }
         }
     }

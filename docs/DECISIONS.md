@@ -30,3 +30,20 @@
 - **Bottom Bar Layout**: Bottom bar allocates an 80dp start spacer so that the 52dp floating resume cover can overlap the bottom-left area without obscuring any tab buttons (Home, Library, More).
 - **Sheet Architecture**: Sheets (`LibraryFilterSheet`, `LibraryViewSortSheet`, `AnnotationsFilterSheet`, `AnnotationsSortSheet`, `AnnotationsShareSheet`, `DisplaySettingsSheet`) are composables styled as modal bottom sheets with 16dp top corners, `#232323` surface, title headers, and "DONE" / "Close" action buttons. They are registered in the `NavHost` to enable direct navigation and backstack restoration.
 - **Reader Display Settings Architecture**: `DisplaySettingsSheet` hosts the four Kindle display tabs (Font `17`, Layout `18`, Themes `19`, More `20`) under a unified tab header and bottom brightness slider with auto-toggle, allowing smooth switching between typography, layout, theme presets, and reading progress controls.
+
+---
+
+## Phase 2: In-Memory Data Repository and Filtering/Sorting Engine
+
+- **Repository Abstraction**: `BookRepository` interface cleanly decouples the UI from data persistence. `FakeBookRepository` uses Kotlin `MutableStateFlow` to notify subscribers of filter, sort, collection, and book updates reactively.
+- **Filtering Logic**: Implemented in `FakeBookRepository.computeFilteredBooks`:
+  - Read condition evaluates against `isRead` boolean (`progressPercent >= 100`).
+  - Content type evaluates against `ContentType` enum (`BOOK`, `SAMPLE`, `DOC`).
+  - Active counts in `LibraryFilterSheet` are computed dynamically from `allBooks`.
+- **Sorting Logic**:
+  - `MOST_RECENT`: sorts descending by `lastReadTimestamp`.
+  - `TITLE`: sorts ascending case-insensitively by `title`.
+  - `AUTHOR_AZ`: sorts ascending case-insensitively by `author`.
+  - `AUTHOR_ZA`: sorts descending case-insensitively by `author`.
+- **Collections Lifecycle**: Collections maintain an internal list of member book IDs and a dynamically computed `bookCount`. Adding or deleting a collection persists in the in-memory repository for the session.
+- **Dialog Architecture**: In-place `AlertDialog`s for collection creation and device renaming, styled with `#232323` container, `#2491FF` confirm actions, and outlined input fields.

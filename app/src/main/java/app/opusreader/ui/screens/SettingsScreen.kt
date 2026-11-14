@@ -3,13 +3,18 @@ package app.opusreader.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,23 +28,75 @@ import androidx.compose.ui.unit.sp
 import app.opusreader.ui.components.OpusToggleRow
 import app.opusreader.ui.components.OpusTopBar
 import app.opusreader.ui.components.ToggleType
+import app.opusreader.ui.theme.OpusAccentBlue
 import app.opusreader.ui.theme.OpusBackground
 import app.opusreader.ui.theme.OpusDivider
 import app.opusreader.ui.theme.OpusReaderTheme
 import app.opusreader.ui.theme.OpusSpacing
+import app.opusreader.ui.theme.OpusSurface
+import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
 
 @Composable
 fun SettingsScreen(
     onBackClick: () -> Unit = {},
-    onDeviceNameClick: () -> Unit = {},
     onImportFilesClick: () -> Unit = {},
     onFontManagerClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    var deviceName by remember { mutableStateOf("Opus Android Reader") }
+    var showDeviceNameDialog by remember { mutableStateOf(false) }
+    var editedName by remember { mutableStateOf(deviceName) }
+
     var downloadToSdCard by remember { mutableStateOf(false) }
     var syncEnabled by remember { mutableStateOf(true) }
     var pushNotificationsEnabled by remember { mutableStateOf(true) }
+
+    if (showDeviceNameDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeviceNameDialog = false },
+            title = {
+                Text(
+                    text = "Edit Device Name",
+                    color = OpusTextPrimary,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            },
+            text = {
+                OutlinedTextField(
+                    value = editedName,
+                    onValueChange = { editedName = it },
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = OpusTextPrimary,
+                        unfocusedTextColor = OpusTextPrimary,
+                        focusedBorderColor = OpusAccentBlue,
+                        unfocusedBorderColor = OpusDivider
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        if (editedName.isNotBlank()) {
+                            deviceName = editedName.trim()
+                        }
+                        showDeviceNameDialog = false
+                    }
+                ) {
+                    Text("SAVE", color = OpusAccentBlue, fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeviceNameDialog = false }) {
+                    Text("CANCEL", color = OpusTextSecondary)
+                }
+            },
+            containerColor = OpusSurface
+        )
+    }
 
     Column(
         modifier = modifier
@@ -58,9 +115,12 @@ fun SettingsScreen(
 
         OpusToggleRow(
             title = "Device name",
-            subtitle = "Opus Android Reader",
+            subtitle = deviceName,
             toggleType = ToggleType.CHEVRON,
-            onClick = onDeviceNameClick
+            onClick = {
+                editedName = deviceName
+                showDeviceNameDialog = true
+            }
         )
 
         OpusToggleRow(
