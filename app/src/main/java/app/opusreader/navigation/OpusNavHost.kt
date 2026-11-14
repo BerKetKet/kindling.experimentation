@@ -70,7 +70,8 @@ fun OpusNavHost(
     navController: NavHostController = rememberNavController(),
     bookRepository: BookRepository = remember { FakeBookRepository() },
     catalogRepository: CatalogRepository = remember { FakeCatalogRepository() },
-    fixtureId: String? = null
+    fixtureId: String? = null,
+    fixtureTrigger: Int = 0
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -79,7 +80,7 @@ fun OpusNavHost(
         FakeReaderEngine(settingsDataStore = settingsDataStore, scope = coroutineScope)
     }
 
-    LaunchedEffect(fixtureId) {
+    LaunchedEffect(fixtureId, fixtureTrigger) {
         if (!fixtureId.isNullOrBlank()) {
             while (runCatching { navController.graph }.isFailure) {
                 kotlinx.coroutines.delay(50)

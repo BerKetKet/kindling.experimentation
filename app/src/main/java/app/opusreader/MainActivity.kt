@@ -30,6 +30,7 @@ class MainActivity : ComponentActivity() {
     private val bookRepository: BookRepository = FakeBookRepository()
     private val catalogRepository: CatalogRepository = FakeCatalogRepository()
     private var fixtureId by androidx.compose.runtime.mutableStateOf<String?>(null)
+    private var fixtureTrigger by androidx.compose.runtime.mutableIntStateOf(0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +43,7 @@ class MainActivity : ComponentActivity() {
                 "D11" -> Color(0xFF080808)
                 "D12" -> Color(0xFF202020)
                 "D13", "R06" -> Color.Black
-                "D14" -> Color(0xFF101112)
+                "D04", "D14" -> Color(0xFF101112)
                 "D15", "D16" -> Color(0xFF1A1B1C)
                 "D17", "D18", "D19", "D20", "R11", "R12", "R13", "R14" -> Color(0xFF3A3A3C)
                 else -> app.opusreader.ui.theme.OpusBottomBar
@@ -56,7 +57,8 @@ class MainActivity : ComponentActivity() {
                 OpusNavHost(
                     bookRepository = bookRepository,
                     catalogRepository = catalogRepository,
-                    fixtureId = fixtureId
+                    fixtureId = fixtureId,
+                    fixtureTrigger = fixtureTrigger
                 )
             }
         }
@@ -87,6 +89,7 @@ class MainActivity : ComponentActivity() {
             val sid = uri.lastPathSegment ?: uri.pathSegments.firstOrNull()
             if (sid != null) {
                 fixtureId = sid
+                fixtureTrigger++
                 return
             }
         }
