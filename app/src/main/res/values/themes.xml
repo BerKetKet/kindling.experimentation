@@ -2,7 +2,7 @@
 <resources>
     <style name="Theme.OpusReader" parent="android:Theme.Material.NoActionBar">
         <item name="android:statusBarColor">#141414</item>
-        <item name="android:navigationBarColor">#101112</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowBackground">#101112</item>
     </style>
 </resources>

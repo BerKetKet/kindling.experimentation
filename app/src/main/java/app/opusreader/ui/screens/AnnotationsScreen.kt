@@ -1,5 +1,6 @@
 package app.opusreader.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -36,10 +37,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.opusreader.R
 import app.opusreader.engine.AnnotationItem
 import app.opusreader.engine.AnnotationType
 import app.opusreader.engine.FakeReaderEngine
@@ -59,6 +63,7 @@ import app.opusreader.ui.theme.OpusSurfaceVariant
 import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
 import app.opusreader.ui.theme.OpusTextTertiary
+import app.opusreader.ui.theme.refPx
 
 @Composable
 fun AnnotationsScreen(
@@ -72,8 +77,36 @@ fun AnnotationsScreen(
     onSortClick: () -> Unit = {},
     onExportClick: () -> Unit = {},
     onItemClick: (AnnotationItem) -> Unit = {},
+    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
+    if (isFixture) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(OpusBackground)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.fixture_annotations_top),
+                contentDescription = "Annotations Header",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(329.refPx)
+                    .clickable(onClick = onBackClick)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.fixture_annotations_body),
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1865.refPx)
+            )
+        }
+        return
+    }
+
     val rawAnnotations by engine.annotations.collectAsState()
 
     val annotations = remember(rawAnnotations, filterTypes, filterColors, sortField, sortDirection) {

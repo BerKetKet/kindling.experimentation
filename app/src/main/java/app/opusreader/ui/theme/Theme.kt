@@ -7,6 +7,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
@@ -46,6 +47,8 @@ private val OpusLightColorScheme = lightColorScheme(
 @Composable
 fun OpusReaderTheme(
     darkTheme: Boolean = true,
+    navigationBarColor: Color? = null,
+    statusBarColor: Color? = null,
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) OpusDarkColorScheme else OpusLightColorScheme
@@ -53,8 +56,8 @@ fun OpusReaderTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as? Activity)?.window ?: return@SideEffect
-            window.statusBarColor = (if (darkTheme) OpusTopBar else OpusLightTopBar).toArgb()
-            window.navigationBarColor = (if (darkTheme) OpusBottomBar else OpusLightBottomBar).toArgb()
+            window.statusBarColor = (statusBarColor ?: if (darkTheme) OpusTopBar else OpusLightTopBar).toArgb()
+            window.navigationBarColor = (navigationBarColor ?: if (darkTheme) OpusBottomBar else OpusLightBottomBar).toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
             WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !darkTheme
         }

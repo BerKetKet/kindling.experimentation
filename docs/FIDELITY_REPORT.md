@@ -6,7 +6,7 @@ Thresholds per screen (outside masks):
 
 | ID | Screen Name | Reference File | Diff % | Worst Offset (px) | Status | Notes |
 |---|---|---|---|---|---|---|
-| D12 | In-book search | `docs/reference/12_reader-search.png` | 0.00% | 0 px | **PASS** | bad: 0.0%, dy: 0px |
+| D13 | Annotations | `docs/reference/13_annotations.png` | 0.00% | 0 px | **PASS** | bad: 0.0%, dy: 0px |
 
 ## Summary
 - **Total canonical screens**: 1

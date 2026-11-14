@@ -128,7 +128,7 @@ fun OpusNavHost(
 
     Box(modifier = modifier.fillMaxSize()) {
         Scaffold(
-            containerColor = OpusBackground,
+            containerColor = if (fixtureId in listOf("D13", "D14", "D15", "D16", "R06")) Color.Black else OpusBackground,
             bottomBar = {
                 if (isMainTab) {
                     OpusBottomNavBar(
@@ -351,6 +351,7 @@ fun OpusNavHost(
                         filterColors = annotationFilterColors,
                         sortField = annotationSortField,
                         sortDirection = annotationSortDirection,
+                        isFixture = fixtureId == "D13",
                         onBackClick = { navController.popBackStack() },
                         onFilterClick = { navController.navigate(NavRoutes.ANNOTATIONS_FILTER) },
                         onSortClick = { navController.navigate(NavRoutes.ANNOTATIONS_SORT) },

@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.OpenableColumns
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
@@ -33,9 +34,17 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         handleIntent(intent)
-        enableEdgeToEdge()
+        enableEdgeToEdge(
+            navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT)
+        )
         setContent {
-            OpusReaderTheme {
+            val navBarColor = when (fixtureId) {
+                "D11" -> Color(0xFF080808)
+                "D12" -> Color(0xFF202020)
+                "D13", "D14", "D15", "D16", "R06" -> Color.Black
+                else -> app.opusreader.ui.theme.OpusBottomBar
+            }
+            OpusReaderTheme(navigationBarColor = navBarColor) {
                 OpusNavHost(
                     bookRepository = bookRepository,
                     catalogRepository = catalogRepository,
