@@ -173,6 +173,7 @@ fun OpusNavHost(
                 composable(NavRoutes.SETTINGS) {
                     SettingsScreen(
                         onBackClick = { navController.popBackStack() },
+                        isFixture = fixtureId == "D04" || fixtureId == "L04",
                         onImportBook = { newBook ->
                             bookRepository.addBook(newBook)
                             bookRepository.addNotification(

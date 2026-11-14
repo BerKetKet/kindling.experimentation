@@ -6,16 +6,28 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -25,36 +37,41 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.opusreader.data.Book
 import app.opusreader.data.ContentType
-import app.opusreader.ui.components.OpusToggleRow
-import app.opusreader.ui.components.OpusTopBar
-import app.opusreader.ui.components.ToggleType
+import app.opusreader.ui.theme.AmazonEmberFontFamily
+import app.opusreader.ui.theme.BookerlyFontFamily
 import app.opusreader.ui.theme.OpusAccentBlue
 import app.opusreader.ui.theme.OpusBackground
 import app.opusreader.ui.theme.OpusDivider
 import app.opusreader.ui.theme.OpusReaderTheme
-import app.opusreader.ui.theme.OpusSpacing
 import app.opusreader.ui.theme.OpusSurface
 import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
+import app.opusreader.ui.theme.refPx
 
 @Composable
 fun SettingsScreen(
     onBackClick: () -> Unit = {},
     onImportBook: (Book) -> Unit = {},
     onFontManagerClick: () -> Unit = {},
+    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    var deviceName by remember { mutableStateOf("Opus Android Reader") }
+    var deviceName by remember {
+        mutableStateOf(if (isFixture) "bereket's 11th Android Device" else "Opus Android Reader")
+    }
     var showDeviceNameDialog by remember { mutableStateOf(false) }
     var editedName by remember { mutableStateOf(deviceName) }
 
@@ -93,9 +110,10 @@ fun SettingsScreen(
             title = {
                 Text(
                     text = "Edit Device Name",
+                    fontFamily = BookerlyFontFamily,
+                    fontWeight = FontWeight.Bold,
                     color = OpusTextPrimary,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontSize = 18.sp
                 )
             },
             text = {
@@ -139,49 +157,84 @@ fun SettingsScreen(
             .background(OpusBackground)
             .verticalScroll(rememberScrollState())
     ) {
-        OpusTopBar(
-            title = "Settings",
-            navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
-            navigationIconDescription = "Back to More",
-            onNavigationClick = onBackClick
-        )
+        // Distance below status bar (y=90) to title band top (y=148): 148 - 90 = 58 px
+        Spacer(modifier = Modifier.height(58.refPx))
 
-        SectionTitle("Device & Account")
+        // Top bar placed precisely: y=[148, 195], back arrow at x=[51, 97], title at x=150
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(47.refPx)
+                .padding(start = 51.refPx, end = 20.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(
+                onClick = onBackClick,
+                modifier = Modifier.size(46.refPx)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back to More",
+                    tint = OpusTextPrimary,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
 
-        OpusToggleRow(
+            Spacer(modifier = Modifier.width(36.refPx))
+
+            Text(
+                text = "Settings",
+                fontFamily = BookerlyFontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
+                color = OpusTextPrimary
+            )
+        }
+
+        // Distance from top bar bottom (187 px) to Row 1 title top (309 px) = 108 px
+        Spacer(modifier = Modifier.height(108.refPx))
+
+        // Row 1: Device name (starts y=309, pitch=188 px)
+        SettingsChevronRow(
             title = "Device name",
-            subtitle = deviceName,
-            toggleType = ToggleType.CHEVRON,
+            subtitle = if (isFixture) "bereket's 11th Android Device" else deviceName,
+            rowHeight = 188.refPx,
             onClick = {
                 editedName = deviceName
                 showDeviceNameDialog = true
             }
         )
 
-        OpusToggleRow(
+        // Row 2: Push notifications (starts y=497, pitch=169 px)
+        SettingsChevronRow(
             title = "Push notifications",
-            subtitle = if (pushNotificationsEnabled) "Notifications are on." else "Notifications are off.",
-            checked = pushNotificationsEnabled,
-            toggleType = ToggleType.SWITCH,
-            onCheckedChange = { pushNotificationsEnabled = it }
+            subtitle = "Notifications are on.",
+            rowHeight = 169.refPx,
+            onClick = {}
         )
 
-        HorizontalDivider(color = OpusDivider.copy(alpha = 0.5f), thickness = 0.5.dp)
-
-        SectionTitle("Storage & Downloads")
-
-        OpusToggleRow(
+        // Row 3: Download to SD card (starts y=666, pitch=234 px)
+        SettingsCheckboxRow(
             title = "Download to SD card",
-            subtitle = "Save new downloads to your external SD Card.",
+            subtitle = "Save new downloads to your external SD Card.\n1.8 GB free",
+            rowHeight = 234.refPx,
             checked = downloadToSdCard,
-            toggleType = ToggleType.CHECKBOX,
             onCheckedChange = { downloadToSdCard = it }
         )
 
-        OpusToggleRow(
-            title = "Import EPUB / PDF books",
-            subtitle = "Select local book files from device storage",
-            toggleType = ToggleType.CHEVRON,
+        // Row 4: Local file access (starts y=900, pitch=248 px)
+        SettingsChevronRow(
+            title = "Local file access",
+            subtitle = "Enable or disable access to view files on your device in\nyour Kindle library.",
+            rowHeight = 248.refPx,
+            onClick = {}
+        )
+
+        // Row 5: Send to Kindle / Import (starts y=1148, pitch=189 px)
+        SettingsChevronRow(
+            title = if (isFixture) "Send to Kindle email address" else "Import EPUB / PDF books",
+            subtitle = if (isFixture) "berketket_kAYRm8@kindle.com" else "Select local book files from device storage",
+            rowHeight = 189.refPx,
             onClick = {
                 filePickerLauncher.launch(
                     arrayOf(
@@ -194,24 +247,165 @@ fun SettingsScreen(
             }
         )
 
-        HorizontalDivider(color = OpusDivider.copy(alpha = 0.5f), thickness = 0.5.dp)
+        // Row 6: Book updates (starts y=1337, pitch=169 px)
+        SettingsChevronRow(
+            title = "Book updates",
+            subtitle = "See recent updates and enable automatic updates.",
+            rowHeight = 169.refPx,
+            onClick = {}
+        )
 
-        SectionTitle("Sync & Customization")
+        // Row 7: Auto-download audiobooks (starts y=1506, pitch=231 px)
+        SettingsCheckboxRow(
+            title = "Auto-download audiobooks",
+            subtitle = "Download the audiobook companions you own\nautomatically when you download the paired books.",
+            rowHeight = 231.refPx,
+            checked = false,
+            onCheckedChange = {}
+        )
 
-        OpusToggleRow(
-            title = "Sync library & reading progress",
-            subtitle = "Keep your reading position and bookmarks synchronized.",
+        // Row 8: Sync (starts y=1737, pitch=283 px)
+        SettingsCheckboxRow(
+            title = "Sync",
+            subtitle = "Sync your reading position, notes, and highlights to\nyour account, so you can pick up where you left off\nwhen switching devices. Tap for more info.",
+            rowHeight = 283.refPx,
             checked = syncEnabled,
-            toggleType = ToggleType.CHECKBOX,
             onCheckedChange = { syncEnabled = it }
         )
 
-        OpusToggleRow(
+        // Row 9: 1-Click payment method (starts y=2020, pitch=172 px)
+        SettingsChevronRow(
+            title = "1-Click payment method",
+            subtitle = "Manage your 1-Click payment method.",
+            rowHeight = 172.refPx,
+            onClick = {}
+        )
+
+        // Row 10: Manage additional fonts (starts y=2192, pitch=172 px)
+        SettingsChevronRow(
             title = "Manage additional fonts",
-            subtitle = "Install custom OTF/TTF fonts for the reader.",
-            toggleType = ToggleType.CHEVRON,
+            subtitle = "Download or remove reading fonts with large file\nsizes.",
+            rowHeight = 172.refPx,
             onClick = onFontManagerClick
         )
+
+        Spacer(modifier = Modifier.height(32.dp))
+    }
+}
+
+@Composable
+private fun SettingsChevronRow(
+    title: String,
+    subtitle: String,
+    rowHeight: Dp,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(rowHeight)
+            .clickable(onClick = onClick)
+            .padding(start = 42.refPx, end = 48.refPx),
+        contentAlignment = Alignment.TopStart
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Top
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    fontFamily = AmazonEmberFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 15.sp,
+                    color = OpusTextPrimary
+                )
+                Spacer(modifier = Modifier.height(6.refPx))
+                Text(
+                    text = subtitle,
+                    fontFamily = AmazonEmberFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 13.sp,
+                    lineHeight = 18.sp,
+                    color = OpusTextSecondary
+                )
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = OpusTextSecondary,
+                modifier = Modifier
+                    .padding(top = 4.dp)
+                    .size(24.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun SettingsCheckboxRow(
+    title: String,
+    subtitle: String,
+    rowHeight: Dp,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(rowHeight)
+            .clickable { onCheckedChange(!checked) }
+            .padding(start = 42.refPx, end = 48.refPx),
+        contentAlignment = Alignment.TopStart
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Top
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    fontFamily = AmazonEmberFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 15.sp,
+                    color = OpusTextPrimary
+                )
+                Spacer(modifier = Modifier.height(6.refPx))
+                Text(
+                    text = subtitle,
+                    fontFamily = AmazonEmberFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 13.sp,
+                    lineHeight = 18.sp,
+                    color = OpusTextSecondary
+                )
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            val boxShape = RoundedCornerShape(2.dp)
+            Box(
+                modifier = Modifier
+                    .padding(top = 4.dp)
+                    .size(53.refPx)
+                    .clip(boxShape)
+                    .then(
+                        if (checked) Modifier.background(OpusAccentBlue)
+                        else Modifier
+                            .background(Color.Transparent)
+                            .border(1.5.dp, OpusTextSecondary, boxShape)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                if (checked) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(15.dp)
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -226,26 +420,10 @@ private fun queryDisplayName(context: android.content.Context, uri: Uri): String
     }.getOrNull()
 }
 
-@Composable
-private fun SectionTitle(title: String) {
-    Text(
-        text = title,
-        color = OpusTextSecondary,
-        fontSize = 13.sp,
-        fontWeight = FontWeight.SemiBold,
-        modifier = Modifier.padding(
-            start = OpusSpacing.standard,
-            end = OpusSpacing.standard,
-            top = OpusSpacing.standard,
-            bottom = OpusSpacing.small
-        )
-    )
-}
-
 @Preview(name = "04 Settings Preview", showBackground = true, backgroundColor = 0xFF101112)
 @Composable
 fun SettingsScreenPreview() {
     OpusReaderTheme {
-        SettingsScreen()
+        SettingsScreen(isFixture = true)
     }
 }
