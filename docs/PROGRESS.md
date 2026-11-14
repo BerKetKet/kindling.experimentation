@@ -219,4 +219,9 @@
   - Calibrated exact geometry: top bar ($y \in [145, 196]$), search pill ($y \in [254, 358]$, border $3\text{ px}$ `#8E9194`), divider ($y \in [401, 403]$), 3x3 grid + 4th row ($y \in [472, 2111]$).
   - Aligned floating resume cover ($210\text{ px} \times 349\text{ px}$) at `start = 40.refPx`, `bottom = 97.refPx` ($y \in [1894, 2242]$).
   - Verified on Samsung Galaxy M32: **PASS** with **1.51%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 9 element bands.
+- **D02 (Home Screen)**:
+  - Extracted authentic bell icon with red notification dot, topic chips, shelf titles, cover carousels, dividers, and bottom bar.
+  - Calibrated all 18 element bands to exact reference geometry ($y \in [136, 1992]$).
+  - Configured floating resume cover height ($360\text{ px}$) and Home-active navigation bar.
+  - Verified on Samsung Galaxy M32: **PASS** with **1.22%** diff pixels (threshold $\le 2.00\%$) and **1 px** worst offset across all 18 element bands.
 

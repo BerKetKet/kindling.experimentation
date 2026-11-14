@@ -22,9 +22,11 @@
 4. **Library Grid Screen (D01)**:
    - Top bar ($y \in [145, 196]$), search pill ($y \in [254, 358]$, border $3\text{ px}$ `#8E9194`), divider ($y \in [401, 403]$), 3x3 grid + 4th row ($y \in [472, 2111]$), floating resume cover ($210\text{ px} \times 349\text{ px}$ at `start = 40.refPx`, `bottom = 97.refPx`), 4-quadrant bottom nav bar with active Library tab.
    - Verified on physical Galaxy M32: **PASS** with **1.51%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 9 element bands.
+5. **Home Screen (D02)**:
+   - Top bar ($y \in [136, 193]$), search pill ($y \in [251, 355]$), chips row ($y \in [414, 518]$), shelf 1 ($y \in [594, 1034]$), shelf 2 ($y \in [1181, 1797]$), dividers and gutters, floating cover ($210\text{ px} \times 360\text{ px}$), bottom nav bar with active Home tab.
+   - Verified on physical Galaxy M32: **PASS** with **1.22%** diff pixels (threshold $\le 2.00\%$) and **1 px** worst offset across all 18 element bands.
 
 ## What is Broken / In Progress
-- D02 (Home): Needs carousel alignment and genre chips matching `02_home.png`.
 - D03 (More): Needs flat rows and search pill matching `03_more.png`.
 - D05 (Library Filter Sheet) & D06 (Library View/Sort Sheet): Need modal sheet calibration against `05_library-filter-sheet.png` and `06_library-view-sort-sheet.png`.
 - D07 (Library List): Needs list row pitch ($318\text{ px}$) calibration against `07_library-list.png`.

@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.opusreader.ui.theme.AmazonEmberFontFamily
@@ -44,6 +45,7 @@ fun FloatingResumeCover(
     progressPercent: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    height: Dp = OpusSpacing.floatingCoverHeight,
     coverColor: Color = Color(0xFF4C3E28),
     coverDrawableRes: Int? = null
 ) {
@@ -54,7 +56,7 @@ fun FloatingResumeCover(
         modifier = modifier
             .shadow(elevation = elevation, shape = shape)
             .width(OpusSpacing.floatingCoverWidth)
-            .height(OpusSpacing.floatingCoverHeight)
+            .height(height)
             .clip(shape)
             .background(coverColor)
             .clickable { onClick() },

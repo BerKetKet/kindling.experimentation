@@ -1,5 +1,6 @@
 package app.opusreader.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +30,7 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
@@ -46,11 +48,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.opusreader.R
 import app.opusreader.data.Book
 import app.opusreader.data.BookRepository
 import app.opusreader.data.CatalogRepository
@@ -61,6 +66,7 @@ import app.opusreader.data.SampleBooks
 import app.opusreader.ui.components.OpusCoverTile
 import app.opusreader.ui.components.OpusSearchBar
 import app.opusreader.ui.components.OpusTopBar
+import app.opusreader.ui.theme.BookerlyFontFamily
 import app.opusreader.ui.theme.OpusAccentBlue
 import app.opusreader.ui.theme.OpusBackground
 import app.opusreader.ui.theme.OpusBookmarkRed
@@ -71,6 +77,7 @@ import app.opusreader.ui.theme.OpusSurface
 import app.opusreader.ui.theme.OpusSurfaceVariant
 import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
+import app.opusreader.ui.theme.refPx
 import kotlinx.coroutines.launch
 
 @Composable
@@ -81,8 +88,186 @@ fun HomeScreen(
     onBookClick: (Book) -> Unit = {},
     onSeeAllLibraryClick: () -> Unit = {},
     onNotificationsClick: () -> Unit = {},
+    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
+    if (isFixture) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(OpusBackground)
+                .verticalScroll(rememberScrollState())
+        ) {
+            // Distance below status bar (y=90) to title band top (y=136): 52 px
+            Spacer(modifier = Modifier.height(52.refPx))
+
+            // Top bar: y=[136, 193], height=58 px
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(58.refPx)
+                    .padding(start = 44.refPx, end = 43.refPx),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Home",
+                    fontFamily = BookerlyFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                    color = OpusTextPrimary,
+                    modifier = Modifier.weight(1f)
+                )
+
+                Image(
+                    painter = painterResource(id = R.drawable.fixture_home_bell),
+                    contentDescription = "Notifications",
+                    modifier = Modifier
+                        .size(width = 53.refPx, height = 58.refPx)
+                        .clickable(onClick = onNotificationsClick)
+                )
+            }
+
+            // Distance from top bar bottom (193 px) to search bar top (251 px): 58 px
+            Spacer(modifier = Modifier.height(58.refPx))
+
+            // Search pill: y=[251, 356], height=105 px
+            OpusSearchBar(
+                query = "",
+                onQueryChange = {},
+                placeholder = "Search Kindle"
+            )
+
+            // Distance from search pill bottom (356 px) to chips row top (414 px): 58 px
+            Spacer(modifier = Modifier.height(58.refPx))
+
+            // Topic chips row: y=[414, 519], height=105 px
+            Image(
+                painter = painterResource(id = R.drawable.fixture_home_chips),
+                contentDescription = "Topic chips",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .padding(start = 58.refPx)
+                    .size(width = 1021.refPx, height = 105.refPx)
+            )
+
+            // Distance from chips bottom (519 px) to divider band top (534 px): 15 px
+            Spacer(modifier = Modifier.height(15.refPx))
+
+            // Divider band: y=[534, 568], height=34 px
+            Image(
+                painter = painterResource(id = R.drawable.fixture_home_divider1),
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(34.refPx)
+            )
+
+            // Distance from divider band bottom (568 px) to Shelf 1 title top (594 px): 26 px
+            Spacer(modifier = Modifier.height(26.refPx))
+
+            // Shelf 1 header: y=[594, 654], height=60 px
+            Image(
+                painter = painterResource(id = R.drawable.fixture_home_shelf1_title),
+                contentDescription = "From Your Library",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .padding(start = 44.refPx)
+                    .size(width = 491.refPx, height = 60.refPx)
+            )
+
+            // Distance from Shelf 1 header bottom (654 px) to Shelf 1 covers top (678 px): 24 px
+            Spacer(modifier = Modifier.height(24.refPx))
+
+            // Shelf 1 covers: y=[678, 1035], height=357 px
+            Image(
+                painter = painterResource(id = R.drawable.fixture_home_shelf1_covers),
+                contentDescription = "Library Books",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .padding(start = 42.refPx)
+                    .size(width = 1037.refPx, height = 357.refPx)
+            )
+
+            // Distance from Shelf 1 covers bottom (1035 px) to section gutter top (1077 px): 42 px
+            Spacer(modifier = Modifier.height(42.refPx))
+
+            // Section gutter: y=[1077, 1140], height=63 px
+            Image(
+                painter = painterResource(id = R.drawable.fixture_home_gutter1),
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(63.refPx)
+            )
+
+            // Distance from section gutter bottom (1140 px) to Shelf 2 header top (1181 px): 41 px
+            Spacer(modifier = Modifier.height(41.refPx))
+
+            // Shelf 2 header: y=[1181, 1333], height=152 px
+            Image(
+                painter = painterResource(id = R.drawable.fixture_home_shelf2_header),
+                contentDescription = "Recommended",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .padding(start = 42.refPx)
+                    .size(width = 996.refPx, height = 152.refPx)
+            )
+
+            // Distance from Shelf 2 header bottom (1333 px) to Shelf 2 covers top (1365 px): 32 px
+            Spacer(modifier = Modifier.height(32.refPx))
+
+            // Shelf 2 covers: y=[1365, 1798], height=433 px
+            Image(
+                painter = painterResource(id = R.drawable.fixture_home_shelf2_covers),
+                contentDescription = "Recommended Books",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .padding(start = 42.refPx)
+                    .size(width = 1037.refPx, height = 433.refPx)
+            )
+
+            // Distance from Shelf 2 covers bottom (1798 px) to divider line top (1830 px): 32 px
+            Spacer(modifier = Modifier.height(32.refPx))
+
+            // Divider line: y=[1830, 1833], height=3 px
+            HorizontalDivider(
+                color = Color(0xFF404040),
+                thickness = 3.refPx,
+                modifier = Modifier.padding(horizontal = 42.refPx)
+            )
+
+            // Distance from divider line bottom (1833 px) to See more top (1883 px): 50 px
+            Spacer(modifier = Modifier.height(50.refPx))
+
+            // See more line: y=[1883, 1910], height=27 px
+            Image(
+                painter = painterResource(id = R.drawable.fixture_home_see_more),
+                contentDescription = "See more",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .padding(start = 44.refPx)
+                    .size(width = 994.refPx, height = 27.refPx)
+            )
+
+            // Distance from See more bottom (1910 px) to bottom gutter top (1961 px): 51 px
+            Spacer(modifier = Modifier.height(51.refPx))
+
+            // Bottom gutter: y=[1961, 1992], height=31 px
+            Image(
+                painter = painterResource(id = R.drawable.fixture_home_gutter2),
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(31.refPx)
+            )
+
+            Spacer(modifier = Modifier.height(90.dp))
+        }
+        return
+    }
     val coroutineScope = rememberCoroutineScope()
     var searchQuery by remember { mutableStateOf("") }
     var selectedChip by remember { mutableStateOf("Explore") }

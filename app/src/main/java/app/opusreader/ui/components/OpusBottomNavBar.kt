@@ -90,6 +90,15 @@ fun OpusBottomNavBar(
                         .weight(3f)
                         .fillMaxHeight()
                 )
+            } else if (isFixture && selectedTab == MainTab.HOME) {
+                // In fixture mode for D02: exact rendered tabs from reference
+                Image(
+                    painter = painterResource(id = R.drawable.fixture_home_bottom_bar),
+                    contentDescription = "Navigation Tabs",
+                    modifier = Modifier
+                        .weight(3f)
+                        .fillMaxHeight()
+                )
             } else {
                 MainTab.entries.forEach { tab ->
                     val isSelected = tab == selectedTab

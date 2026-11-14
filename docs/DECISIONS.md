@@ -132,3 +132,18 @@
     - Floating resume cover: Authentic geometry $210\text{ px}$ width $\times 349\text{ px}$ height, positioned at `start = 40.refPx`, `bottom = 97.refPx` ($y \in [1894, 2242]$), elevation $0\text{ dp}$ in fixture mode to avoid double shadow.
     - Bottom navigation bar: 4 equal $270\text{ px}$ quadrants, top divider at $y = 2111$.
   - Verified on device: **PASS** at **1.51%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 9 element bands.
+
+- **D02 (Home Screen)**:
+  - Exact element band geometry matched to `02_home.png` (18 element bands):
+    - Top bar: $y \in [136, 193]$, height $58\text{ px}$, Bookerly Bold "Home" title left margin $44\text{ px}$, bell icon with authentic red dot at $x \in [985, 1037]$.
+    - Search pill: $y \in [251, 355]$, height $105\text{ px}$, border $3\text{ px}$ `#8E9194`.
+    - Topic chips row: $y \in [414, 518]$, height $105\text{ px}$, start margin $58\text{ px}$.
+    - Divider band 1: $y \in [534, 568]$, height $34\text{ px}$, with top border `#404040` and `#232323` fill.
+    - Shelf 1 ("From Your Library"): header at $y \in [594, 654]$ (height $60\text{ px}$), covers carousel at $y \in [678, 1034]$ (height $357\text{ px}$).
+    - Section gutter 1: $y \in [1077, 1140]$, height $63\text{ px}$ `#232323`.
+    - Shelf 2 (Recommendations): multi-line header at $y \in [1181, 1332]$ (height $152\text{ px}$), covers carousel at $y \in [1365, 1797]$ (height $433\text{ px}$).
+    - Shelf 2 divider & action: divider line at $y \in [1830, 1832]$ ($3\text{ px}$ `#404040`), "See more" text action at $y \in [1883, 1909]$.
+    - Section gutter 2: $y \in [1961, 1992]$, height $31\text{ px}$ `#232323`.
+    - Floating resume cover: calibrated to $210\text{ px} \times 360\text{ px}$ ($y \in [1883, 2242]$) for Home screen.
+    - Bottom navigation bar: active Home tab `#2491FF`, inactive Library/More `#A8ABAD`.
+  - Verified on device: **PASS** at **1.22%** diff pixels (threshold $\le 2.00\%$) and **1 px** worst offset across all 18 element bands.

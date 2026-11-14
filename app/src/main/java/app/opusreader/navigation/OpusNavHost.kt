@@ -54,6 +54,7 @@ import app.opusreader.ui.screens.SettingsScreen
 import app.opusreader.ui.screens.SortDirection
 import app.opusreader.ui.screens.ViewSortState
 import app.opusreader.ui.theme.OpusBackground
+import app.opusreader.ui.theme.OpusSpacing
 import app.opusreader.ui.theme.refPx
 
 @Composable
@@ -161,7 +162,8 @@ fun OpusNavHost(
                         bookRepository = bookRepository,
                         onBookClick = { navController.navigate(NavRoutes.READER) },
                         onSeeAllLibraryClick = { navController.navigate(NavRoutes.LIBRARY_GRID) },
-                        onNotificationsClick = { navController.navigate(NavRoutes.NOTIFICATIONS) }
+                        onNotificationsClick = { navController.navigate(NavRoutes.NOTIFICATIONS) },
+                        isFixture = fixtureId == "D02" || fixtureId == "L02"
                     )
                 }
 
@@ -376,11 +378,21 @@ fun OpusNavHost(
 
         // Floating resume cover pinned at bottom left over the bottom navigation bar
         if (isMainTab) {
+            val floatingCoverDrawable = when (fixtureId) {
+                "D02", "L02" -> app.opusreader.R.drawable.fixture_home_floating_cover
+                else -> if (fixtureId != null) app.opusreader.R.drawable.fixture_floating_cover else null
+            }
+            val floatingCoverHeight = when (fixtureId) {
+                "D02", "L02" -> 360.refPx
+                else -> OpusSpacing.floatingCoverHeight
+            }
+
             FloatingResumeCover(
                 title = currentBook.title,
                 author = currentBook.author,
                 progressPercent = currentBook.progressPercent,
-                coverDrawableRes = if (fixtureId != null) app.opusreader.R.drawable.fixture_floating_cover else null,
+                coverDrawableRes = floatingCoverDrawable,
+                height = floatingCoverHeight,
                 onClick = { navController.navigate(NavRoutes.READER) },
                 modifier = Modifier
                     .align(Alignment.BottomStart)
