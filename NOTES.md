@@ -28,3 +28,25 @@
 
 ## Next Steps
 - Deliver final summary and commands.
+
+## Official Kindle App Visual Audit & Comparison Findings
+- **Light Mode UI**:
+  - Screen Background: `#FFFFFF` (pure white).
+  - App Top Bar: `#FFFFFF` with `#000000` text & icons.
+  - Bottom Navigation Bar: `#FFFFFF` with `#000000` active item and `#757575` inactive item.
+  - Filter / View & Sort Sheets: `#FFFFFF` surface with `#2491FF` blue accents and `#E0E0E0` dividers.
+  - Search Bar: `#FFFFFF` container with `#D8D8D8` border outline.
+- **Dark Mode UI**:
+  - Screen Background: `#000000` (AMOLED black for primary screens, `#101112` for settings/dialogs).
+  - Bottom Bar: `#000000` (Opus uses `#141414`).
+  - Sheets: `#232323` surface with `#EDEDED` text.
+- **Reading Interface 4 Themes**:
+  - **White**: Background `#FFFFFF`, Text `#000000`, Chrome `#FFFFFF`.
+  - **Sepia**: Background `#FBF0D9` (warm cream), Text `#361715` (espresso brown), Top chrome `#FFFFFF`, Bottom chrome `#EEEEEE` (Opus currently uses `#F7F1E3` bg, `#2C2C2C` text).
+  - **Green**: Background `#C5E7CE` (mint sage), Text `#3A4B43` (deep slate), Top chrome `#FFFFFF`, Bottom chrome `#EEEEEE` (Opus currently uses `#CEE5D8` bg, `#1E3A2F` text).
+  - **Black**: Background `#000000` (AMOLED black), Text `#CCCCCC` (soft silver gray), Top chrome `#000000`, Bottom chrome `#000000` (Opus currently uses `#141414` charcoal bg, `#E0E0E0` text).
+- **Layout & Reading Settings**:
+  - "Update Page Using System Theme": Kindle has an explicit checkbox in Layout tab linking reader theme to system dark/light mode.
+  - Aa Menu: Always defaults to Font tab upon opening; Layout tab holds color radios, margins, alignment, and scrolling switch.
+  - Font carousel: Kindle cards display an upper preview of "Aa" rendered in the target font family above the font name label.
+  - Text selection menu: Kindle pops up a floating contextual menu with highlight color swatches, note creator, copy, share, and dictionary/lookup card.
