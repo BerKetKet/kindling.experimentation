@@ -11,4 +11,5 @@ local.properties
 shot*.png
 side_by_side*.png
 *.apk
+*.zip
 app/build
