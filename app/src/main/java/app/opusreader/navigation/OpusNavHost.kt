@@ -393,6 +393,7 @@ fun OpusNavHost(
                 // 16 Annotations Share Sheet
                 composable(NavRoutes.ANNOTATIONS_SHARE) {
                     AnnotationsShareSheet(
+                        isFixture = fixtureId == "D16",
                         onCloseClick = { navController.popBackStack() }
                     )
                 }
