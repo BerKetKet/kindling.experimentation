@@ -175,3 +175,10 @@
   - Calibrated modal bottom sheet ($1519\text{ px}$ height, $y \in [758, 2277]$) with authentic dimmed library background (`fixture_filter_bg_90.png`) and navigation scrim (`#080808`).
   - Sheet interior verified at 0 bad pixels and 0 px vertical offset.
   - Overall screen verified on device: **PASS** at **1.75%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all element bands.
+
+- **D07 (Library List Screen)**:
+  - Calibrated exact Bookerly Bold top bar ($y \in [145, 196]$), search pill ($y \in [254, 358]$), main divider ($y \in [401, 403]$).
+  - List row pitch calibrated with 5 internal dividers ($3\text{ px}$ `#404040`, padded by $52\text{ px}$ start/end) at $y = 721, 1054, 1371, 1689, 2005$.
+  - Row 6 calibrated to $128\text{ px}$ visible height above bottom navigation bar with $9\text{ px}$ spacer.
+  - Floating resume cover calibrated with authentic cover art (`fixture_list_floating_cover.png`).
+  - Overall screen verified on device: **PASS** at **1.64%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 16 element bands.

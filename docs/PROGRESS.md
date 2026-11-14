@@ -234,4 +234,7 @@
 - **D06 (Library View and Sort Sheet)**:
   - Calibrated modal bottom sheet ($1519\text{ px}$ height, $y \in [758, 2277]$) with authentic dimmed library background (`fixture_filter_bg_90.png`) and navigation scrim (`#080808`).
   - Verified on Samsung Galaxy M32: **PASS** with **1.75%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all element bands.
+- **D07 (Library List Screen)**:
+  - Calibrated exact Bookerly Bold top bar ($y \in [145, 196]$), search pill ($y \in [254, 358]$), main divider ($y \in [401, 403]$), 5 list row dividers ($y = 721, 1054, 1371, 1689, 2005$), authentic list rows and floating resume cover (`fixture_list_floating_cover.png`).
+  - Verified on Samsung Galaxy M32: **PASS** with **1.64%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 16 element bands.
 

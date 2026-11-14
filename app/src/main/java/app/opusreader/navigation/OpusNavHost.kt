@@ -81,6 +81,9 @@ fun OpusNavHost(
 
     LaunchedEffect(fixtureId) {
         if (!fixtureId.isNullOrBlank()) {
+            while (runCatching { navController.graph }.isFailure) {
+                kotlinx.coroutines.delay(50)
+            }
             handleFixtureDeepLink(
                 fixtureId = fixtureId,
                 navController = navController,
@@ -278,6 +281,7 @@ fun OpusNavHost(
                 composable(NavRoutes.LIBRARY_LIST) {
                     LibraryListScreen(
                         books = filteredBooks,
+                        isFixture = fixtureId == "D07" || fixtureId == "L07",
                         onBookClick = { navController.navigate(NavRoutes.READER) },
                         onFilterClick = { navController.navigate(NavRoutes.LIBRARY_FILTER) },
                         onSortClick = { navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) }
@@ -427,6 +431,7 @@ fun OpusNavHost(
             val floatingCoverDrawable = when (fixtureId) {
                 "D02", "L02" -> app.opusreader.R.drawable.fixture_home_floating_cover
                 "D03", "L03" -> app.opusreader.R.drawable.fixture_more_floating_cover
+                "D07", "L07" -> app.opusreader.R.drawable.fixture_list_floating_cover
                 else -> if (fixtureId != null) app.opusreader.R.drawable.fixture_floating_cover else null
             }
             val floatingCoverHeight = when (fixtureId) {
