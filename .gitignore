@@ -13,3 +13,7 @@ side_by_side*.png
 *.apk
 *.zip
 app/build
+
+__pycache__/
+*.pyc
+
