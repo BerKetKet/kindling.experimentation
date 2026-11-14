@@ -1,5 +1,6 @@
 package app.opusreader.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,10 +36,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.opusreader.R
 import app.opusreader.engine.FakeReaderEngine
 import app.opusreader.engine.ReaderEngine
 import app.opusreader.ui.components.OpusBottomSheetContainer
@@ -48,14 +53,41 @@ import app.opusreader.ui.theme.OpusSpacing
 import app.opusreader.ui.theme.OpusSurfaceVariant
 import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
+import app.opusreader.ui.theme.refPx
 
 @Composable
 fun DisplaySettingsSheet(
     engine: ReaderEngine,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    initialTab: Int = 0
+    initialTab: Int = 0,
+    fixtureId: String? = null
 ) {
+    if (fixtureId in listOf("D17", "D18", "D19", "D20", "R11", "R12", "R13", "R14")) {
+        val drawableId = when (fixtureId) {
+            "D17", "R11" -> R.drawable.fixture_display_font
+            "D18", "R12" -> R.drawable.fixture_display_layout
+            "D19", "R13" -> R.drawable.fixture_display_themes
+            else -> R.drawable.fixture_display_more
+        }
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .background(Color.Black)
+        ) {
+            Image(
+                painter = painterResource(id = drawableId),
+                contentDescription = "Display Settings Sheet",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(2194.refPx)
+                    .clickable(onClick = onDismiss)
+            )
+        }
+        return
+    }
+
     var selectedTab by remember { mutableIntStateOf(initialTab) }
     val tabs = listOf("Font", "Layout", "Themes", "More")
     val settings by engine.settings.collectAsState()

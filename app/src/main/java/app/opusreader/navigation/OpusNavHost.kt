@@ -403,6 +403,7 @@ fun OpusNavHost(
                     DisplaySettingsSheet(
                         engine = readerEngine,
                         initialTab = 0,
+                        fixtureId = fixtureId,
                         onDismiss = { navController.popBackStack() }
                     )
                 }
@@ -412,6 +413,7 @@ fun OpusNavHost(
                     DisplaySettingsSheet(
                         engine = readerEngine,
                         initialTab = 1,
+                        fixtureId = fixtureId,
                         onDismiss = { navController.popBackStack() }
                     )
                 }
@@ -421,6 +423,7 @@ fun OpusNavHost(
                     DisplaySettingsSheet(
                         engine = readerEngine,
                         initialTab = 2,
+                        fixtureId = fixtureId,
                         onDismiss = { navController.popBackStack() }
                     )
                 }
@@ -430,6 +433,7 @@ fun OpusNavHost(
                     DisplaySettingsSheet(
                         engine = readerEngine,
                         initialTab = 3,
+                        fixtureId = fixtureId,
                         onDismiss = { navController.popBackStack() }
                     )
                 }

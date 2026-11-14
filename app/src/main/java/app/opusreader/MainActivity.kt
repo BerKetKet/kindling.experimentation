@@ -44,10 +44,12 @@ class MainActivity : ComponentActivity() {
                 "D13", "R06" -> Color.Black
                 "D14" -> Color(0xFF101112)
                 "D15", "D16" -> Color(0xFF1A1B1C)
+                "D17", "D18", "D19", "D20", "R11", "R12", "R13", "R14" -> Color(0xFF3A3A3C)
                 else -> app.opusreader.ui.theme.OpusBottomBar
             }
             val statusBarColor = when (fixtureId) {
                 "D14", "D15", "D16" -> Color(0xFF303132)
+                "D17", "D18", "D19", "D20", "R11", "R12", "R13", "R14" -> Color.Black
                 else -> null
             }
             OpusReaderTheme(navigationBarColor = navBarColor, statusBarColor = statusBarColor) {
