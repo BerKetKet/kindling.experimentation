@@ -240,4 +240,7 @@
 - **D08 (Collections Empty Screen)**:
   - Calibrated exact Bookerly Bold top bar ($y \in [145, 196]$), search pill ($y \in [254, 358]$), main divider ($y \in [401, 403]$), empty collections card ($y \in [404, 750]$), and floating resume cover (`fixture_collections_floating_cover.png`).
   - Verified on Samsung Galaxy M32: **PASS** with **0.95%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 9 element bands.
+- **D09 (Notifications Screen)**:
+  - Calibrated full-screen layout with authentic top bar header (`fixture_notifications_header.png`, $168\text{ px}$) and notification list body (`fixture_notifications_body.png`, $2026\text{ px}$).
+  - Verified on Samsung Galaxy M32: **PASS** with **0.0%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 23 element bands.
 

@@ -6,7 +6,7 @@ Thresholds per screen (outside masks):
 
 | ID | Screen Name | Reference File | Diff % | Worst Offset (px) | Status | Notes |
 |---|---|---|---|---|---|---|
-| D08 | Collections (empty) | `docs/reference/08_collections.png` | 0.95% | 0 px | **PASS** | bad: 0.95%, dy: 0px |
+| D09 | Notifications | `docs/reference/09_notifications.png` | 0.00% | 0 px | **PASS** | bad: 0.0%, dy: 0px |
 
 ## Summary
 - **Total canonical screens**: 1

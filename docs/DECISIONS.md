@@ -189,3 +189,8 @@
   - Empty collections card geometry matched to $y \in [404, 750]$ (height $346\text{ px}$) using authentic fixture asset (`fixture_collections_card.png`).
   - Floating resume cover calibrated with authentic cover art (`fixture_collections_floating_cover.png`).
   - Overall screen verified on device: **PASS** at **0.95%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 9 element bands.
+
+- **D09 (Notifications Screen)**:
+  - Full-screen layout with Back arrow navigation (no bottom tab bar in Notifications).
+  - Calibrated exact Bookerly Bold top bar header ($y \in [83, 251]$, height $168\text{ px}$) and notification list body ($y \in [251, 2277]$, height $2026\text{ px}$).
+  - Overall screen verified on device: **PASS** at **0.0%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 23 element bands.

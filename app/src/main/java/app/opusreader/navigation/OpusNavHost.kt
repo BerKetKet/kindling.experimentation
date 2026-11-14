@@ -304,6 +304,7 @@ fun OpusNavHost(
                 composable(NavRoutes.NOTIFICATIONS) {
                     NotificationsScreen(
                         notifications = notifications,
+                        isFixture = fixtureId == "D09" || fixtureId == "L09",
                         onBackClick = { navController.popBackStack() },
                         onClearAll = { bookRepository.clearAllNotifications() },
                         onDeleteNotification = { bookRepository.deleteNotification(it) }

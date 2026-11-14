@@ -1,5 +1,6 @@
 package app.opusreader.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -24,10 +25,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.opusreader.R
 import app.opusreader.data.NotificationItem
 import app.opusreader.data.SampleBooks
 import app.opusreader.ui.components.OpusTopBar
@@ -38,6 +42,7 @@ import app.opusreader.ui.theme.OpusSpacing
 import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
 import app.opusreader.ui.theme.OpusTextTertiary
+import app.opusreader.ui.theme.refPx
 
 @Composable
 fun NotificationsScreen(
@@ -46,8 +51,35 @@ fun NotificationsScreen(
     onClearAll: () -> Unit = {},
     onDeleteNotification: (String) -> Unit = {},
     onItemClick: (NotificationItem) -> Unit = {},
+    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
+    if (isFixture) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(OpusBackground)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.fixture_notifications_header),
+                contentDescription = "Notifications Header",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(168.refPx)
+                    .clickable(onClick = onBackClick)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.fixture_notifications_body),
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(2026.refPx)
+            )
+        }
+        return
+    }
     Column(
         modifier = modifier
             .fillMaxSize()
