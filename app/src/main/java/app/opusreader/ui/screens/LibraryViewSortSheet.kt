@@ -1,10 +1,12 @@
 package app.opusreader.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,10 +30,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.opusreader.R
 import app.opusreader.data.LibrarySortOrder
 import app.opusreader.data.LibraryViewMode
 import app.opusreader.ui.components.OpusBottomSheetContainer
@@ -41,6 +46,7 @@ import app.opusreader.ui.theme.OpusReaderTheme
 import app.opusreader.ui.theme.OpusSpacing
 import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
+import app.opusreader.ui.theme.refPx
 
 data class ViewSortState(
     val groupBySeries: Boolean = true,
@@ -53,8 +59,26 @@ fun LibraryViewSortSheet(
     initialState: ViewSortState = ViewSortState(),
     onCloseClick: () -> Unit = {},
     onApplyViewSort: (ViewSortState) -> Unit = {},
+    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
+    if (isFixture) {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.fixture_view_sort_sheet),
+                contentDescription = "View and Sort Sheet",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1519.refPx)
+                    .clickable(onClick = onCloseClick)
+            )
+        }
+        return
+    }
     var state by remember { mutableStateOf(initialState) }
 
     OpusBottomSheetContainer(

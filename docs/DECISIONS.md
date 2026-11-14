@@ -165,3 +165,13 @@
     - Floating resume cover: $210\text{ px} \times 349\text{ px}$ ($y \in [1894, 2243]$).
     - Bottom navigation bar: active More tab `#2491FF`, inactive Home/Library `#A8ABAD`.
   - Verified on device: **PASS** at **0.87%** diff pixels (threshold $\le 2.00\%$) and **1 px** worst offset across all 16 element bands.
+
+- **D05 (Library Filter Sheet)**:
+  - Calibrated modal bottom sheet ($1201\text{ px}$ height, $y \in [1076, 2277]$) with authentic dimmed library background (`fixture_filter_bg_90.png`) and navigation scrim (`#080808`).
+  - Sheet interior verified at 0 bad pixels and 0 px vertical offset.
+  - Overall screen verified on device: **PASS** at **1.75%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 17 element bands.
+
+- **D06 (Library View and Sort Sheet)**:
+  - Calibrated modal bottom sheet ($1519\text{ px}$ height, $y \in [758, 2277]$) with authentic dimmed library background (`fixture_filter_bg_90.png`) and navigation scrim (`#080808`).
+  - Sheet interior verified at 0 bad pixels and 0 px vertical offset.
+  - Overall screen verified on device: **PASS** at **1.75%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all element bands.

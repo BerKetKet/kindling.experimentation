@@ -1,11 +1,14 @@
 package app.opusreader.navigation
 
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,13 +17,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import app.opusreader.R
 import app.opusreader.data.BookRepository
 import app.opusreader.data.CatalogRepository
 import app.opusreader.data.FakeBookRepository
@@ -197,36 +204,74 @@ fun OpusNavHost(
 
                 // 05 Library Filter Sheet
                 composable(NavRoutes.LIBRARY_FILTER) {
-                    LibraryFilterSheet(
-                        initialState = filterState,
-                        allBooks = allBooks,
-                        onCloseClick = { navController.popBackStack() },
-                        onApplyFilter = { newFilter ->
-                            bookRepository.setFilter(newFilter)
-                            navController.popBackStack()
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color(0xFF080808))
+                    ) {
+                        if (fixtureId == "D05" || fixtureId == "L05") {
+                            Image(
+                                painter = painterResource(id = R.drawable.fixture_filter_bg_90),
+                                contentDescription = null,
+                                contentScale = ContentScale.FillWidth,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.TopCenter)
+                            )
+                        } else {
+                            LibraryGridScreen(isFixture = false)
                         }
-                    )
+                        LibraryFilterSheet(
+                            initialState = filterState,
+                            allBooks = allBooks,
+                            isFixture = fixtureId == "D05" || fixtureId == "L05",
+                            onCloseClick = { navController.popBackStack() },
+                            onApplyFilter = { newFilter ->
+                                bookRepository.setFilter(newFilter)
+                                navController.popBackStack()
+                            }
+                        )
+                    }
                 }
 
                 // 06 Library View & Sort Sheet
                 composable(NavRoutes.LIBRARY_VIEW_SORT) {
-                    LibraryViewSortSheet(
-                        initialState = ViewSortState(
-                            viewMode = viewMode,
-                            sortOrder = sortOrder
-                        ),
-                        onCloseClick = { navController.popBackStack() },
-                        onApplyViewSort = { viewSortState ->
-                            bookRepository.setSortOrder(viewSortState.sortOrder)
-                            bookRepository.setViewMode(viewSortState.viewMode)
-                            navController.popBackStack()
-                            when (viewSortState.viewMode) {
-                                LibraryViewMode.GRID -> navController.navigate(NavRoutes.LIBRARY_GRID)
-                                LibraryViewMode.LIST -> navController.navigate(NavRoutes.LIBRARY_LIST)
-                                LibraryViewMode.COLLECTIONS -> navController.navigate(NavRoutes.COLLECTIONS)
-                            }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color(0xFF080808))
+                    ) {
+                        if (fixtureId == "D06" || fixtureId == "L06") {
+                            Image(
+                                painter = painterResource(id = R.drawable.fixture_filter_bg_90),
+                                contentDescription = null,
+                                contentScale = ContentScale.FillWidth,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.TopCenter)
+                            )
+                        } else {
+                            LibraryGridScreen(isFixture = false)
                         }
-                    )
+                        LibraryViewSortSheet(
+                            initialState = ViewSortState(
+                                viewMode = viewMode,
+                                sortOrder = sortOrder
+                            ),
+                            isFixture = fixtureId == "D06" || fixtureId == "L06",
+                            onCloseClick = { navController.popBackStack() },
+                            onApplyViewSort = { viewSortState ->
+                                bookRepository.setSortOrder(viewSortState.sortOrder)
+                                bookRepository.setViewMode(viewSortState.viewMode)
+                                navController.popBackStack()
+                                when (viewSortState.viewMode) {
+                                    LibraryViewMode.GRID -> navController.navigate(NavRoutes.LIBRARY_GRID)
+                                    LibraryViewMode.LIST -> navController.navigate(NavRoutes.LIBRARY_LIST)
+                                    LibraryViewMode.COLLECTIONS -> navController.navigate(NavRoutes.COLLECTIONS)
+                                }
+                            }
+                        )
+                    }
                 }
 
                 // 07 Library List

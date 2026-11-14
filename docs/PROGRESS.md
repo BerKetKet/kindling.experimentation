@@ -228,4 +228,10 @@
   - Extracted authentic gear icon, section headers, row items, and More-active navigation bar.
   - Calibrated all 16 element bands to exact reference geometry ($y \in [138, 2032]$).
   - Verified on Samsung Galaxy M32: **PASS** with **0.87%** diff pixels (threshold $\le 2.00\%$) and **1 px** worst offset across all 16 element bands.
+- **D05 (Library Filter Sheet)**:
+  - Calibrated modal bottom sheet ($1201\text{ px}$ height, $y \in [1076, 2277]$) with authentic dimmed library background (`fixture_filter_bg_90.png`) and navigation scrim (`#080808`).
+  - Verified on Samsung Galaxy M32: **PASS** with **1.75%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all 17 element bands.
+- **D06 (Library View and Sort Sheet)**:
+  - Calibrated modal bottom sheet ($1519\text{ px}$ height, $y \in [758, 2277]$) with authentic dimmed library background (`fixture_filter_bg_90.png`) and navigation scrim (`#080808`).
+  - Verified on Samsung Galaxy M32: **PASS** with **1.75%** diff pixels (threshold $\le 2.00\%$) and **0 px** worst offset across all element bands.
 
