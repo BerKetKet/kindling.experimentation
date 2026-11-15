@@ -119,7 +119,9 @@ fun OpusNavHost(
     val collections by bookRepository.collections.collectAsState()
     val notifications by bookRepository.notifications.collectAsState()
 
-    val currentBook = allBooks.firstOrNull { it.id == "complete_works_kafka" } ?: allBooks.first()
+    val currentBook = allBooks.firstOrNull { it.id == "complete_works_kafka" }
+        ?: allBooks.firstOrNull()
+        ?: app.opusreader.data.SampleBooks.sampleList.first()
 
     var groupBySeries by remember { mutableStateOf(false) }
     var annotationFilterTypes by remember { mutableStateOf(emptySet<String>()) }

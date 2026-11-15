@@ -22,16 +22,16 @@ class RoomBookRepository(
     private val _viewMode = MutableStateFlow(LibraryViewMode.GRID)
     override val viewMode: StateFlow<LibraryViewMode> = _viewMode.asStateFlow()
 
-    private val _collections = MutableStateFlow<List<CollectionItem>>(emptyList())
+    private val _collections = MutableStateFlow<List<CollectionItem>>(SampleBooks.sampleCollections)
     override val collections: StateFlow<List<CollectionItem>> = _collections.asStateFlow()
 
-    private val _allBooks = MutableStateFlow<List<Book>>(emptyList())
+    private val _allBooks = MutableStateFlow<List<Book>>(SampleBooks.sampleList)
     override val allBooks: StateFlow<List<Book>> = _allBooks.asStateFlow()
 
-    private val _filteredBooks = MutableStateFlow<List<Book>>(emptyList())
+    private val _filteredBooks = MutableStateFlow<List<Book>>(computeFilteredBooks(SampleBooks.sampleList, _filterState.value, _sortOrder.value))
     override val filteredBooks: StateFlow<List<Book>> = _filteredBooks.asStateFlow()
 
-    private val _notifications = MutableStateFlow<List<NotificationItem>>(emptyList())
+    private val _notifications = MutableStateFlow<List<NotificationItem>>(SampleBooks.sampleNotifications)
     override val notifications: StateFlow<List<NotificationItem>> = _notifications.asStateFlow()
 
     init {
