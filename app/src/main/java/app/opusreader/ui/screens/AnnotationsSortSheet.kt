@@ -1,17 +1,19 @@
 package app.opusreader.ui.screens
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,19 +23,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.opusreader.R
-import app.opusreader.ui.components.OpusBottomSheetContainer
-import app.opusreader.ui.theme.OpusDivider
+import app.opusreader.ui.theme.AmazonEmberFontFamily
 import app.opusreader.ui.theme.OpusReaderTheme
-import app.opusreader.ui.theme.OpusSpacing
-import app.opusreader.ui.theme.OpusTextPrimary
-import app.opusreader.ui.theme.OpusTextSecondary
 import app.opusreader.ui.theme.refPx
 
 enum class AnnotationSortField(val displayName: String) {
@@ -58,90 +57,125 @@ fun AnnotationsSortSheet(
     var selectedField by remember { mutableStateOf(initialField) }
     var selectedDirection by remember { mutableStateOf(initialDirection) }
 
-    OpusBottomSheetContainer(
-        title = "Sort",
-        doneButtonText = "DONE",
-        onDoneClick = { onApply(selectedField, selectedDirection) },
-        onCloseClick = onDismiss,
+    Column(
         modifier = modifier
+            .fillMaxWidth()
+            .height(972.refPx)
+            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+            .background(Color(0xFF1A1B1C))
     ) {
-        SectionTitle("Sort by")
+        // Drag handle (y=1389..1399, top padding = 21px from top of sheet)
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = (21 / 2.625).dp)
+                .size(width = (104 / 2.625).dp, height = (10 / 2.625).dp)
+                .clip(CircleShape)
+                .background(Color(0xFF8E9194))
+        )
 
+        // Title "Sort" (y=1445..1474, top padding = 34px from handle)
+        Text(
+            text = "Sort",
+            color = Color.White,
+            fontFamily = AmazonEmberFontFamily,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = (34 / 2.625).dp)
+        )
+
+        Spacer(modifier = Modifier.height((56 / 2.625).dp))
+
+        // Sort Field Rows (Location, Date created, Date modified)
         AnnotationSortField.entries.forEach { field ->
             val isSelected = selectedField == field
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { selectedField = field }
-                    .padding(horizontal = OpusSpacing.standard, vertical = 12.dp),
+                    .height((146 / 2.625).dp)
+                    .clickable {
+                        selectedField = field
+                        onApply(selectedField, selectedDirection)
+                    }
+                    .padding(start = (46 / 2.625).dp, end = (49 / 2.625).dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = field.displayName,
-                    color = OpusTextPrimary,
-                    fontSize = 15.sp,
+                    color = Color.White,
+                    fontFamily = AmazonEmberFontFamily,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
                     modifier = Modifier.weight(1f)
                 )
                 if (isSelected) {
                     Icon(
                         imageVector = Icons.Default.Check,
                         contentDescription = "Selected",
-                        tint = OpusTextPrimary,
-                        modifier = Modifier.size(20.dp)
+                        tint = Color.White,
+                        modifier = Modifier.size(28.dp)
                     )
                 }
             }
         }
 
-        HorizontalDivider(color = OpusDivider, thickness = 1.dp)
+        // Divider 1 (y=1980..1982)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height((2 / 2.625).dp)
+                .background(Color(0xFF3B3C3D))
+        )
 
-        SectionTitle("Order")
-
+        // Sort Direction Rows (Ascending, Descending)
         SortDirection.entries.forEach { dir ->
             val isSelected = selectedDirection == dir
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { selectedDirection = dir }
-                    .padding(horizontal = OpusSpacing.standard, vertical = 12.dp),
+                    .height((146 / 2.625).dp)
+                    .clickable {
+                        selectedDirection = dir
+                        onApply(selectedField, selectedDirection)
+                    }
+                    .padding(start = (46 / 2.625).dp, end = (49 / 2.625).dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = dir.displayName,
-                    color = OpusTextPrimary,
-                    fontSize = 15.sp,
+                    color = Color.White,
+                    fontFamily = AmazonEmberFontFamily,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
                     modifier = Modifier.weight(1f)
                 )
                 if (isSelected) {
                     Icon(
                         imageVector = Icons.Default.Check,
                         contentDescription = "Selected",
-                        tint = OpusTextPrimary,
-                        modifier = Modifier.size(20.dp)
+                        tint = Color.White,
+                        modifier = Modifier.size(28.dp)
                     )
                 }
             }
         }
+
+        // Divider 2 (y=2275..2277)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height((2 / 2.625).dp)
+                .background(Color(0xFF3B3C3D))
+        )
     }
 }
 
-@Composable
-private fun SectionTitle(title: String) {
-    Text(
-        text = title,
-        color = OpusTextSecondary,
-        fontSize = 13.sp,
-        fontWeight = FontWeight.SemiBold,
-        modifier = Modifier.padding(
-            start = OpusSpacing.standard,
-            end = OpusSpacing.standard,
-            top = OpusSpacing.medium,
-            bottom = OpusSpacing.small
-        )
-    )
-}
-
-@Preview(name = "15 Annotations Sort Preview", showBackground = true, backgroundColor = 0xFF232323)
+@Preview(name = "15 Annotations Sort Sheet Preview", showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun AnnotationsSortSheetPreview() {
     OpusReaderTheme {

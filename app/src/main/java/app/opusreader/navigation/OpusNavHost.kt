@@ -410,16 +410,37 @@ fun OpusNavHost(
 
                 // 15 Annotations Sort Sheet
                 composable(NavRoutes.ANNOTATIONS_SORT) {
-                    AnnotationsSortSheet(
-                        initialField = annotationSortField,
-                        initialDirection = annotationSortDirection,
-                        onDismiss = { navController.popBackStack() },
-                        onApply = { field, direction ->
-                            annotationSortField = field
-                            annotationSortDirection = direction
-                            navController.popBackStack()
-                        }
-                    )
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        AnnotationsScreen(
+                            engine = readerEngine,
+                            filterTypes = annotationFilterTypes,
+                            filterColors = annotationFilterColors,
+                            sortField = annotationSortField,
+                            sortDirection = annotationSortDirection,
+                            onBackClick = { navController.popBackStack() },
+                            onFilterClick = {},
+                            onSortClick = {},
+                            onExportClick = {},
+                            onItemClick = {}
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color(0xFF444648).copy(alpha = 0.60f))
+                                .clickable { navController.popBackStack() }
+                        )
+                        AnnotationsSortSheet(
+                            initialField = annotationSortField,
+                            initialDirection = annotationSortDirection,
+                            onDismiss = { navController.popBackStack() },
+                            onApply = { field, direction ->
+                                annotationSortField = field
+                                annotationSortDirection = direction
+                                navController.popBackStack()
+                            },
+                            modifier = Modifier.align(Alignment.BottomCenter)
+                        )
+                    }
                 }
 
                 // 16 Annotations Share Sheet
