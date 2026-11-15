@@ -1,5 +1,6 @@
 package app.opusreader.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -27,6 +28,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -81,10 +84,10 @@ fun OpusListRow(
                 contentAlignment = Alignment.BottomCenter
             ) {
                 if (coverDrawableRes != 0) {
-                    androidx.compose.foundation.Image(
-                        painter = androidx.compose.ui.res.painterResource(coverDrawableRes),
+                    Image(
+                        painter = painterResource(coverDrawableRes),
                         contentDescription = title,
-                        contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
                     )
                 } else {
@@ -94,7 +97,7 @@ fun OpusListRow(
                         fontWeight = FontWeight.Bold,
                         color = OpusTextPrimary.copy(alpha = 0.9f),
                         fontSize = 10.sp,
-                        maxLines = 3,
+                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .align(Alignment.Center)

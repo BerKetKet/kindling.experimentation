@@ -9,6 +9,9 @@ D01: 0,2094,1080,2111
 # D04: Settings (Mask device name and email address per privacy rule)
 D04: 45,355,650,395 45,1190,680,1235
 
+# D10: Reader Chrome (Mask reading text area to compare chrome bars)
+D10: 0,251,1080,2040
+
 # D12: In-book search (Mask virtual software keyboard)
 D12: 0,1290,1080,2340
 
