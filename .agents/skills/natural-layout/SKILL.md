@@ -1,13 +1,11 @@
 ---
 name: natural-layout
-description: Keeps the UI real: no pasted screenshot pixels, no fixture branches, no deformed or cut-off elements. Use before and after building any screen, and whenever a reference shows something cut off, covered or half scrolled.
+description: Build complete, uniform Jetpack Compose components that clip naturally inside scrollable containers without viewport overfitting.
 ---
+# Natural Layout Skill
 
-# Real UI, natural layout
-
-1. A reference is a frozen viewport of a scrollable, layered screen. Note which parts are cut by the edge, the bottom bar, a sheet or the scrim. That is viewport, not design.
-2. Build the complete element in a real container. Give the container more data than the viewport shows. Reproduce the reference view with `scrollToItem(index, offsetPx)`.
-3. Fixture mode supplies data and state only. There is no UI code that behaves differently in fixture mode.
-4. Never use a crop of a reference as content. If you catch yourself cutting a PNG out of a reference to place it in the app, stop: build the composable instead, measure with tools/measure.py, and diff.
-5. Gates, in order: `python3 tools/guard.py .` (must print GUARD OK), the fidelity loop, the liveness check (change a string, re-capture, the region must change), and the scroll test (`adb shell input swipe 540 1800 540 600 300` to the end; capture top, mid, end into docs/fidelity/scroll/; nothing deformed or cut except by the viewport and the real bottom bar).
-6. Mask only a strip where a reference element is cut or covered. The visible part must still match.
+1. **Never copy viewport cutoffs**: An element cut off at the bottom edge of a reference screenshot is a complete element inside a scrollable container (`LazyColumn`, `LazyVerticalGrid`, or `verticalScroll`). Always build the full-height element and let the container clip it naturally.
+2. **Zero screenshot-slice drawables**: Never crop UI bars, rows, chips, or sheets from reference PNGs into `res/drawable/fixture_*.png`. Only genuine book cover images (`cover_0..11.png`) and vector icons (`ic_*.xml`) are permitted.
+3. **Zero `isFixture` UI branches**: Every screen composable must render the exact same live, interactive Jetpack Compose UI in both normal navigation and deep-link evaluation.
+4. **Tighter Kindle Typography Scale**: Use `AmazonEmberFontFamily` and `BookerlyFontFamily` with `PlatformTextStyle(includeFontPadding = false)` and Kindle's tighter `12.5sp`–`15sp` scale so text rows never wrap prematurely or drift downward.
+5. **Run Guard Before Every Commit**: Always run `python3 tools/guard.py .` and `python3 tools/compare_typography.py --id <ID>` to verify `0–1 px` band alignment.

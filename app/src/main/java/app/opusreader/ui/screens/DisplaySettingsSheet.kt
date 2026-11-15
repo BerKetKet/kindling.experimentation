@@ -1,6 +1,7 @@
 package app.opusreader.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,13 +14,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BrightnessLow
-import androidx.compose.material.icons.filled.BrightnessMedium
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.outlined.WbSunny
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -34,8 +33,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,7 +43,16 @@ import androidx.compose.ui.unit.sp
 import app.opusreader.engine.FakeReaderEngine
 import app.opusreader.engine.ReaderEngine
 import app.opusreader.ui.theme.AmazonEmberFontFamily
+import app.opusreader.ui.theme.NoPaddingPlatformStyle
+import app.opusreader.ui.theme.OpusAccentBlue
+import app.opusreader.ui.theme.OpusDisplaySettingsFooterSurface
+import app.opusreader.ui.theme.OpusDisplaySettingsSurface
+import app.opusreader.ui.theme.OpusDragHandle
 import app.opusreader.ui.theme.OpusReaderTheme
+import app.opusreader.ui.theme.OpusSheetActionBlue
+import app.opusreader.ui.theme.OpusTextPrimary
+import app.opusreader.ui.theme.OpusTextSecondary
+import app.opusreader.ui.theme.isOpusDarkTheme
 import app.opusreader.ui.theme.refPx
 
 @Composable
@@ -52,189 +60,206 @@ fun DisplaySettingsSheet(
     engine: ReaderEngine,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    initialTab: Int = 0
+    initialTab: Int = 0,
+    collapsedSheet: Boolean = (initialTab == 0)
 ) {
-    var selectedTab by remember { mutableIntStateOf(initialTab) }
+    var selectedTab by remember(initialTab) { mutableIntStateOf(initialTab) }
     val tabs = listOf("Font", "Layout", "Themes", "More")
     val settings by engine.settings.collectAsState()
-    var brightness by remember { mutableStateOf(settings.brightness) }
-    var autoBrightness by remember { mutableStateOf(settings.autoBrightness) }
+    var brightness by remember(settings.brightness) { mutableStateOf(settings.brightness) }
+    var autoBrightness by remember(settings.autoBrightness) { mutableStateOf(settings.autoBrightness) }
+    val isDark = isOpusDarkTheme
 
-    val sheetHeight = if (selectedTab == 0) (2340 - 1186).refPx else (2340 - 284).refPx
+    // In Kindle: Font tab opens at half-height (y=1176, h=1164px), while Layout/Themes/More expand to y=284 (h=2056px)
+    val sheetHeight = if (collapsedSheet) 1164.refPx else 2056.refPx
+    val dragHandleTopPadding = if (collapsedSheet) 29.refPx else 18.refPx
+    val tabHeaderTopGap = if (collapsedSheet && selectedTab == 0) 122.refPx else 122.refPx
+    val dividerColor = if (isDark) Color(0xFF8E8E93) else Color(0xFF222222)
 
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(sheetHeight)
-            .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
-            .background(Color(0xFF2C2C2E))
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter
     ) {
-        // Drag Handle
+        // Transparent tap-to-dismiss area above the sheet
         Box(
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = (19 / 2.625).dp)
-                .size(width = (62 / 2.625).dp, height = (10 / 2.625).dp)
-                .clip(CircleShape)
-                .background(Color(0xFF8E8E93))
+                .fillMaxSize()
+                .clickable(onClick = onDismiss)
         )
 
-        Spacer(modifier = Modifier.height((114 / 2.625).dp))
-
-        // Tabs Header
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = (30 / 2.625).dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            tabs.forEachIndexed { index, tabTitle ->
-                val isSelected = selectedTab == index
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .clickable { selectedTab = index }
-                        .padding(horizontal = 8.dp)
-                ) {
-                    Text(
-                        text = tabTitle,
-                        color = if (isSelected) Color(0xFFA3D7F5) else Color.White,
-                        fontFamily = AmazonEmberFontFamily,
-                        fontSize = 16.sp,
-                        fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-                        style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
-                    )
-                    Spacer(modifier = Modifier.height((27 / 2.625).dp))
-                    Box(
-                        modifier = Modifier
-                            .height((4 / 2.625).dp)
-                            .width((80 / 2.625).dp)
-                            .background(if (isSelected) Color(0xFFA3D7F5) else Color.Transparent)
-                    )
-                }
-            }
-        }
-
-        // Divider below tabs
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height((1 / 2.625).dp)
-                .background(Color(0xFF48484A))
-        )
-
-        // Tab Content
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        ) {
-            when (selectedTab) {
-                0 -> DisplaySettingsFontTab(engine = engine)
-                1 -> DisplaySettingsLayoutTab(engine = engine)
-                2 -> DisplaySettingsThemesTab(engine = engine)
-                3 -> DisplaySettingsMoreTab(engine = engine)
-            }
-        }
-
-        // Common Brightness Bar (pinned at bottom, y=2076..2340)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height((264 / 2.625).dp)
-                .background(Color(0xFF3A3A3C))
+                .height(sheetHeight)
+                .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
+                .background(OpusDisplaySettingsSurface)
+                .clickable(enabled = false) {}
         ) {
-            // Divider above brightness bar
+            // Drag handle: 63x11 px (#8E8E93 dark / #9D9D9D light)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height((1 / 2.625).dp)
-                    .background(Color(0xFF48484A))
-            )
+                    .padding(top = dragHandleTopPadding),
+                contentAlignment = Alignment.Center
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(width = 63.refPx, height = 11.refPx)
+                        .clip(RoundedCornerShape(percent = 50))
+                        .background(OpusDragHandle)
+                )
+            }
 
+            Spacer(modifier = Modifier.height(tabHeaderTopGap))
+
+            // Left-aligned Tabs Header (Font | Layout | Themes | More) at y=434..474 (or y=1338..1377)
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(60.dp)
-                    .padding(horizontal = (45 / 2.625).dp),
+                    .padding(start = 30.refPx, end = 30.refPx),
+                horizontalArrangement = Arrangement.spacedBy(52.refPx),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Default.BrightnessLow,
-                    contentDescription = "Decrease brightness",
-                    tint = Color(0xFF8E8E93),
-                    modifier = Modifier.size(18.dp)
-                )
+                tabs.forEachIndexed { index, tabTitle ->
+                    val isSelected = selectedTab == index
+                    val textColor = if (isSelected) OpusSheetActionBlue else OpusTextPrimary
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.clickable { selectedTab = index }
+                    ) {
+                        Text(
+                            text = tabTitle,
+                            style = TextStyle(
+                                fontFamily = AmazonEmberFontFamily,
+                                color = textColor,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                platformStyle = NoPaddingPlatformStyle
+                            )
+                        )
+                        Spacer(modifier = Modifier.height(29.refPx))
+                        Box(
+                            modifier = Modifier
+                                .height(5.refPx)
+                                .width(110.refPx)
+                                .background(if (isSelected) OpusSheetActionBlue else Color.Transparent)
+                        )
+                    }
+                }
+            }
 
-                Slider(
-                    value = brightness,
-                    onValueChange = {
-                        brightness = it
-                        engine.updateSettings { current -> current.copy(brightness = it) }
-                    },
-                    valueRange = 0f..1f,
-                    modifier = Modifier
-                        .weight(6.3f)
-                        .padding(horizontal = 8.dp),
-                    colors = SliderDefaults.colors(
-                        thumbColor = Color(0xFF2491FF),
-                        activeTrackColor = Color(0xFF2491FF),
-                        inactiveTrackColor = Color(0xFF5D5D61)
-                    )
-                )
+            HorizontalDivider(color = dividerColor, thickness = 2.refPx)
 
-                Icon(
-                    imageVector = Icons.Default.BrightnessMedium,
-                    contentDescription = "Increase brightness",
-                    tint = Color(0xFF8E8E93),
-                    modifier = Modifier.size(24.dp)
-                )
+            // Tab body container clipped above pinned brightness footer (y = 2077..2339, h = 263 px)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .clipToBounds()
+            ) {
+                when (selectedTab) {
+                    0 -> DisplaySettingsFontTab(engine = engine)
+                    1 -> DisplaySettingsLayoutTab(engine = engine)
+                    2 -> DisplaySettingsThemesTab(engine = engine)
+                    3 -> DisplaySettingsMoreTab(engine = engine)
+                }
+            }
 
-                Spacer(modifier = Modifier.width(16.dp))
-
+            // Pinned Brightness Footer at y = [2077, 2339] (263 px height, #3A3A3C dark / #F0F0F0 light)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(263.refPx)
+                    .background(OpusDisplaySettingsFooterSurface)
+                    .padding(start = 56.refPx, end = 56.refPx, bottom = 63.refPx),
+                contentAlignment = Alignment.Center
+            ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .clickable {
-                            val newValue = !autoBrightness
-                            autoBrightness = newValue
-                            engine.updateSettings { current -> current.copy(autoBrightness = newValue) }
-                        }
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Checkbox(
-                        checked = autoBrightness,
-                        onCheckedChange = {
-                            autoBrightness = it
-                            engine.updateSettings { current -> current.copy(autoBrightness = it) }
+                    Icon(
+                        imageVector = Icons.Outlined.WbSunny,
+                        contentDescription = "Low Brightness",
+                        tint = OpusTextSecondary,
+                        modifier = Modifier.size(42.refPx)
+                    )
+
+                    Slider(
+                        value = brightness,
+                        onValueChange = {
+                            brightness = it
+                            engine.updateSettings { current -> current.copy(brightness = it) }
                         },
-                        colors = CheckboxDefaults.colors(
-                            checkedColor = Color(0xFF2491FF),
-                            uncheckedColor = Color(0xFF8E8E93)
-                        ),
-                        modifier = Modifier.size(20.dp)
+                        valueRange = 0f..1f,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 24.refPx),
+                        colors = SliderDefaults.colors(
+                            thumbColor = OpusAccentBlue,
+                            activeTrackColor = OpusAccentBlue,
+                            inactiveTrackColor = if (isDark) Color(0xFF6E7073) else Color(0xFFB5B7B9)
+                        )
                     )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = "Auto",
-                        color = Color.White,
-                        fontFamily = AmazonEmberFontFamily,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Normal,
-                        style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
+
+                    Icon(
+                        imageVector = Icons.Outlined.WbSunny,
+                        contentDescription = "High Brightness",
+                        tint = OpusTextPrimary,
+                        modifier = Modifier.size(60.refPx)
                     )
+
+                    Spacer(modifier = Modifier.width(42.refPx))
+
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.clickable {
+                            val next = !autoBrightness
+                            autoBrightness = next
+                            engine.updateSettings { current -> current.copy(autoBrightness = next) }
+                        }
+                    ) {
+                        val boxShape = RoundedCornerShape(2.dp)
+                        Box(
+                            modifier = Modifier
+                                .size(48.refPx)
+                                .clip(boxShape)
+                                .then(
+                                    if (autoBrightness) Modifier.background(OpusAccentBlue)
+                                    else Modifier.border(1.5.dp, OpusTextSecondary, boxShape)
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (autoBrightness) {
+                                Icon(
+                                    imageVector = Icons.Default.Check,
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.size(13.dp)
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(8.refPx))
+                        Text(
+                            text = "Auto",
+                            style = TextStyle(
+                                fontFamily = AmazonEmberFontFamily,
+                                color = OpusTextPrimary,
+                                fontSize = 11.sp,
+                                platformStyle = NoPaddingPlatformStyle
+                            )
+                        )
+                    }
                 }
             }
         }
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFF101112)
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun DisplaySettingsSheetPreview() {
     OpusReaderTheme {
-        DisplaySettingsSheet(
-            engine = FakeReaderEngine(),
-            onDismiss = {}
-        )
+        DisplaySettingsSheet(engine = FakeReaderEngine(), onDismiss = {})
     }
 }

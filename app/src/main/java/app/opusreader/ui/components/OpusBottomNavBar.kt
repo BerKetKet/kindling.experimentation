@@ -29,7 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.opusreader.R
 import app.opusreader.navigation.NavRoutes
 import app.opusreader.ui.theme.AmazonEmberFontFamily
 import app.opusreader.ui.theme.OpusAccentBlue
@@ -51,12 +50,13 @@ fun OpusBottomNavBar(
     selectedTab: MainTab,
     onTabSelected: (MainTab) -> Unit,
     modifier: Modifier = Modifier,
-    showCoverSpacer: Boolean = true
+    showCoverSpacer: Boolean = true,
+    
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(OpusBackground)
+            .background(app.opusreader.ui.theme.OpusBottomBar)
             .navigationBarsPadding()
     ) {
         // 3 px divider matching reference anchor (y: 2111-2113)
@@ -80,37 +80,41 @@ fun OpusBottomNavBar(
                 )
             }
 
-            MainTab.entries.forEach { tab ->
-                val isSelected = tab == selectedTab
-                val itemColor = if (isSelected) OpusAccentBlue else OpusTextSecondary
+                            MainTab.entries.forEach { tab ->
+                    val isSelected = tab == selectedTab
+                    val itemColor = if (isSelected) OpusAccentBlue else OpusTextSecondary
 
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .clickable { onTabSelected(tab) },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .clickable { onTabSelected(tab) },
+                        contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            imageVector = tab.icon,
-                            contentDescription = tab.title,
-                            tint = itemColor,
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = tab.title,
-                            fontFamily = AmazonEmberFontFamily,
-                            fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal,
-                            color = itemColor,
-                            fontSize = 11.sp
-                        )
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            when (tab) {
+                                MainTab.HOME -> Icon(
+                                    imageVector = tab.icon,
+                                    contentDescription = tab.title,
+                                    tint = itemColor,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                MainTab.LIBRARY -> KindleLibraryIcon(tint = itemColor, modifier = Modifier.size(24.dp))
+                                MainTab.MORE -> KindleMoreListIcon(tint = itemColor, modifier = Modifier.size(24.dp))
+                            }
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = tab.title,
+                                fontFamily = AmazonEmberFontFamily,
+                                fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal,
+                                color = itemColor,
+                                fontSize = 11.sp
+                            )
+                        }
                     }
                 }
-            }
         }
     }
 }

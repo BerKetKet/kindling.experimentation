@@ -36,6 +36,17 @@ The runner stood in the doorway, breathing hard, dusting ash from his sleeves. �
 Paran stood, buckling his sword-belt. Outside, the sky burned with the unnatural violet of sorcery unleashed."""
     )
 
+    private val _bookTitle = MutableStateFlow(sampleTitle)
+    override val bookTitle: StateFlow<String> = _bookTitle.asStateFlow()
+
+    private val _bookAuthor = MutableStateFlow("Steven Erikson")
+    override val bookAuthor: StateFlow<String> = _bookAuthor.asStateFlow()
+
+    override fun openBook(title: String, author: String) {
+        _bookTitle.value = title
+        _bookAuthor.value = author
+    }
+
     private val _settings = MutableStateFlow(ReaderSettings())
     override val settings: StateFlow<ReaderSettings> = _settings.asStateFlow()
 
@@ -72,42 +83,41 @@ Paran stood, buckling his sword-belt. Outside, the sky burned with the unnatural
                 id = "toc_1",
                 title = "Preface to Gardens of the Moon — redux",
                 level = 0,
-                targetLocation = 1
+                targetLocation = 91
             ),
             TocItem(
                 id = "toc_2",
-                title = "Foreword to Gardens of the Moon — 10th Anniversary",
+                title = "Foreword to Gardens of the Moon — 10th Anniversary Edition",
                 level = 0,
-                targetLocation = 91
+                targetLocation = 140
             ),
             TocItem(
                 id = "toc_3",
                 title = "Maps",
                 level = 0,
-                targetLocation = 140
+                targetLocation = 180
             ),
             TocItem(
                 id = "toc_4",
                 title = "Dramatis Personae",
                 level = 0,
-                targetLocation = 180
+                targetLocation = 220
             ),
             TocItem(
                 id = "toc_5",
                 title = "Prologue",
                 level = 0,
-                targetLocation = 220
+                targetLocation = 250
             ),
             TocItem(
                 id = "toc_6",
                 title = "Book One: Pale",
                 level = 0,
-                targetLocation = 250,
+                targetLocation = 320,
                 children = listOf(
                     TocItem("toc_6_1", "Chapter One", 1, 330),
                     TocItem("toc_6_2", "Chapter Two", 1, 410),
-                    TocItem("toc_6_3", "Chapter Three", 1, 520),
-                    TocItem("toc_6_4", "Chapter Four", 1, 600)
+                    TocItem("toc_6_3", "Chapter Three", 1, 520)
                 )
             ),
             TocItem(
@@ -116,16 +126,9 @@ Paran stood, buckling his sword-belt. Outside, the sky burned with the unnatural
                 level = 0,
                 targetLocation = 640,
                 children = listOf(
-                    TocItem("toc_7_1", "Chapter Five", 1, 650),
-                    TocItem("toc_7_2", "Chapter Six", 1, 740),
-                    TocItem("toc_7_3", "Chapter Seven", 1, 800)
+                    TocItem("toc_7_1", "Chapter Four", 1, 650),
+                    TocItem("toc_7_2", "Chapter Five", 1, 740)
                 )
-            ),
-            TocItem(
-                id = "toc_8",
-                title = "Epilogue",
-                level = 0,
-                targetLocation = 850
             )
         )
     )
@@ -138,22 +141,33 @@ Paran stood, buckling his sword-belt. Outside, the sky burned with the unnatural
                 location = 3971,
                 sectionTitle = "Book Two: Darujhistan",
                 selectedText = "soft knock diverted his attention. “Yes?”",
-                note = null,
+                note = "Crucial character turning point.",
                 highlightColor = "YELLOW",
                 type = AnnotationType.HIGHLIGHT,
-                isFavorite = false,
+                isFavorite = true,
                 dateAdded = "November 12, 2026"
             ),
             AnnotationItem(
                 id = "ann_2",
-                location = 11240,
-                sectionTitle = "Book One: Raraku",
-                selectedText = "“Question,” Mallick Rel said. “Has the council begun?” “Not yet,” Coltaine said slowly. “We await my warlock.” The priest of",
+                location = 1204,
+                sectionTitle = "Book One: Pale",
+                selectedText = "Sorcery crackled in the afternoon sky, smelling of ozone and crushed stone.",
                 note = null,
                 highlightColor = "BLUE",
-                type = AnnotationType.BOOKMARK,
+                type = AnnotationType.HIGHLIGHT,
                 isFavorite = false,
                 dateAdded = "November 10, 2026"
+            ),
+            AnnotationItem(
+                id = "ann_3",
+                location = 250,
+                sectionTitle = "Prologue",
+                selectedText = "The stains of rust seemed to map the world.",
+                note = "Opening imagery.",
+                highlightColor = "PINK",
+                type = AnnotationType.NOTE,
+                isFavorite = true,
+                dateAdded = "November 9, 2026"
             )
         )
     )

@@ -1,6 +1,5 @@
 package app.opusreader.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -16,12 +15,11 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Sync
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,24 +28,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.opusreader.R
 import app.opusreader.data.NotificationItem
 import app.opusreader.data.SampleBooks
 import app.opusreader.ui.theme.AmazonEmberFontFamily
 import app.opusreader.ui.theme.BookerlyFontFamily
+import app.opusreader.ui.theme.NoPaddingPlatformStyle
+import app.opusreader.ui.theme.OpusBackground
 import app.opusreader.ui.theme.OpusReaderTheme
+import app.opusreader.ui.theme.OpusTextPrimary
+import app.opusreader.ui.theme.OpusTextSecondary
+import app.opusreader.ui.theme.isOpusDarkTheme
 import app.opusreader.ui.theme.refPx
-
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.runtime.LaunchedEffect
-import app.opusreader.ui.theme.LocalFixtureTrigger
 
 @Composable
 fun NotificationsScreen(
@@ -58,63 +56,66 @@ fun NotificationsScreen(
     onItemClick: (NotificationItem) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    val listState = rememberLazyListState()
-    val fixtureTrigger = LocalFixtureTrigger.current
-    LaunchedEffect(fixtureTrigger) {
-        listState.scrollToItem(0)
-    }
+    val isDark = isOpusDarkTheme
+    val bodyBg = if (isDark) Color(0xFF404040) else Color.White
+    val dividerCol = if (isDark) Color(0xFF525252) else Color(0xFFE0E0E0)
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color(0xFF404040))
+            .background(bodyBg)
     ) {
-        // Top bar container
-        Row(
+        // Top header bar: y=[0, 250] (251 px total height)
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(168.refPx)
-                .background(Color(0xFF101112))
-                .padding(horizontal = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .height(251.refPx)
+                .background(OpusBackground)
+                .statusBarsPadding()
         ) {
+            Spacer(modifier = Modifier.height(58.refPx))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(47.refPx)
+                    .padding(start = 51.refPx, end = 42.refPx),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 IconButton(
                     onClick = onBackClick,
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.size(46.refPx)
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back",
-                        tint = Color.White,
+                        tint = OpusTextPrimary,
                         modifier = Modifier.size(24.dp)
                     )
                 }
-
-                Spacer(modifier = Modifier.width(8.dp))
-
+                Spacer(modifier = Modifier.width(36.refPx))
                 Text(
                     text = "Notifications",
-                    fontFamily = BookerlyFontFamily,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 20.sp,
-                    color = Color(0xFFF0F0F0),
+                    style = TextStyle(
+                        fontFamily = BookerlyFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 22.sp,
+                        color = OpusTextPrimary,
+                        platformStyle = NoPaddingPlatformStyle
+                    ),
                     modifier = Modifier.weight(1f)
                 )
-
                 if (notifications.isNotEmpty()) {
-                    IconButton(
-                        onClick = onClearAll,
-                        modifier = Modifier.size(48.dp)
-                    ) {
+                    IconButton(onClick = onClearAll, modifier = Modifier.size(48.refPx)) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_trash),
+                            imageVector = Icons.Default.Delete,
                             contentDescription = "Clear all notifications",
-                            tint = Color(0xFFDBDCDC),
-                            modifier = Modifier.size(24.dp)
+                            tint = OpusTextPrimary,
+                            modifier = Modifier.size(22.dp)
                         )
                     }
                 }
             }
+        }
 
         if (notifications.isEmpty()) {
             Box(
@@ -123,89 +124,93 @@ fun NotificationsScreen(
             ) {
                 Text(
                     text = "No notifications",
-                    fontFamily = AmazonEmberFontFamily,
-                    color = Color(0xFFC6C6C6),
+                    color = OpusTextSecondary,
                     fontSize = 15.sp
                 )
             }
         } else {
             LazyColumn(
-                state = listState,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(0xFF404040))
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .clipToBounds()
             ) {
                 items(notifications, key = { it.id }) { item ->
-                    Row(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { onItemClick(item) }
-                            .padding(horizontal = 16.dp, vertical = 10.5.dp),
-                        verticalAlignment = Alignment.Top
+                            .padding(horizontal = 42.refPx, vertical = 46.refPx)
                     ) {
-                        if (item.coverDrawableRes != null && item.coverDrawableRes != 0) {
-                            Image(
-                                painter = painterResource(id = item.coverDrawableRes),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .width(40.dp)
-                                    .height(60.dp)
-                                    .clip(RoundedCornerShape(2.dp)),
-                                contentScale = ContentScale.Crop
-                            )
-                        } else {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.Top
+                        ) {
                             Box(
                                 modifier = Modifier
-                                    .size(40.dp)
-                                    .clip(CircleShape)
-                                    .background(Color(0xFF2E3033)),
+                                    .size(105.refPx)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(Color(0xFF7C5944)),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Icon(
-                                    imageVector = if (item.title.contains("Sync", ignoreCase = true)) {
-                                        Icons.Default.Sync
-                                    } else {
-                                        Icons.Default.Notifications
-                                    },
-                                    contentDescription = null,
-                                    tint = Color(0xFF2491FF),
-                                    modifier = Modifier.size(22.dp)
+                                Text(
+                                    text = "OPUS",
+                                    fontFamily = BookerlyFontFamily,
+                                    color = Color.White,
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Bold
                                 )
                             }
-                        }
-
-                        Spacer(modifier = Modifier.width(12.dp))
-
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = item.title,
-                                fontFamily = AmazonEmberFontFamily,
-                                color = Color(0xFFF0F0F0),
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                maxLines = 1
-                            )
-                            Spacer(modifier = Modifier.height(2.dp))
-                            Text(
-                                text = item.description,
-                                fontFamily = AmazonEmberFontFamily,
-                                color = Color(0xFFC6C6C6),
-                                fontSize = 14.sp,
-                                lineHeight = 19.sp,
-                                maxLines = 2
-                            )
-                            Spacer(modifier = Modifier.height(6.dp))
-                            Text(
-                                text = item.dateText,
-                                fontFamily = AmazonEmberFontFamily,
-                                color = Color(0xFFC6C6C6),
-                                fontSize = 12.sp
-                            )
+                            Spacer(modifier = Modifier.width(34.refPx))
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = item.title,
+                                    style = TextStyle(
+                                        fontFamily = AmazonEmberFontFamily,
+                                        color = OpusTextPrimary,
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        platformStyle = NoPaddingPlatformStyle
+                                    )
+                                )
+                                Spacer(modifier = Modifier.height(10.refPx))
+                                Text(
+                                    text = item.description,
+                                    style = TextStyle(
+                                        fontFamily = AmazonEmberFontFamily,
+                                        color = OpusTextPrimary,
+                                        fontSize = 13.sp,
+                                        lineHeight = 17.sp,
+                                        platformStyle = NoPaddingPlatformStyle
+                                    )
+                                )
+                                Spacer(modifier = Modifier.height(18.refPx))
+                                Text(
+                                    text = item.dateText,
+                                    style = TextStyle(
+                                        fontFamily = AmazonEmberFontFamily,
+                                        color = OpusTextSecondary,
+                                        fontSize = 11.5.sp,
+                                        platformStyle = NoPaddingPlatformStyle
+                                    )
+                                )
+                            }
+                            IconButton(
+                                onClick = { onDeleteNotification(item.id) },
+                                modifier = Modifier.size(36.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Delete notification",
+                                    tint = OpusTextSecondary,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
                         }
                     }
 
                     HorizontalDivider(
-                        color = Color(0xFF525252),
+                        color = dividerCol,
                         thickness = 3.refPx,
                         modifier = Modifier.padding(horizontal = 32.refPx)
                     )

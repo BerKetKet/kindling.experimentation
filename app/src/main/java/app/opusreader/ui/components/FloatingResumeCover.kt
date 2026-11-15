@@ -50,7 +50,7 @@ fun FloatingResumeCover(
     coverDrawableRes: Int? = null
 ) {
     val shape = RoundedCornerShape(3.dp)
-    val elevation = 8.dp
+    val elevation = 6.dp
 
     Box(
         modifier = modifier

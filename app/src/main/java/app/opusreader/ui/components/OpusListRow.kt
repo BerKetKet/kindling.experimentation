@@ -1,6 +1,5 @@
 package app.opusreader.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -8,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,8 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -56,7 +52,8 @@ fun OpusListRow(
     progressPercent: Int = 0,
     isDownloaded: Boolean = true,
     coverColor: Color = OpusSurfaceVariant,
-    coverDrawableRes: Int = 0,
+    coverDrawableRes: Int? = null,
+    isSample: Boolean = false,
     onClick: () -> Unit = {},
     onMoreClick: (() -> Unit)? = null,
     onDownloadClick: (() -> Unit)? = null
@@ -74,7 +71,6 @@ fun OpusListRow(
                 .padding(start = 53.refPx, end = OpusSpacing.screenMarginHorizontal),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Book cover thumbnail (168px x 253px)
             Box(
                 modifier = Modifier
                     .width(OpusSpacing.listCoverWidth)
@@ -83,21 +79,22 @@ fun OpusListRow(
                     .background(coverColor),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                if (coverDrawableRes != 0) {
-                    Image(
-                        painter = painterResource(coverDrawableRes),
+                if (coverDrawableRes != null) {
+                    androidx.compose.foundation.Image(
+                        painter = androidx.compose.ui.res.painterResource(id = coverDrawableRes),
                         contentDescription = title,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
+                        contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                        modifier = Modifier.fillMaxWidth().fillMaxHeight()
                     )
                 } else {
+                    // Book title placeholder
                     Text(
                         text = title.take(24),
                         fontFamily = BookerlyFontFamily,
                         fontWeight = FontWeight.Bold,
                         color = OpusTextPrimary.copy(alpha = 0.9f),
                         fontSize = 10.sp,
-                        maxLines = 2,
+                        maxLines = 3,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .align(Alignment.Center)
@@ -154,7 +151,7 @@ fun OpusListRow(
                 if (metaInfo != null || progressPercent > 0) {
                     Spacer(modifier = Modifier.height(3.dp))
                     val displayMeta = when {
-                        metaInfo != null && progressPercent > 0 -> "$metaInfo · $progressPercent%"
+                        metaInfo != null && progressPercent > 0 -> "$progressPercent%  $metaInfo"
                         metaInfo != null -> metaInfo
                         else -> "$progressPercent%"
                     }

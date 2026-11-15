@@ -26,102 +26,88 @@ val AmazonEmberFontFamily = FontFamily(
     Font(R.font.amazon_ember_medium, FontWeight.Bold)
 )
 
-private val defaultPlatformStyle = PlatformTextStyle(includeFontPadding = false)
+val NoPaddingPlatformStyle = PlatformTextStyle(includeFontPadding = false)
 
 val OpusTypography = Typography(
-    // Screen title headline (Bookerly Bold serif)
     headlineLarge = TextStyle(
         fontFamily = BookerlyFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 22.sp,
-        lineHeight = 28.sp,
+        lineHeight = 26.sp,
         letterSpacing = 0.sp,
-        color = OpusTextPrimary,
-        platformStyle = defaultPlatformStyle
+        platformStyle = NoPaddingPlatformStyle
     ),
     headlineMedium = TextStyle(
         fontFamily = BookerlyFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 20.sp,
-        lineHeight = 26.sp,
+        lineHeight = 24.sp,
         letterSpacing = 0.sp,
-        color = OpusTextPrimary,
-        platformStyle = defaultPlatformStyle
+        platformStyle = NoPaddingPlatformStyle
     ),
     titleLarge = TextStyle(
         fontFamily = BookerlyFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 18.sp,
-        lineHeight = 24.sp,
+        lineHeight = 22.sp,
         letterSpacing = 0.sp,
-        color = OpusTextPrimary,
-        platformStyle = defaultPlatformStyle
+        platformStyle = NoPaddingPlatformStyle
     ),
-    // UI Titles & Row Headers (Amazon Ember Medium)
     titleMedium = TextStyle(
         fontFamily = AmazonEmberFontFamily,
         fontWeight = FontWeight.Medium,
-        fontSize = 16.sp,
-        lineHeight = 22.sp,
+        fontSize = 14.sp,
+        lineHeight = 18.sp,
         letterSpacing = 0.sp,
-        color = OpusTextPrimary,
-        platformStyle = defaultPlatformStyle
+        platformStyle = NoPaddingPlatformStyle
     ),
     titleSmall = TextStyle(
         fontFamily = AmazonEmberFontFamily,
         fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
+        fontSize = 13.5.sp,
+        lineHeight = 17.sp,
         letterSpacing = 0.sp,
-        color = OpusTextPrimary,
-        platformStyle = defaultPlatformStyle
+        platformStyle = NoPaddingPlatformStyle
     ),
-    // Body text (Amazon Ember Regular)
     bodyLarge = TextStyle(
-        fontFamily = AmazonEmberFontFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 15.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.sp,
-        color = OpusTextPrimary,
-        platformStyle = defaultPlatformStyle
-    ),
-    bodyMedium = TextStyle(
         fontFamily = AmazonEmberFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         lineHeight = 18.sp,
         letterSpacing = 0.sp,
-        color = OpusTextSecondary,
-        platformStyle = defaultPlatformStyle
+        platformStyle = NoPaddingPlatformStyle
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = AmazonEmberFontFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 13.sp,
+        lineHeight = 17.sp,
+        letterSpacing = 0.sp,
+        platformStyle = NoPaddingPlatformStyle
     ),
     bodySmall = TextStyle(
         fontFamily = AmazonEmberFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
-        lineHeight = 16.sp,
+        lineHeight = 15.sp,
         letterSpacing = 0.sp,
-        color = OpusTextTertiary,
-        platformStyle = defaultPlatformStyle
+        platformStyle = NoPaddingPlatformStyle
     ),
-    // Labels & Buttons (Amazon Ember Medium)
     labelLarge = TextStyle(
         fontFamily = AmazonEmberFontFamily,
         fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 18.sp,
+        fontSize = 13.5.sp,
+        lineHeight = 17.sp,
         letterSpacing = 0.sp,
-        color = OpusTextPrimary,
-        platformStyle = defaultPlatformStyle
+        platformStyle = NoPaddingPlatformStyle
     ),
     labelMedium = TextStyle(
         fontFamily = AmazonEmberFontFamily,
         fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
+        fontSize = 12.5.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.sp,
-        color = OpusTextSecondary,
-        platformStyle = defaultPlatformStyle
+        platformStyle = NoPaddingPlatformStyle
     ),
     labelSmall = TextStyle(
         fontFamily = AmazonEmberFontFamily,
@@ -129,7 +115,6 @@ val OpusTypography = Typography(
         fontSize = 11.sp,
         lineHeight = 14.sp,
         letterSpacing = 0.sp,
-        color = OpusTextTertiary,
-        platformStyle = defaultPlatformStyle
+        platformStyle = NoPaddingPlatformStyle
     )
 )

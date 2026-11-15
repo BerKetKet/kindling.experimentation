@@ -6,8 +6,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,6 +18,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -26,19 +32,32 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.opusreader.R
 import app.opusreader.ui.theme.AmazonEmberFontFamily
+import app.opusreader.ui.theme.HighlightAqua
+import app.opusreader.ui.theme.HighlightBlue
+import app.opusreader.ui.theme.HighlightDefault
+import app.opusreader.ui.theme.HighlightGray
+import app.opusreader.ui.theme.HighlightGreen
+import app.opusreader.ui.theme.HighlightOrange
+import app.opusreader.ui.theme.HighlightPurple
+import app.opusreader.ui.theme.HighlightRed
+import app.opusreader.ui.theme.HighlightYellow
+import app.opusreader.ui.theme.NoPaddingPlatformStyle
+import app.opusreader.ui.theme.OpusDivider
 import app.opusreader.ui.theme.OpusReaderTheme
+import app.opusreader.ui.theme.OpusScrim
+import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.refPx
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AnnotationsFilterSheet(
     initialTypes: Set<String> = setOf("Highlight", "Bookmark"),
@@ -50,200 +69,223 @@ fun AnnotationsFilterSheet(
     var selectedTypes by remember { mutableStateOf(initialTypes) }
     var selectedColors by remember { mutableStateOf(initialColors) }
 
-    val typeRows = listOf(
-        listOf("Favorite" to 0, "Note" to 0, "Highlight" to 1),
-        listOf("Underline" to 0, "Outline" to 0, "Bookmark" to 1)
+    val types = listOf(
+        "Favorite" to 0,
+        "Note" to 0,
+        "Highlight" to 1,
+        "Underline" to 0,
+        "Outline" to 0,
+        "Bookmark" to 1
     )
 
-    val colorRows = listOf(
-        listOf(Triple("Default", 0, Color.White), Triple("Gray", 0, Color(0xFF8E9194)), Triple("Red", 0, Color(0xFFFF5252))),
-        listOf(Triple("Orange", 0, Color(0xFFFF9800)), Triple("Yellow", 1, Color(0xFFFFD87C)), Triple("Green", 0, Color(0xFF4CAF50))),
-        listOf(Triple("Aqua", 0, Color(0xFF00E5FF)), Triple("Blue", 1, Color(0xFF5EAFFF)), Triple("Purple", 0, Color(0xFF7C4DFF))),
-        listOf(Triple("Pink", 0, Color(0xFFFF4081)))
+    val colors = listOf(
+        Triple("Default", HighlightDefault, 0),
+        Triple("Gray", HighlightGray, 0),
+        Triple("Red", HighlightRed, 0),
+        Triple("Orange", HighlightOrange, 0),
+        Triple("Yellow", HighlightYellow, 1),
+        Triple("Green", HighlightGreen, 0),
+        Triple("Aqua", HighlightAqua, 0),
+        Triple("Blue", HighlightBlue, 1),
+        Triple("Purple", HighlightPurple, 0)
     )
 
-    Column(
+    Box(
         modifier = modifier
-            .fillMaxWidth()
-            .height(1218.refPx)
-            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-            .background(Color(0xFF101112))
+            .fillMaxSize()
+            .background(OpusScrim)
+            .clickable(onClick = { onApply(selectedTypes, selectedColors) }),
+        contentAlignment = Alignment.BottomCenter
     ) {
-        // Header (y=1122..1310, h=190px)
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(190.refPx)
+                .clickable(enabled = false) {}
         ) {
-            Text(
-                text = "Filter",
-                color = Color.White,
-                fontFamily = AmazonEmberFontFamily,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = (89 / 2.625).dp)
-            )
-
-            IconButton(
-                onClick = onCloseClick,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = (79 / 2.625).dp, end = (53 / 2.625).dp)
-                    .size(24.dp)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_bds_close),
-                    contentDescription = "Close",
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
-            // Divider 1 (y=1310..1312, h=2px)
-            Box(
+            // Sheet container: y=[1190, 2276], h=1087 px, surface #101112
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height((2 / 2.625).dp)
-                    .background(Color(0xFF2B2C2D))
-                    .align(Alignment.BottomCenter)
-            )
-        }
-
-        Spacer(modifier = Modifier.height((44 / 2.625).dp))
-
-        // Type section title (y=1366..1405)
-        Text(
-            text = "Type",
-            color = Color.White,
-            fontFamily = AmazonEmberFontFamily,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
-            modifier = Modifier.padding(start = (42 / 2.625).dp)
-        )
-
-        Spacer(modifier = Modifier.height((32 / 2.625).dp))
-
-        // Type rows
-        typeRows.forEachIndexed { index, rowItems ->
-            if (index > 0) Spacer(modifier = Modifier.height((27 / 2.625).dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = (42 / 2.625).dp),
-                horizontalArrangement = Arrangement.spacedBy((21 / 2.625).dp)
+                    .height(1087.refPx)
+                    .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
+                    .background(Color(0xFF101112))
+                    .clipToBounds()
             ) {
-                rowItems.forEach { (type, count) ->
-                    val isSelected = selectedTypes.contains(type)
-                    Box(
-                        modifier = Modifier
-                            .height((104 / 2.625).dp)
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(if (isSelected) Color(0xFF141414) else Color(0xFF28292A))
-                            .then(
-                                if (isSelected) Modifier.border(width = 1.5.dp, color = Color(0xFFC5C6C7), shape = RoundedCornerShape(6.dp))
-                                else Modifier
-                            )
-                            .clickable {
-                                selectedTypes = if (isSelected) selectedTypes - type else selectedTypes + type
-                                onApply(selectedTypes, selectedColors)
-                            }
-                            .padding(horizontal = (48 / 2.625).dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "$type ($count)",
-                            color = if (isSelected) Color.White else Color(0xFFC5C6C7),
+                // Header row: centered "Filter" + right Close 'X' at y=[1212, 1253]
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.refPx)
+                        .padding(horizontal = 42.refPx),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Filter",
+                        style = TextStyle(
                             fontFamily = AmazonEmberFontFamily,
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Normal,
-                            style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
+                            color = OpusTextPrimary,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            platformStyle = NoPaddingPlatformStyle
+                        ),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    IconButton(
+                        onClick = { onApply(selectedTypes, selectedColors) },
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .size(48.refPx)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Close",
+                            tint = OpusTextPrimary,
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 }
-            }
-        }
 
-        Spacer(modifier = Modifier.height((53 / 2.625).dp))
+                // Divider 1 at y=[1310, 1312]
+                HorizontalDivider(color = OpusDivider, thickness = 3.refPx)
 
-        // Divider 2 (y=1725..1727, h=2px)
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height((2 / 2.625).dp)
-                .background(Color(0xFF2B2C2D))
-        )
+                // "Type" section header at y=[1366, 1405]
+                Spacer(modifier = Modifier.height(54.refPx))
+                Text(
+                    text = "Type",
+                    style = TextStyle(
+                        fontFamily = AmazonEmberFontFamily,
+                        color = OpusTextPrimary,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        platformStyle = NoPaddingPlatformStyle
+                    ),
+                    modifier = Modifier.padding(horizontal = 42.refPx)
+                )
+                Spacer(modifier = Modifier.height(32.refPx))
 
-        Spacer(modifier = Modifier.height((42 / 2.625).dp))
-
-        // Color section title (y=1779..1811)
-        Text(
-            text = "Color",
-            color = Color.White,
-            fontFamily = AmazonEmberFontFamily,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
-            modifier = Modifier.padding(start = (44 / 2.625).dp)
-        )
-
-        Spacer(modifier = Modifier.height((32 / 2.625).dp))
-
-        // Color rows
-        colorRows.forEachIndexed { index, rowItems ->
-            if (index > 0) Spacer(modifier = Modifier.height((27 / 2.625).dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = (42 / 2.625).dp),
-                horizontalArrangement = Arrangement.spacedBy((21 / 2.625).dp)
-            ) {
-                rowItems.forEach { (colorName, count, dotColor) ->
-                    val isSelected = selectedColors.contains(colorName.uppercase())
-                    Box(
-                        modifier = Modifier
-                            .height((104 / 2.625).dp)
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(if (isSelected) Color(0xFF141414) else Color(0xFF28292A))
-                            .then(
-                                if (isSelected) Modifier.border(width = 1.5.dp, color = Color(0xFFC5C6C7), shape = RoundedCornerShape(6.dp))
-                                else Modifier
+                // Type chips: Row 1 y=[1437, 1541] (105px), Row 2 y=[1568, 1672] (105px), vertical gap 26px
+                FlowRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 42.refPx),
+                    horizontalArrangement = Arrangement.spacedBy(26.refPx),
+                    verticalArrangement = Arrangement.spacedBy(26.refPx)
+                ) {
+                    types.forEach { (type, count) ->
+                        val isSelected = selectedTypes.contains(type)
+                        val shape = RoundedCornerShape(4.dp)
+                        Box(
+                            modifier = Modifier
+                                .height(105.refPx)
+                                .clip(shape)
+                                .background(Color(0xFF28292A))
+                                .border(
+                                    width = if (isSelected) 3.refPx else 2.refPx,
+                                    color = if (isSelected) OpusTextPrimary else Color(0xFF8E9194),
+                                    shape = shape
+                                )
+                                .clickable {
+                                    selectedTypes = if (isSelected) selectedTypes - type else selectedTypes + type
+                                }
+                                .padding(horizontal = 36.refPx),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "$type ($count)",
+                                style = TextStyle(
+                                    fontFamily = AmazonEmberFontFamily,
+                                    color = OpusTextPrimary,
+                                    fontSize = 12.5.sp,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                    platformStyle = NoPaddingPlatformStyle
+                                )
                             )
-                            .clickable {
-                                selectedColors = if (isSelected) selectedColors - colorName.uppercase() else selectedColors + colorName.uppercase()
-                                onApply(selectedTypes, selectedColors)
-                            }
-                            .padding(horizontal = (48 / 2.625).dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+                        }
+                    }
+                }
+
+                // Divider 2 at y=[1725, 1727] (53 px gap)
+                Spacer(modifier = Modifier.height(53.refPx))
+                HorizontalDivider(color = OpusDivider, thickness = 3.refPx)
+
+                // "Color" section header at y=[1779, 1811]
+                Spacer(modifier = Modifier.height(52.refPx))
+                Text(
+                    text = "Color",
+                    style = TextStyle(
+                        fontFamily = AmazonEmberFontFamily,
+                        color = OpusTextPrimary,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        platformStyle = NoPaddingPlatformStyle
+                    ),
+                    modifier = Modifier.padding(horizontal = 44.refPx)
+                )
+                Spacer(modifier = Modifier.height(41.refPx))
+
+                // Color chips: rows at y=1852, 1983, 2114, 2245 (105px height, 26px gap)
+                FlowRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 42.refPx),
+                    horizontalArrangement = Arrangement.spacedBy(26.refPx),
+                    verticalArrangement = Arrangement.spacedBy(26.refPx)
+                ) {
+                    colors.forEach { (name, color, count) ->
+                        val isSelected = selectedColors.contains(name.uppercase())
+                        val shape = RoundedCornerShape(4.dp)
+                        Row(
+                            modifier = Modifier
+                                .height(105.refPx)
+                                .clip(shape)
+                                .background(Color(0xFF28292A))
+                                .border(
+                                    width = if (isSelected) 3.refPx else 2.refPx,
+                                    color = if (isSelected) OpusTextPrimary else Color(0xFF8E9194),
+                                    shape = shape
+                                )
+                                .clickable {
+                                    val upper = name.uppercase()
+                                    selectedColors = if (isSelected) selectedColors - upper else selectedColors + upper
+                                }
+                                .padding(horizontal = 32.refPx),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             Box(
                                 modifier = Modifier
-                                    .size((36 / 2.625).dp)
+                                    .size(36.refPx)
                                     .clip(CircleShape)
-                                    .background(dotColor)
+                                    .background(color)
                             )
-                            Spacer(modifier = Modifier.width((33 / 2.625).dp))
+                            Spacer(modifier = Modifier.width(20.refPx))
                             Text(
-                                text = "$colorName ($count)",
-                                color = if (isSelected) Color.White else Color(0xFFC5C6C7),
-                                fontFamily = AmazonEmberFontFamily,
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Normal,
-                                style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
+                                text = "$name ($count)",
+                                style = TextStyle(
+                                    fontFamily = AmazonEmberFontFamily,
+                                    color = OpusTextPrimary,
+                                    fontSize = 12.5.sp,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                    platformStyle = NoPaddingPlatformStyle
+                                )
                             )
                         }
                     }
                 }
             }
+
+            // Bottom gesture bar area: y=[2277, 2339] (63 px)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(63.refPx)
+                    .background(Color(0xFF101112))
+            )
         }
     }
 }
 
-@Preview(name = "14 Annotations Filter Sheet Preview", showBackground = true, backgroundColor = 0xFF000000)
+@Preview(name = "14 Annotations Filter Preview", showBackground = true, backgroundColor = 0xFF101112)
 @Composable
 fun AnnotationsFilterSheetPreview() {
     OpusReaderTheme {

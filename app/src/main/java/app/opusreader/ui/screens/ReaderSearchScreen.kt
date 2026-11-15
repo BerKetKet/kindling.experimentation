@@ -11,12 +11,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,18 +34,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.opusreader.R
 import app.opusreader.engine.FakeReaderEngine
 import app.opusreader.engine.ReaderEngine
 import app.opusreader.engine.ReaderSearchResult
+import app.opusreader.ui.theme.AmazonEmberFontFamily
+import app.opusreader.ui.theme.NoPaddingPlatformStyle
+import app.opusreader.ui.theme.OpusDivider
 import app.opusreader.ui.theme.OpusReaderTheme
+import app.opusreader.ui.theme.OpusSpacing
+import app.opusreader.ui.theme.OpusTextPrimary
+import app.opusreader.ui.theme.OpusTextSecondary
+import app.opusreader.ui.theme.OpusTextTertiary
+import app.opusreader.ui.theme.isOpusDarkTheme
 import app.opusreader.ui.theme.refPx
 
 @Composable
@@ -51,6 +63,9 @@ fun ReaderSearchScreen(
 ) {
     var query by remember { mutableStateOf("") }
     var results by remember { mutableStateOf<List<ReaderSearchResult>>(emptyList()) }
+    val isDark = isOpusDarkTheme
+    val topSurface = if (isDark) Color(0xFF141414) else Color.White
+    val bodySurface = if (isDark) Color(0xFF333333) else Color(0xFFF5F5F5)
 
     LaunchedEffect(query) {
         results = if (query.isNotBlank()) {
@@ -63,101 +78,118 @@ fun ReaderSearchScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color(0xFF333333))
+            .background(bodySurface)
     ) {
-        // Top Bar: y=0..253 (height 254 px, background #141414)
+        // Top header block: y=[0, 253] (254 px total height including status bar)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(254.refPx)
-                .background(Color(0xFF141414))
+                .background(topSurface)
+                .statusBarsPadding()
         ) {
-            // Status bar space (y=0..90)
-            Spacer(modifier = Modifier.height(90.refPx))
-
+            Spacer(modifier = Modifier.height(44.refPx))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(164.refPx),
+                    .height(64.refPx)
+                    .padding(horizontal = 36.refPx),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Back button (width 132 px, center cx=66 px)
-                Box(
-                    modifier = Modifier
-                        .width(132.refPx)
-                        .height(164.refPx)
-                        .clickable(onClick = onBackClick),
-                    contentAlignment = Alignment.Center
-                ) {
+                IconButton(onClick = onBackClick, modifier = Modifier.size(56.refPx)) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_reader_back),
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back to Reader",
-                        tint = Color(0xFFBDBDBD),
-                        modifier = Modifier.size(24.dp)
+                        tint = OpusTextPrimary,
+                        modifier = Modifier.size(28.dp)
                     )
                 }
-
-                // Search field / Title
-                BasicTextField(
-                    value = query,
-                    onValueChange = { query = it },
-                    textStyle = TextStyle(
-                        color = Color(0xFFEEEEEE),
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Normal
-                    ),
-                    cursorBrush = SolidColor(Color(0xFF29ABE2)),
-                    singleLine = true,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(end = 40.refPx),
-                    decorationBox = { innerTextField ->
-                        if (query.isEmpty()) {
-                            Text(
-                                text = "SEARCH",
-                                color = Color(0xFFEEEEEE),
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Normal,
-                                letterSpacing = 0.5.sp
-                            )
-                        }
-                        innerTextField()
-                    }
+                Spacer(modifier = Modifier.width(16.refPx))
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = null,
+                    tint = OpusTextSecondary,
+                    modifier = Modifier.size(20.dp)
                 )
+                Spacer(modifier = Modifier.width(24.refPx))
+                Box(
+                    modifier = Modifier.weight(1f),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    if (query.isEmpty()) {
+                        Text(
+                            text = "Search",
+                            style = TextStyle(
+                                fontFamily = AmazonEmberFontFamily,
+                                color = OpusTextSecondary,
+                                fontSize = 15.sp,
+                                platformStyle = NoPaddingPlatformStyle
+                            )
+                        )
+                    }
+                    BasicTextField(
+                        value = query,
+                        onValueChange = { query = it },
+                        singleLine = true,
+                        textStyle = TextStyle(
+                            fontFamily = AmazonEmberFontFamily,
+                            color = OpusTextPrimary,
+                            fontSize = 15.sp,
+                            platformStyle = NoPaddingPlatformStyle
+                        ),
+                        cursorBrush = SolidColor(OpusTextPrimary),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                if (query.isNotEmpty()) {
+                    IconButton(onClick = { query = "" }) {
+                        Icon(
+                            imageVector = Icons.Default.Clear,
+                            contentDescription = "Clear search",
+                            tint = OpusTextSecondary
+                        )
+                    }
+                }
             }
         }
 
         if (query.isBlank()) {
-            // Empty State matching 12_reader-search.png
-            Spacer(modifier = Modifier.height(110.refPx))
-            Text(
-                text = "Find words and phrases in this book",
-                color = Color(0xFFC2C2C2),
-                fontSize = 15.5.sp,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(2.refPx))
-            Text(
-                text = "or in your entire library",
-                color = Color(0xFFC2C2C2),
-                fontSize = 15.5.sp,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-        } else if (results.isEmpty()) {
+            // Prompt text: line 1 at y=[375, 411], line 2 at y=[430, 466] (121 px below top bar 254)
+            Spacer(modifier = Modifier.height(121.refPx))
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
-                contentAlignment = Alignment.Center
+                    .fillMaxWidth()
+                    .padding(horizontal = 180.refPx),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                Text(
+                    text = "Find exactly what you're looking for in your book and notes.",
+                    style = TextStyle(
+                        fontFamily = AmazonEmberFontFamily,
+                        color = Color(0xFFC2C2C2),
+                        fontSize = 14.sp,
+                        lineHeight = 21.sp,
+                        platformStyle = NoPaddingPlatformStyle
+                    ),
+                    textAlign = TextAlign.Center
+                )
+            }
+        } else if (results.isEmpty()) {
+            Spacer(modifier = Modifier.height(121.refPx))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 120.refPx),
+                contentAlignment = Alignment.TopCenter
             ) {
                 Text(
                     text = "No results found for \"$query\"",
-                    color = Color(0xFFC2C2C2),
-                    fontSize = 15.sp,
+                    style = TextStyle(
+                        fontFamily = AmazonEmberFontFamily,
+                        color = OpusTextSecondary,
+                        fontSize = 14.sp,
+                        platformStyle = NoPaddingPlatformStyle
+                    ),
                     textAlign = TextAlign.Center
                 )
             }
@@ -167,29 +199,29 @@ fun ReaderSearchScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { onResultClick(res) }
-                            .padding(horizontal = 24.dp, vertical = 14.dp)
+                            .clickable {
+                                engine.jumpToLocation(res.location)
+                                onResultClick(res)
+                            }
+                            .padding(horizontal = OpusSpacing.standard, vertical = OpusSpacing.medium)
                     ) {
                         Text(
-                            text = res.chapterTitle,
-                            color = Color(0xFFA6A6A6),
-                            fontSize = 12.sp
+                            text = "Location ${res.location} · ${res.chapterTitle}",
+                            fontFamily = AmazonEmberFontFamily,
+                            color = OpusTextTertiary,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = res.previewText,
-                            color = Color(0xFFEEEEEE),
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Normal
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = "Location ${res.location}",
-                            color = Color(0xFF888888),
-                            fontSize = 11.sp
+                            fontFamily = AmazonEmberFontFamily,
+                            color = OpusTextPrimary,
+                            fontSize = 14.sp,
+                            lineHeight = 20.sp
                         )
                     }
-                    HorizontalDivider(color = Color(0xFF404040), thickness = 1.refPx)
+                    HorizontalDivider(color = OpusDivider.copy(alpha = 0.5f), thickness = 0.5.dp)
                 }
             }
         }

@@ -50,7 +50,7 @@ data class ReaderSettings(
     val updatePageWithSystemTheme: Boolean = true,
     val continuousScrolling: Boolean = false,
     val orientationLock: Boolean = false,
-    val brightness: Float = 0.71f,
+    val brightness: Float = 0.8f,
     val autoBrightness: Boolean = true,
     val assistiveReaderEnabled: Boolean = false,
     val readingProgressDisplay: String = "LOCATION_PERCENT", // LOCATION_PERCENT, TIME_IN_CHAPTER, TIME_IN_BOOK, OFF
@@ -60,6 +60,8 @@ data class ReaderSettings(
 )
 
 interface ReaderEngine {
+    val bookTitle: StateFlow<String>
+    val bookAuthor: StateFlow<String>
     val currentLocation: StateFlow<ReaderLocation>
     val currentText: StateFlow<String>
     val isBookmarked: StateFlow<Boolean>
@@ -67,6 +69,7 @@ interface ReaderEngine {
     val tableOfContents: StateFlow<List<TocItem>>
     val annotations: StateFlow<List<AnnotationItem>>
 
+    fun openBook(title: String, author: String = "Steven Erikson")
     fun nextPage(): Boolean
     fun prevPage(): Boolean
     fun jumpToLocation(location: Int)

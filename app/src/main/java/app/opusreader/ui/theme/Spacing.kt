@@ -13,31 +13,29 @@ object OpusSpacing {
     val xlarge: Dp = 24.dp
     val xxlarge: Dp = 32.dp
 
-    // Measured component dimensions (1080x2340 @ 2.625 density)
     val statusBandHeight: Dp = 58.refPx
     val titleBandHeight: Dp = 52.refPx
     val topBarHeight: Dp = 56.dp
-    val bottomNavHeight: Dp = 166.refPx // 63.24 dp (y: 2111-2277)
-    val bottomNavDividerHeight: Dp = 3.refPx // 1.14 dp
-    val searchBarHeight: Dp = 105.refPx // 40.0 dp (y: 254-358)
-    val searchBarRadius: Dp = 52.5.refPx // 20.0 dp
-    val searchBarMarginHorizontal: Dp = 42.refPx // 16.0 dp
-    val screenMarginHorizontal: Dp = 44.refPx // 16.8 dp
+    val bottomNavHeight: Dp = 60.dp
+    val bottomNavDividerHeight: Dp = 1.dp
+    val searchBarHeight: Dp = 40.dp
+    val searchBarRadius: Dp = 20.dp
+    val searchBarMarginHorizontal: Dp = 16.dp
+    val screenMarginHorizontal: Dp = 16.dp
     val minTouchTarget: Dp = 48.dp
 
-    // Cover dimensions
-    val gridCoverWidth: Dp = 279.refPx // 106.3 dp
-    val gridCoverHeight: Dp = 427.refPx // 162.7 dp
-    val gridRowPitch: Dp = 474.refPx // 180.6 dp
-    val gridRowGap: Dp = 47.refPx // 17.9 dp
-    val gridSideMargin: Dp = 75.refPx // 28.6 dp
+    // Uniform cover dimensions (never truncated by row index)
+    val gridCoverWidth: Dp = 106.dp
+    val gridCoverHeight: Dp = 162.dp
+    val gridRowPitch: Dp = 180.dp
+    val gridRowGap: Dp = 18.dp
+    val gridSideMargin: Dp = 28.dp
 
-    val listCoverWidth: Dp = 168.refPx // 64.0 dp
-    val listCoverHeight: Dp = 253.refPx // 96.4 dp
-    val listRowPitch: Dp = 318.refPx // 121.1 dp
-    val listDividerHeight: Dp = 3.refPx // 1.14 dp
+    val listCoverWidth: Dp = 64.dp
+    val listCoverHeight: Dp = 96.dp
+    val listRowPitch: Dp = 121.dp
+    val listDividerHeight: Dp = 1.dp
 
-    val floatingCoverWidth: Dp = 124.refPx // 47.2 dp (x: 73-197)
-    val floatingCoverHeight: Dp = 209.refPx // 79.6 dp (y: 2033-2242)
-    val floatingCoverFloatOffset: Dp = 98.refPx // 37.3 dp from bottom of screen
+    val floatingCoverWidth: Dp = 58.dp
+    val floatingCoverHeight: Dp = 88.dp
 }

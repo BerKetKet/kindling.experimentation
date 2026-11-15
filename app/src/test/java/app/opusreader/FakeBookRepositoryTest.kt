@@ -22,7 +22,7 @@ class FakeBookRepositoryTest {
     @Test
     fun testInitialBooksLoaded() {
         val books = repository.allBooks.value
-        assertEquals(12, books.size)
+        assertEquals(10, books.size)
     }
 
     @Test

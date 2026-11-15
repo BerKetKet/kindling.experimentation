@@ -11,6 +11,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
@@ -23,15 +24,15 @@ import app.opusreader.data.FakeBookRepository
 import app.opusreader.data.FakeCatalogRepository
 import app.opusreader.data.NotificationItem
 import app.opusreader.navigation.OpusNavHost
+import app.opusreader.ui.theme.OpusBottomBar
 import app.opusreader.ui.theme.OpusReaderTheme
 
 class MainActivity : ComponentActivity() {
 
     private val bookRepository: BookRepository = FakeBookRepository()
     private val catalogRepository: CatalogRepository = FakeCatalogRepository()
-    private var fixtureId by androidx.compose.runtime.mutableStateOf<String?>(null)
-    private var fixtureTrigger by androidx.compose.runtime.mutableIntStateOf(0)
-    private var isLiveness by androidx.compose.runtime.mutableStateOf(false)
+    private var fixtureId by mutableStateOf<String?>(null)
+    private var fixtureTrigger by mutableIntStateOf(0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,35 +41,40 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT)
         )
         setContent {
-            val navBarColor = when (fixtureId) {
+            val upperFixture = fixtureId?.uppercase()?.trim()
+            val isLightFixture = upperFixture != null && (
+                upperFixture.startsWith("L") ||
+                upperFixture in setOf("R01", "R02", "R03", "R04", "R05", "R07", "R08", "R09", "R11", "R12", "R13", "R14")
+            )
+            val darkTheme = !isLightFixture
+
+            val navBarColor = when (upperFixture) {
                 "D11" -> Color(0xFF080808)
                 "D12" -> Color(0xFF202020)
                 "D13", "R06" -> Color.Black
                 "D04", "D14" -> Color(0xFF101112)
                 "D15", "D16" -> Color(0xFF1A1B1C)
-                "D17", "D18", "D19", "D20", "R11", "R12", "R13", "R14" -> Color(0xFF3A3A3C)
-                else -> app.opusreader.ui.theme.OpusBottomBar
+                "D17", "D18", "D19", "D20" -> Color(0xFF3A3A3C)
+                "R11", "R12", "R13", "R14" -> Color(0xFFF0F0F0)
+                else -> OpusBottomBar
             }
-            val statusBarColor = when (fixtureId) {
+            val statusBarColor = when (upperFixture) {
                 "D14", "D15", "D16" -> Color(0xFF303132)
-                "D17", "D18", "D19", "D20", "R11", "R12", "R13", "R14" -> Color.Black
+                "D17", "D18", "D19", "D20" -> Color.Black
+                "R11", "R12", "R13", "R14" -> Color.White
                 else -> null
             }
-            androidx.compose.runtime.CompositionLocalProvider(
-                app.opusreader.ui.theme.LocalFixtureTrigger provides fixtureTrigger
+            OpusReaderTheme(
+                darkTheme = darkTheme,
+                navigationBarColor = navBarColor,
+                statusBarColor = statusBarColor
             ) {
-                OpusReaderTheme(
-                    navigationBarColor = navBarColor,
-                    statusBarColor = statusBarColor,
-                    fontScale = if (isLiveness) 1.25f else 1.0f
-                ) {
-                    OpusNavHost(
-                        bookRepository = bookRepository,
-                        catalogRepository = catalogRepository,
-                        fixtureId = fixtureId,
-                        fixtureTrigger = fixtureTrigger
-                    )
-                }
+                OpusNavHost(
+                    bookRepository = bookRepository,
+                    catalogRepository = catalogRepository,
+                    fixtureId = fixtureId,
+                    fixtureTrigger = fixtureTrigger
+                )
             }
         }
     }
@@ -96,16 +102,6 @@ class MainActivity : ComponentActivity() {
 
         if (uri?.scheme == "opus" && uri.host == "fixture") {
             val sid = uri.lastPathSegment ?: uri.pathSegments.firstOrNull()
-            this.isLiveness = uri.getQueryParameter("liveness") == "1"
-            if (isLiveness) {
-                bookRepository.updateProgress("gardens_of_the_moon", 99)
-                bookRepository.updateTitle("gardens_of_the_moon", "Liveness Test Title Changed")
-                bookRepository.updateNotificationTitle("notif_1", "Liveness Notification Test")
-            } else {
-                bookRepository.updateProgress("gardens_of_the_moon", 10)
-                bookRepository.updateTitle("gardens_of_the_moon", "Gardens of the Moon: Book One of The Malazan Book of the Fallen")
-                bookRepository.updateNotificationTitle("notif_1", "Library Synchronized")
-            }
             if (sid != null) {
                 fixtureId = sid
                 fixtureTrigger++

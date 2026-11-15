@@ -16,14 +16,11 @@ interface BookRepository {
     fun setFilter(filter: LibraryFilterState)
     fun setSortOrder(sortOrder: LibrarySortOrder)
     fun setViewMode(viewMode: LibraryViewMode)
-    fun setCollections(collections: List<CollectionItem>)
     fun createCollection(name: String): CollectionItem
     fun deleteCollection(id: String)
     fun toggleBookInCollection(bookId: String, collectionId: String)
     fun toggleDownload(bookId: String)
     fun updateProgress(bookId: String, progress: Int)
-    fun updateTitle(bookId: String, newTitle: String)
-    fun updateNotificationTitle(id: String, newTitle: String)
     fun addBook(book: Book)
     fun addNotification(notification: NotificationItem)
     fun deleteNotification(id: String)
@@ -32,7 +29,7 @@ interface BookRepository {
 
 class FakeBookRepository(
     initialBooks: List<Book> = SampleBooks.sampleList,
-    initialCollections: List<CollectionItem> = emptyList(),
+    initialCollections: List<CollectionItem> = SampleBooks.sampleCollections,
     initialNotifications: List<NotificationItem> = SampleBooks.sampleNotifications
 ) : BookRepository {
 
@@ -50,10 +47,6 @@ class FakeBookRepository(
 
     private val _collections = MutableStateFlow(initialCollections)
     override val collections: StateFlow<List<CollectionItem>> = _collections.asStateFlow()
-
-    override fun setCollections(collections: List<CollectionItem>) {
-        _collections.value = collections
-    }
 
     private val _notifications = MutableStateFlow(initialNotifications)
     override val notifications: StateFlow<List<NotificationItem>> = _notifications.asStateFlow()
@@ -121,19 +114,6 @@ class FakeBookRepository(
         refreshFilteredBooks()
     }
 
-    override fun updateTitle(bookId: String, newTitle: String) {
-        _allBooks.value = _allBooks.value.map {
-            if (it.id == bookId) it.copy(title = newTitle) else it
-        }
-        refreshFilteredBooks()
-    }
-
-    override fun updateNotificationTitle(id: String, newTitle: String) {
-        _notifications.value = _notifications.value.map {
-            if (it.id == id) it.copy(title = newTitle) else it
-        }
-    }
-
     override fun addBook(book: Book) {
         if (_allBooks.value.none { it.id == book.id }) {
             _allBooks.value = listOf(book) + _allBooks.value
@@ -166,18 +146,18 @@ class FakeBookRepository(
         filter: LibraryFilterState,
         sort: LibrarySortOrder
     ): List<Book> {
-        val hasReadFilter = filter.showRead || filter.showUnread
-        val hasTypeFilter = filter.showBooks || filter.showSamples || filter.showDocs
-
         return books
             .filter { book ->
-                val readMatch = if (!hasReadFilter) true else (if (book.isRead) filter.showRead else filter.showUnread)
-                val typeMatch = if (!hasTypeFilter) true else when (book.contentType) {
+                val downloadMatch = !filter.showDownloaded || book.isDownloaded
+                val anyReadFilter = filter.showRead || filter.showUnread
+                val readMatch = !anyReadFilter || (if (book.isRead) filter.showRead else filter.showUnread)
+                val anyTypeFilter = filter.showBooks || filter.showSamples || filter.showDocs
+                val typeMatch = !anyTypeFilter || when (book.contentType) {
                     ContentType.BOOK -> filter.showBooks
                     ContentType.SAMPLE -> filter.showSamples
                     ContentType.DOC -> filter.showDocs
                 }
-                readMatch && typeMatch
+                downloadMatch && readMatch && typeMatch
             }
             .let { list ->
                 when (sort) {

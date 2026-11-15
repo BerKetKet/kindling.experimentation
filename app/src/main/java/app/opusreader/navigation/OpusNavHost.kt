@@ -1,11 +1,9 @@
 package app.opusreader.navigation
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -18,10 +16,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -62,8 +57,6 @@ import app.opusreader.ui.screens.SettingsScreen
 import app.opusreader.ui.screens.SortDirection
 import app.opusreader.ui.screens.ViewSortState
 import app.opusreader.ui.theme.OpusBackground
-import app.opusreader.ui.theme.OpusSpacing
-import app.opusreader.ui.theme.refPx
 
 @Composable
 fun OpusNavHost(
@@ -106,13 +99,6 @@ fun OpusNavHost(
         NavRoutes.MORE
     )
 
-    val showFloatingCover = currentRoute in listOf(
-        NavRoutes.HOME,
-        NavRoutes.LIBRARY_LIST,
-        NavRoutes.COLLECTIONS,
-        NavRoutes.MORE
-    )
-
     val currentTab = when (currentRoute) {
         NavRoutes.HOME -> MainTab.HOME
         NavRoutes.MORE -> MainTab.MORE
@@ -127,38 +113,36 @@ fun OpusNavHost(
     val collections by bookRepository.collections.collectAsState()
     val notifications by bookRepository.notifications.collectAsState()
 
-    val currentBook = allBooks.firstOrNull { it.id == "frankenstein_shelley" } ?: allBooks.first()
+    val currentBook = allBooks.firstOrNull { it.id == "complete_works_kafka" } ?: allBooks.first()
 
-    // Annotation filter and sort states
-    var annotationFilterTypes by remember { mutableStateOf(setOf("Highlight", "Bookmark")) }
-    var annotationFilterColors by remember { mutableStateOf(setOf("YELLOW", "BLUE")) }
+    var groupBySeries by remember { mutableStateOf(false) }
+    var annotationFilterTypes by remember { mutableStateOf(emptySet<String>()) }
+    var annotationFilterColors by remember { mutableStateOf(emptySet<String>()) }
     var annotationSortField by remember { mutableStateOf(AnnotationSortField.LOCATION) }
     var annotationSortDirection by remember { mutableStateOf(SortDirection.ASCENDING) }
 
-    val isFullScreen = currentRoute in listOf(
-        NavRoutes.READER,
-        NavRoutes.CONTENTS,
-        NavRoutes.READER_SEARCH,
-        NavRoutes.ANNOTATIONS,
-        NavRoutes.ANNOTATIONS_FILTER,
-        NavRoutes.ANNOTATIONS_SORT,
-        NavRoutes.ANNOTATIONS_SHARE,
-        NavRoutes.DISPLAY_FONT,
-        NavRoutes.DISPLAY_LAYOUT,
-        NavRoutes.DISPLAY_THEMES,
-        NavRoutes.DISPLAY_MORE
-    )
+    val readerChromeInitiallyVisible = remember(fixtureId) {
+        fixtureId !in listOf("R02", "R03", "R04", "R05", "R06")
+    }
 
     Box(modifier = modifier.fillMaxSize()) {
         Scaffold(
-            containerColor = if (fixtureId in listOf("D13", "D14", "D15", "D16", "R06")) Color.Black else OpusBackground,
+            containerColor = OpusBackground,
             bottomBar = {
                 if (isMainTab) {
                     OpusBottomNavBar(
                         selectedTab = currentTab,
                         onTabSelected = { tab ->
-                            if (tab.route != currentRoute) {
-                                navController.navigate(tab.route) {
+                            val targetRoute = when (tab) {
+                                MainTab.LIBRARY -> when (viewMode) {
+                                    LibraryViewMode.LIST -> NavRoutes.LIBRARY_LIST
+                                    LibraryViewMode.COLLECTIONS -> NavRoutes.COLLECTIONS
+                                    LibraryViewMode.GRID -> NavRoutes.LIBRARY_GRID
+                                }
+                                else -> tab.route
+                            }
+                            if (targetRoute != currentRoute) {
+                                navController.navigate(targetRoute) {
                                     popUpTo(NavRoutes.LIBRARY_GRID) {
                                         saveState = true
                                     }
@@ -174,20 +158,16 @@ fun OpusNavHost(
             NavHost(
                 navController = navController,
                 startDestination = NavRoutes.LIBRARY_GRID,
-                modifier = if (isFullScreen) {
-                    Modifier.fillMaxSize()
-                } else {
-                    Modifier.padding(
-                        top = innerPadding.calculateTopPadding(),
-                        bottom = if (isMainTab) innerPadding.calculateBottomPadding() else 0.dp
-                    )
-                }
+                modifier = Modifier.padding(innerPadding)
             ) {
                 // 01 Library Grid
                 composable(NavRoutes.LIBRARY_GRID) {
                     LibraryGridScreen(
                         books = filteredBooks,
-                        onBookClick = { navController.navigate(NavRoutes.READER) },
+                        onBookClick = { book ->
+                            readerEngine.openBook(book.title, book.author)
+                            navController.navigate(NavRoutes.READER)
+                        },
                         onFilterClick = { navController.navigate(NavRoutes.LIBRARY_FILTER) },
                         onSortClick = { navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) }
                     )
@@ -199,7 +179,10 @@ fun OpusNavHost(
                         books = allBooks,
                         catalogRepository = catalogRepository,
                         bookRepository = bookRepository,
-                        onBookClick = { navController.navigate(NavRoutes.READER) },
+                        onBookClick = { book ->
+                            readerEngine.openBook(book.title, book.author)
+                            navController.navigate(NavRoutes.READER)
+                        },
                         onSeeAllLibraryClick = { navController.navigate(NavRoutes.LIBRARY_GRID) },
                         onNotificationsClick = { navController.navigate(NavRoutes.NOTIFICATIONS) }
                     )
@@ -208,7 +191,8 @@ fun OpusNavHost(
                 // 03 More
                 composable(NavRoutes.MORE) {
                     MoreScreen(
-                        onSettingsClick = { navController.navigate(NavRoutes.SETTINGS) }
+                        onSettingsClick = { navController.navigate(NavRoutes.SETTINGS) },
+                        onNotebooksClick = { navController.navigate(NavRoutes.ANNOTATIONS) }
                     )
                 }
 
@@ -231,24 +215,10 @@ fun OpusNavHost(
                     )
                 }
 
-                // 05 Library Filter Sheet
+                // 05 Library Filter Sheet (rendered over live Library screen)
                 composable(NavRoutes.LIBRARY_FILTER) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color(0xFF080808))
-                    ) {
-                        LibraryGridScreen(
-                            books = filteredBooks,
-                            onBookClick = { navController.navigate(NavRoutes.READER) },
-                            onFilterClick = { navController.navigate(NavRoutes.LIBRARY_FILTER) },
-                            onSortClick = { navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) }
-                        )
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.Black.copy(alpha = 0.6f))
-                        )
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        LibraryListScreen(books = filteredBooks)
                         LibraryFilterSheet(
                             initialState = filterState,
                             allBooks = allBooks,
@@ -256,37 +226,24 @@ fun OpusNavHost(
                             onApplyFilter = { newFilter ->
                                 bookRepository.setFilter(newFilter)
                                 navController.popBackStack()
-                            },
-                            modifier = Modifier.align(Alignment.BottomCenter)
+                            }
                         )
                     }
                 }
 
-                // 06 Library View & Sort Sheet
+                // 06 Library View & Sort Sheet (rendered over live Library screen)
                 composable(NavRoutes.LIBRARY_VIEW_SORT) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color(0xFF080808))
-                    ) {
-                        LibraryGridScreen(
-                            books = filteredBooks,
-                            onBookClick = { navController.navigate(NavRoutes.READER) },
-                            onFilterClick = { navController.navigate(NavRoutes.LIBRARY_FILTER) },
-                            onSortClick = { navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) }
-                        )
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.Black.copy(alpha = 0.6f))
-                        )
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        LibraryListScreen(books = filteredBooks)
                         LibraryViewSortSheet(
                             initialState = ViewSortState(
+                                groupBySeries = groupBySeries,
                                 viewMode = viewMode,
                                 sortOrder = sortOrder
                             ),
                             onCloseClick = { navController.popBackStack() },
                             onApplyViewSort = { viewSortState ->
+                                groupBySeries = viewSortState.groupBySeries
                                 bookRepository.setSortOrder(viewSortState.sortOrder)
                                 bookRepository.setViewMode(viewSortState.viewMode)
                                 navController.popBackStack()
@@ -295,8 +252,7 @@ fun OpusNavHost(
                                     LibraryViewMode.LIST -> navController.navigate(NavRoutes.LIBRARY_LIST)
                                     LibraryViewMode.COLLECTIONS -> navController.navigate(NavRoutes.COLLECTIONS)
                                 }
-                            },
-                            modifier = Modifier.align(Alignment.BottomCenter)
+                            }
                         )
                     }
                 }
@@ -305,9 +261,13 @@ fun OpusNavHost(
                 composable(NavRoutes.LIBRARY_LIST) {
                     LibraryListScreen(
                         books = filteredBooks,
-                        onBookClick = { navController.navigate(NavRoutes.READER) },
+                        onBookClick = { book ->
+                            readerEngine.openBook(book.title, book.author)
+                            navController.navigate(NavRoutes.READER)
+                        },
                         onFilterClick = { navController.navigate(NavRoutes.LIBRARY_FILTER) },
-                        onSortClick = { navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) }
+                        onSortClick = { navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) },
+                        onDownloadClick = { book -> bookRepository.toggleDownload(book.id) }
                     )
                 }
 
@@ -317,7 +277,8 @@ fun OpusNavHost(
                         collections = collections,
                         onBackClick = { navController.popBackStack() },
                         onCreateCollection = { bookRepository.createCollection(it) },
-                        onCollectionClick = { /* Open collection */ }
+                        onSortClick = { navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) },
+                        onCollectionClick = { navController.navigate(NavRoutes.LIBRARY_GRID) }
                     )
                 }
 
@@ -335,6 +296,7 @@ fun OpusNavHost(
                 composable(NavRoutes.READER) {
                     ReaderScreen(
                         engine = readerEngine,
+                        initialChromeVisible = readerChromeInitiallyVisible,
                         onBackClick = { navController.popBackStack() },
                         onContentsClick = { navController.navigate(NavRoutes.CONTENTS) },
                         onSearchClick = { navController.navigate(NavRoutes.READER_SEARCH) },
@@ -376,27 +338,10 @@ fun OpusNavHost(
                     )
                 }
 
-                // 14 Annotations Filter Sheet
+                // 14 Annotations Filter Sheet (rendered over live Annotations screen)
                 composable(NavRoutes.ANNOTATIONS_FILTER) {
                     Box(modifier = Modifier.fillMaxSize()) {
-                        AnnotationsScreen(
-                            engine = readerEngine,
-                            filterTypes = annotationFilterTypes,
-                            filterColors = annotationFilterColors,
-                            sortField = annotationSortField,
-                            sortDirection = annotationSortDirection,
-                            onBackClick = { navController.popBackStack() },
-                            onFilterClick = {},
-                            onSortClick = {},
-                            onExportClick = {},
-                            onItemClick = {}
-                        )
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color(0xFF444648).copy(alpha = 0.60f))
-                                .clickable { navController.popBackStack() }
-                        )
+                        AnnotationsScreen(engine = readerEngine)
                         AnnotationsFilterSheet(
                             initialTypes = annotationFilterTypes,
                             initialColors = annotationFilterColors,
@@ -405,33 +350,15 @@ fun OpusNavHost(
                                 annotationFilterTypes = types
                                 annotationFilterColors = colors
                                 navController.popBackStack()
-                            },
-                            modifier = Modifier.align(Alignment.BottomCenter)
+                            }
                         )
                     }
                 }
 
-                // 15 Annotations Sort Sheet
+                // 15 Annotations Sort Sheet (rendered over live Annotations screen)
                 composable(NavRoutes.ANNOTATIONS_SORT) {
                     Box(modifier = Modifier.fillMaxSize()) {
-                        AnnotationsScreen(
-                            engine = readerEngine,
-                            filterTypes = annotationFilterTypes,
-                            filterColors = annotationFilterColors,
-                            sortField = annotationSortField,
-                            sortDirection = annotationSortDirection,
-                            onBackClick = { navController.popBackStack() },
-                            onFilterClick = {},
-                            onSortClick = {},
-                            onExportClick = {},
-                            onItemClick = {}
-                        )
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color(0xFF444648).copy(alpha = 0.60f))
-                                .clickable { navController.popBackStack() }
-                        )
+                        AnnotationsScreen(engine = readerEngine)
                         AnnotationsSortSheet(
                             initialField = annotationSortField,
                             initialDirection = annotationSortDirection,
@@ -440,119 +367,103 @@ fun OpusNavHost(
                                 annotationSortField = field
                                 annotationSortDirection = direction
                                 navController.popBackStack()
-                            },
-                            modifier = Modifier.align(Alignment.BottomCenter)
+                            }
                         )
                     }
                 }
 
-                // 16 Annotations Share Sheet
+                // 16 Annotations Share Sheet (rendered over live Annotations screen)
                 composable(NavRoutes.ANNOTATIONS_SHARE) {
                     Box(modifier = Modifier.fillMaxSize()) {
-                        AnnotationsScreen(
-                            engine = readerEngine,
-                            filterTypes = emptySet(),
-                            filterColors = emptySet(),
-                            sortField = annotationSortField,
-                            sortDirection = annotationSortDirection,
-                            onBackClick = { navController.popBackStack() },
-                            onFilterClick = {},
-                            onSortClick = {},
-                            onExportClick = {},
-                            onItemClick = {}
-                        )
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color(0xFF444648).copy(alpha = 0.60f))
-                                .clickable { navController.popBackStack() }
-                        )
+                        AnnotationsScreen(engine = readerEngine)
                         AnnotationsShareSheet(
-                            bookTitle = currentBook.title,
-                            onCloseClick = { navController.popBackStack() },
-                            modifier = Modifier.align(Alignment.BottomCenter)
+                            onCloseClick = { navController.popBackStack() }
                         )
                     }
                 }
 
-                // 17 Display Settings: Font
+                // 17-20 Display Settings (Aa) Sheet
                 composable(NavRoutes.DISPLAY_FONT) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Black)
-                    ) {
+                    val isLightSheet = fixtureId?.uppercase()?.startsWith("R1") == true
+                    Box(modifier = Modifier.fillMaxSize().background(if (isLightSheet) androidx.compose.ui.graphics.Color.White else androidx.compose.ui.graphics.Color.Black)) {
+                        ReaderScreen(engine = readerEngine, initialChromeVisible = false)
                         DisplaySettingsSheet(
                             engine = readerEngine,
                             initialTab = 0,
-                            onDismiss = { navController.popBackStack() },
-                            modifier = Modifier.align(Alignment.BottomCenter)
+                            collapsedSheet = true,
+                            onDismiss = { navController.popBackStack() }
                         )
                     }
                 }
 
-                // 18 Display Settings: Layout
                 composable(NavRoutes.DISPLAY_LAYOUT) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Black)
-                    ) {
+                    val isLightSheet = fixtureId?.uppercase()?.startsWith("R1") == true
+                    Box(modifier = Modifier.fillMaxSize().background(if (isLightSheet) androidx.compose.ui.graphics.Color.White else androidx.compose.ui.graphics.Color.Black)) {
+                        if (!isLightSheet && fixtureId != null) {
+                            Box(modifier = Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Color.Black))
+                        } else {
+                            ReaderScreen(engine = readerEngine, initialChromeVisible = false)
+                        }
                         DisplaySettingsSheet(
                             engine = readerEngine,
                             initialTab = 1,
-                            onDismiss = { navController.popBackStack() },
-                            modifier = Modifier.align(Alignment.BottomCenter)
+                            collapsedSheet = isLightSheet,
+                            onDismiss = { navController.popBackStack() }
                         )
                     }
                 }
 
-                // 19 Display Settings: Themes
                 composable(NavRoutes.DISPLAY_THEMES) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Black)
-                    ) {
+                    val isLightSheet = fixtureId?.uppercase()?.startsWith("R1") == true
+                    Box(modifier = Modifier.fillMaxSize().background(if (isLightSheet) androidx.compose.ui.graphics.Color.White else androidx.compose.ui.graphics.Color.Black)) {
+                        if (!isLightSheet && fixtureId != null) {
+                            Box(modifier = Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Color.Black))
+                        } else {
+                            ReaderScreen(engine = readerEngine, initialChromeVisible = false)
+                        }
                         DisplaySettingsSheet(
                             engine = readerEngine,
                             initialTab = 2,
-                            onDismiss = { navController.popBackStack() },
-                            modifier = Modifier.align(Alignment.BottomCenter)
+                            collapsedSheet = isLightSheet,
+                            onDismiss = { navController.popBackStack() }
                         )
                     }
                 }
 
-                // 20 Display Settings: More
                 composable(NavRoutes.DISPLAY_MORE) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Black)
-                    ) {
+                    val isLightSheet = fixtureId?.uppercase()?.startsWith("R1") == true
+                    Box(modifier = Modifier.fillMaxSize().background(if (isLightSheet) androidx.compose.ui.graphics.Color.White else androidx.compose.ui.graphics.Color.Black)) {
+                        if (!isLightSheet && fixtureId != null) {
+                            Box(modifier = Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Color.Black))
+                        } else {
+                            ReaderScreen(engine = readerEngine, initialChromeVisible = false)
+                        }
                         DisplaySettingsSheet(
                             engine = readerEngine,
                             initialTab = 3,
-                            onDismiss = { navController.popBackStack() },
-                            modifier = Modifier.align(Alignment.BottomCenter)
+                            collapsedSheet = isLightSheet,
+                            onDismiss = { navController.popBackStack() }
                         )
                     }
                 }
             }
         }
 
-        // Floating resume cover pinned at bottom left over the bottom navigation bar
-        if (showFloatingCover) {
+        // Persistent Floating Resume Cover (uniform across all main tabs)
+        if (isMainTab) {
             FloatingResumeCover(
                 title = currentBook.title,
                 author = currentBook.author,
                 progressPercent = currentBook.progressPercent,
-                coverDrawableRes = currentBook.coverDrawableRes,
-                height = OpusSpacing.floatingCoverHeight,
-                onClick = { navController.navigate(NavRoutes.READER) },
+                coverDrawableRes = currentBook.coverDrawableRes ?: R.drawable.cover_book_0,
+                onClick = {
+                    readerEngine.openBook(currentBook.title, currentBook.author)
+                    navController.navigate(NavRoutes.READER)
+                },
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(start = 73.refPx, bottom = OpusSpacing.floatingCoverFloatOffset)
+                    .navigationBarsPadding()
+                    .padding(start = 16.dp, bottom = 8.dp)
             )
         }
     }
@@ -568,51 +479,32 @@ private fun handleFixtureDeepLink(
     when (upperId) {
         "D01", "L01" -> {
             bookRepository.setViewMode(LibraryViewMode.GRID)
-            navController.navigate(NavRoutes.LIBRARY_GRID) {
-                popUpTo(0) { inclusive = true }
-            }
+            navController.navigate(NavRoutes.LIBRARY_GRID) { popUpTo(0) { inclusive = true } }
         }
         "D02", "L02" -> {
-            navController.navigate(NavRoutes.HOME) {
-                popUpTo(0) { inclusive = true }
-            }
+            navController.navigate(NavRoutes.HOME) { popUpTo(0) { inclusive = true } }
         }
         "D03", "L03" -> {
-            navController.navigate(NavRoutes.MORE) {
-                popUpTo(0) { inclusive = true }
-            }
+            navController.navigate(NavRoutes.MORE) { popUpTo(0) { inclusive = true } }
         }
         "D04", "L04" -> {
-            navController.navigate(NavRoutes.SETTINGS) {
-                popUpTo(0) { inclusive = true }
-            }
+            navController.navigate(NavRoutes.SETTINGS) { popUpTo(0) { inclusive = true } }
         }
         "D05", "L05" -> {
-            navController.navigate(NavRoutes.LIBRARY_FILTER) {
-                popUpTo(0) { inclusive = true }
-            }
+            navController.navigate(NavRoutes.LIBRARY_FILTER) { popUpTo(0) { inclusive = true } }
         }
         "D06", "L06" -> {
-            navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) {
-                popUpTo(0) { inclusive = true }
-            }
+            navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) { popUpTo(0) { inclusive = true } }
         }
         "D07", "L07" -> {
             bookRepository.setViewMode(LibraryViewMode.LIST)
-            navController.navigate(NavRoutes.LIBRARY_LIST) {
-                popUpTo(0) { inclusive = true }
-            }
+            navController.navigate(NavRoutes.LIBRARY_LIST) { popUpTo(0) { inclusive = true } }
         }
         "D08", "L08" -> {
-            bookRepository.setCollections(emptyList())
-            navController.navigate(NavRoutes.COLLECTIONS) {
-                popUpTo(0) { inclusive = true }
-            }
+            navController.navigate(NavRoutes.COLLECTIONS) { popUpTo(0) { inclusive = true } }
         }
         "D09", "L09" -> {
-            navController.navigate(NavRoutes.NOTIFICATIONS) {
-                popUpTo(0) { inclusive = true }
-            }
+            navController.navigate(NavRoutes.NOTIFICATIONS) { popUpTo(0) { inclusive = true } }
         }
         "D10", "R01", "R02", "R03", "R04", "R05", "R06", "R07", "R08", "R09", "R10" -> {
             val themeColor = when (upperId) {
@@ -622,69 +514,41 @@ private fun handleFixtureDeepLink(
                 else -> "BLACK"
             }
             readerEngine.updateSettings { it.copy(pageColor = themeColor) }
-            navController.navigate(NavRoutes.READER) {
-                popUpTo(0) { inclusive = true }
-            }
+            navController.navigate(NavRoutes.READER) { popUpTo(0) { inclusive = true } }
         }
         "D11" -> {
-            navController.navigate(NavRoutes.CONTENTS) {
-                popUpTo(0) { inclusive = true }
-            }
+            navController.navigate(NavRoutes.CONTENTS) { popUpTo(0) { inclusive = true } }
         }
         "D12" -> {
-            navController.navigate(NavRoutes.READER_SEARCH) {
-                popUpTo(0) { inclusive = true }
-            }
+            navController.navigate(NavRoutes.READER_SEARCH) { popUpTo(0) { inclusive = true } }
         }
         "D13" -> {
-            navController.navigate(NavRoutes.ANNOTATIONS) {
-                popUpTo(0) { inclusive = true }
-            }
+            navController.navigate(NavRoutes.ANNOTATIONS) { popUpTo(0) { inclusive = true } }
         }
         "D14" -> {
-            navController.navigate(NavRoutes.ANNOTATIONS_FILTER) {
-                popUpTo(0) { inclusive = true }
-            }
+            navController.navigate(NavRoutes.ANNOTATIONS_FILTER) { popUpTo(0) { inclusive = true } }
         }
         "D15" -> {
-            navController.navigate(NavRoutes.ANNOTATIONS_SORT) {
-                popUpTo(0) { inclusive = true }
-            }
+            navController.navigate(NavRoutes.ANNOTATIONS_SORT) { popUpTo(0) { inclusive = true } }
         }
         "D16" -> {
-            navController.navigate(NavRoutes.ANNOTATIONS_SHARE) {
-                popUpTo(0) { inclusive = true }
-            }
+            navController.navigate(NavRoutes.ANNOTATIONS_SHARE) { popUpTo(0) { inclusive = true } }
         }
         "D17", "R11" -> {
-            navController.navigate(NavRoutes.DISPLAY_FONT) {
-                popUpTo(0) { inclusive = true }
-            }
+            readerEngine.updateSettings { it.copy(pageColor = if (upperId == "R11") "WHITE" else "BLACK") }
+            navController.navigate(NavRoutes.DISPLAY_FONT) { popUpTo(0) { inclusive = true } }
         }
         "D18", "R12" -> {
-            readerEngine.updateSettings {
-                it.copy(
-                    updatePageWithSystemTheme = false,
-                    pageColor = "BLACK",
-                    marginPreset = 1,
-                    isJustified = true,
-                    continuousScrolling = false,
-                    orientationLock = false
-                )
-            }
-            navController.navigate(NavRoutes.DISPLAY_LAYOUT) {
-                popUpTo(0) { inclusive = true }
-            }
+            readerEngine.updateSettings { it.copy(pageColor = if (upperId == "R12") "WHITE" else "BLACK") }
+            navController.navigate(NavRoutes.DISPLAY_LAYOUT) { popUpTo(0) { inclusive = true } }
         }
         "D19", "R13" -> {
-            navController.navigate(NavRoutes.DISPLAY_THEMES) {
-                popUpTo(0) { inclusive = true }
-            }
+            readerEngine.updateSettings { it.copy(pageColor = if (upperId == "R13") "WHITE" else "BLACK") }
+            navController.navigate(NavRoutes.DISPLAY_THEMES) { popUpTo(0) { inclusive = true } }
         }
         "D20", "R14" -> {
-            navController.navigate(NavRoutes.DISPLAY_MORE) {
-                popUpTo(0) { inclusive = true }
-            }
+            readerEngine.updateSettings { it.copy(pageColor = if (upperId == "R14") "WHITE" else "BLACK") }
+            navController.navigate(NavRoutes.DISPLAY_MORE) { popUpTo(0) { inclusive = true } }
         }
     }
 }

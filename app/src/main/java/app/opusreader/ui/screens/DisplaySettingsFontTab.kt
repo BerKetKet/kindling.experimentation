@@ -1,9 +1,7 @@
 package app.opusreader.ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -11,36 +9,35 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.opusreader.engine.FakeReaderEngine
 import app.opusreader.engine.ReaderEngine
 import app.opusreader.ui.theme.AmazonEmberFontFamily
 import app.opusreader.ui.theme.BookerlyFontFamily
+import app.opusreader.ui.theme.NoPaddingPlatformStyle
+import app.opusreader.ui.theme.OpusAccentBlue
 import app.opusreader.ui.theme.OpusReaderTheme
-
-data class FontOption(val name: String, val fontFamily: FontFamily)
+import app.opusreader.ui.theme.OpusSheetActionBlue
+import app.opusreader.ui.theme.OpusTextPrimary
+import app.opusreader.ui.theme.OpusTextSecondary
+import app.opusreader.ui.theme.isOpusDarkTheme
+import app.opusreader.ui.theme.refPx
 
 @Composable
 fun DisplaySettingsFontTab(
@@ -48,99 +45,87 @@ fun DisplaySettingsFontTab(
     modifier: Modifier = Modifier
 ) {
     val settings by engine.settings.collectAsState()
-    val availableFonts = listOf(
-        FontOption("Bookerly", BookerlyFontFamily),
-        FontOption("Caecilia", FontFamily.Serif),
-        FontOption("Droid Serif", FontFamily.Serif),
-        FontOption("Georgia", FontFamily.Serif),
-        FontOption("Amazon Ember", AmazonEmberFontFamily),
-        FontOption("Baskerville", FontFamily.Serif),
-        FontOption("Palatino", FontFamily.Serif)
-    )
+    val availableFonts = listOf("Bookerly", "Caecilia", "Droid Serif", "Georgia", "Amazon Ember")
+    val isDark = isOpusDarkTheme
+    val dividerColor = if (isDark) Color(0xFF8E8E93) else Color(0xFF222222)
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(top = (19 / 2.625).dp)
+        modifier = modifier.fillMaxWidth()
     ) {
-        // Font Carousel (y=1460..1618)
+        // Gap from tab divider (y=1410) to Aa glyphs top (y=1460): 50 px
+        Spacer(modifier = Modifier.height(50.refPx))
+
         LazyRow(
-            contentPadding = PaddingValues(horizontal = 21.dp),
-            horizontalArrangement = Arrangement.spacedBy(15.dp)
+            contentPadding = PaddingValues(horizontal = 72.refPx),
+            horizontalArrangement = Arrangement.spacedBy(84.refPx)
         ) {
-            items(availableFonts) { fontOpt ->
-                val isSelected = settings.fontFamily == fontOpt.name
+            items(availableFonts) { font ->
+                val isSelected = settings.fontFamily == font
+                val itemColor = if (isSelected) OpusSheetActionBlue else OpusTextPrimary
+                val previewFamily = when (font) {
+                    "Bookerly" -> BookerlyFontFamily
+                    "Caecilia", "Droid Serif", "Georgia" -> FontFamily.Serif
+                    else -> AmazonEmberFontFamily
+                }
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .width(94.dp)
-                        .clickable { engine.updateSettings { it.copy(fontFamily = fontOpt.name) } }
+                    modifier = Modifier.clickable { engine.updateSettings { it.copy(fontFamily = font) } }
                 ) {
-                    // Guidance text "Aa"
-                    Box(
-                        contentAlignment = Alignment.TopCenter,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height((80 / 2.625).dp)
-                    ) {
-                        Text(
-                            text = "Aa",
-                            color = if (isSelected) Color(0xFFA3D7F5) else Color.White,
-                            fontFamily = fontOpt.fontFamily,
-                            fontSize = 42.sp,
-                            fontWeight = FontWeight.Normal,
-                            style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height((29 / 2.625).dp))
-
-                    // Font Name
+                    // Aa glyph band: y=[1460, 1547], h=88 px
                     Text(
-                        text = fontOpt.name,
-                        color = if (isSelected) Color(0xFFA3D7F5) else Color.White,
-                        fontFamily = AmazonEmberFontFamily,
-                        fontSize = 14.sp,
-                        lineHeight = 18.sp,
-                        fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-                        textAlign = TextAlign.Center,
-                        maxLines = 2,
-                        minLines = 2,
-                        modifier = Modifier.height((37 / 2.625).dp),
-                        style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
+                        text = "Aa",
+                        style = TextStyle(
+                            fontFamily = previewFamily,
+                            color = itemColor,
+                            fontSize = 27.sp,
+                            fontWeight = FontWeight.Normal,
+                            platformStyle = NoPaddingPlatformStyle
+                        )
+                    )
+                    // Gap from Aa bottom (1547) to font name top (1582): 35 px
+                    Spacer(modifier = Modifier.height(35.refPx))
+                    // Font label band: y=[1582, 1618], h=37 px
+                    Text(
+                        text = font,
+                        style = TextStyle(
+                            fontFamily = AmazonEmberFontFamily,
+                            color = itemColor,
+                            fontSize = 12.5.sp,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                            platformStyle = NoPaddingPlatformStyle
+                        )
                     )
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height((80 / 2.625).dp))
-
-        // Divider 1 (y=1691..1692)
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 21.dp)
-                .height((2 / 2.625).dp)
-                .background(Color(0xFF48484A))
+        // Gap from font label bottom (1618) to divider 1 (y=1691): 73 px
+        Spacer(modifier = Modifier.height(73.refPx))
+        HorizontalDivider(
+            color = dividerColor,
+            thickness = 2.refPx,
+            modifier = Modifier.padding(horizontal = 55.refPx)
         )
 
-        Spacer(modifier = Modifier.height((56 / 2.625).dp))
+        // Gap from divider 1 (1692) to size slider row top (1749): 57 px
+        Spacer(modifier = Modifier.height(57.refPx))
 
-        // Font Size Slider (y=1749..1828)
+        // Size slider row: y=[1749, 1828], h=80 px
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height((80 / 2.625).dp)
-                .padding(horizontal = 21.dp),
+                .height(80.refPx)
+                .padding(horizontal = 86.refPx),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = "A",
-                color = Color(0xFF8E8E93),
-                fontFamily = AmazonEmberFontFamily,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
+                style = TextStyle(
+                    fontFamily = AmazonEmberFontFamily,
+                    color = OpusTextPrimary,
+                    fontSize = 14.sp,
+                    platformStyle = NoPaddingPlatformStyle
+                )
             )
 
             Slider(
@@ -148,64 +133,72 @@ fun DisplaySettingsFontTab(
                 onValueChange = { newSize ->
                     engine.updateSettings { it.copy(fontSize = newSize.toInt()) }
                 },
-                valueRange = 1f..14f,
-                steps = 12,
+                valueRange = 12f..32f,
                 colors = SliderDefaults.colors(
-                    thumbColor = Color(0xFF2491FF),
-                    activeTrackColor = Color(0xFF2491FF),
-                    inactiveTrackColor = Color(0xFF5D5D61)
+                    thumbColor = OpusAccentBlue,
+                    activeTrackColor = OpusAccentBlue,
+                    inactiveTrackColor = Color(0xFF6E7073)
                 ),
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 42.refPx)
             )
 
             Text(
                 text = "A",
-                color = Color(0xFF8E8E93),
-                fontFamily = AmazonEmberFontFamily,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
+                style = TextStyle(
+                    fontFamily = AmazonEmberFontFamily,
+                    color = OpusTextPrimary,
+                    fontSize = 24.sp,
+                    platformStyle = NoPaddingPlatformStyle
+                )
             )
         }
 
-        Spacer(modifier = Modifier.height((83 / 2.625).dp))
-
-        // Divider 2 (y=1912..1913)
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 21.dp)
-                .height((2 / 2.625).dp)
-                .background(Color(0xFF48484A))
+        // Gap from slider bottom (1828) to divider 2 (y=1912): 84 px
+        Spacer(modifier = Modifier.height(84.refPx))
+        HorizontalDivider(
+            color = dividerColor,
+            thickness = 2.refPx,
+            modifier = Modifier.padding(horizontal = 55.refPx)
         )
 
-        Spacer(modifier = Modifier.height((39 / 2.625).dp))
+        // Gap from divider 2 (1913) to Spacing title top (1963): 50 px
+        Spacer(modifier = Modifier.height(50.refPx))
 
-        // Spacing disclosure row (y=1963..2059)
+        // Spacing row: title y=[1963, 2002], subtitle y=[2025, 2059]
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 21.dp)
-                .clickable { }
+                .clickable {
+                    val nextSpacing = when {
+                        settings.lineSpacingMultiplier < 1.25f -> 1.35f
+                        settings.lineSpacingMultiplier < 1.45f -> 1.6f
+                        else -> 1.15f
+                    }
+                    engine.updateSettings { it.copy(lineSpacingMultiplier = nextSpacing) }
+                }
+                .padding(horizontal = 56.refPx)
         ) {
             Text(
                 text = "Spacing",
-                color = Color.White,
-                fontFamily = AmazonEmberFontFamily,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
+                style = TextStyle(
+                    fontFamily = AmazonEmberFontFamily,
+                    color = OpusTextPrimary,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    platformStyle = NoPaddingPlatformStyle
+                )
             )
-            Spacer(modifier = Modifier.height((15 / 2.625).dp))
+            Spacer(modifier = Modifier.height(23.refPx))
             Text(
                 text = "Adjust text spacing of the page.",
-                color = Color(0xFFA8ABAD),
-                fontFamily = AmazonEmberFontFamily,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Normal,
-                style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
+                style = TextStyle(
+                    fontFamily = AmazonEmberFontFamily,
+                    color = OpusTextSecondary,
+                    fontSize = 12.5.sp,
+                    platformStyle = NoPaddingPlatformStyle
+                )
             )
         }
     }

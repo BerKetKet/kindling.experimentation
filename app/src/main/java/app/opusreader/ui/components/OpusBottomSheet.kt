@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,6 +36,7 @@ import app.opusreader.ui.theme.OpusBorder
 import app.opusreader.ui.theme.OpusDragHandle
 import app.opusreader.ui.theme.OpusReaderTheme
 import app.opusreader.ui.theme.OpusScrim
+import app.opusreader.ui.theme.OpusSheetActionBlue
 import app.opusreader.ui.theme.OpusSpacing
 import app.opusreader.ui.theme.OpusSurface
 import app.opusreader.ui.theme.OpusTextPrimary
@@ -43,114 +45,139 @@ import app.opusreader.ui.theme.refPx
 
 @Composable
 fun OpusBottomSheetHeader(
-    title: String,
+    title: String?,
     modifier: Modifier = Modifier,
+    centerTitle: Boolean = false,
     doneButtonText: String? = "DONE",
     onDoneClick: (() -> Unit)? = null,
     onCloseClick: (() -> Unit)? = null,
-    showDragHandle: Boolean = false
+    showDragHandle: Boolean = true
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         if (showDragHandle) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 4.dp),
+                    .padding(top = 18.refPx, bottom = 10.refPx),
                 contentAlignment = Alignment.Center
             ) {
                 Box(
                     modifier = Modifier
-                        .size(width = 36.dp, height = 4.dp)
+                        .size(width = 63.refPx, height = 11.refPx)
                         .clip(RoundedCornerShape(percent = 50))
                         .background(OpusDragHandle)
                 )
             }
         }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = OpusSpacing.screenMarginHorizontal, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = title,
-                fontFamily = BookerlyFontFamily,
-                fontWeight = FontWeight.Bold,
-                color = OpusTextPrimary,
-                fontSize = 18.sp,
-                modifier = Modifier.weight(1f)
-            )
-
-            if (doneButtonText != null && onDoneClick != null) {
-                TextButton(
-                    onClick = onDoneClick,
-                    modifier = Modifier.height(OpusSpacing.minTouchTarget)
-                ) {
+        if (title != null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(140.refPx)
+                    .padding(horizontal = 44.refPx),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                if (centerTitle) {
                     Text(
-                        text = doneButtonText,
+                        text = title,
                         fontFamily = AmazonEmberFontFamily,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFFA3D7F5),
-                        fontSize = 14.sp
+                        color = OpusTextPrimary,
+                        fontSize = 15.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
-            } else if (onCloseClick != null) {
-                IconButton(
-                    onClick = onCloseClick,
-                    modifier = Modifier.size(OpusSpacing.minTouchTarget)
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Close",
-                        tint = OpusTextSecondary
-                    )
+                    if (!centerTitle) {
+                        Text(
+                            text = title,
+                            fontFamily = BookerlyFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            color = OpusTextPrimary,
+                            fontSize = 17.sp,
+                            modifier = Modifier.weight(1f)
+                        )
+                    } else {
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+
+                    if (doneButtonText != null && onDoneClick != null) {
+                        Text(
+                            text = doneButtonText,
+                            fontFamily = AmazonEmberFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            color = OpusSheetActionBlue,
+                            fontSize = 13.5.sp,
+                            modifier = Modifier
+                                .clickable(onClick = onDoneClick)
+                                .padding(vertical = 6.dp, horizontal = 4.dp)
+                        )
+                    } else if (onCloseClick != null) {
+                        IconButton(
+                            onClick = onCloseClick,
+                            modifier = Modifier.size(36.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Close",
+                                tint = OpusTextPrimary,
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
+                    }
                 }
             }
+            HorizontalDivider(color = OpusBorder, thickness = 3.refPx)
         }
-        HorizontalDivider(color = OpusBorder, thickness = 3.refPx)
     }
 }
 
 @Composable
 fun OpusBottomSheetContainer(
-    title: String,
+    title: String?,
     modifier: Modifier = Modifier,
+    centerTitle: Boolean = false,
     doneButtonText: String? = "DONE",
     onDoneClick: (() -> Unit)? = null,
     onCloseClick: (() -> Unit)? = null,
-    showDragHandle: Boolean = false,
+    showDragHandle: Boolean = true,
+    surfaceColor: Color = OpusSurface,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    val shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+    val shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
     Column(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape)
-            .background(OpusSurface)
+            .background(surfaceColor)
     ) {
         OpusBottomSheetHeader(
             title = title,
+            centerTitle = centerTitle,
             doneButtonText = doneButtonText,
             onDoneClick = onDoneClick,
             onCloseClick = onCloseClick,
             showDragHandle = showDragHandle
         )
         content()
-        Spacer(modifier = Modifier.height(OpusSpacing.large))
     }
 }
 
-/**
- * Modal bottom sheet overlay with scrim and bottom-anchored container.
- */
 @Composable
 fun OpusModalBottomSheet(
-    title: String,
+    title: String?,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
+    centerTitle: Boolean = false,
     doneButtonText: String? = "DONE",
     showDragHandle: Boolean = false,
+    surfaceColor: Color = OpusSurface,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Box(
@@ -163,11 +190,13 @@ fun OpusModalBottomSheet(
         Box(modifier = Modifier.clickable(enabled = false) {}) {
             OpusBottomSheetContainer(
                 title = title,
+                centerTitle = centerTitle,
                 modifier = modifier,
                 doneButtonText = doneButtonText,
                 onDoneClick = onDismissRequest,
                 onCloseClick = onDismissRequest,
                 showDragHandle = showDragHandle,
+                surfaceColor = surfaceColor,
                 content = content
             )
         }

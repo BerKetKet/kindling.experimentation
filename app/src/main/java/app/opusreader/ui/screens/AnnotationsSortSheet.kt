@@ -6,15 +6,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,14 +28,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.opusreader.ui.theme.AmazonEmberFontFamily
+import app.opusreader.ui.theme.NoPaddingPlatformStyle
+import app.opusreader.ui.theme.OpusDivider
 import app.opusreader.ui.theme.OpusReaderTheme
+import app.opusreader.ui.theme.OpusScrim
+import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.refPx
 
 enum class AnnotationSortField(val displayName: String) {
@@ -57,125 +64,146 @@ fun AnnotationsSortSheet(
     var selectedField by remember { mutableStateOf(initialField) }
     var selectedDirection by remember { mutableStateOf(initialDirection) }
 
-    Column(
+    Box(
         modifier = modifier
-            .fillMaxWidth()
-            .height(972.refPx)
-            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-            .background(Color(0xFF1A1B1C))
+            .fillMaxSize()
+            .background(OpusScrim)
+            .clickable(onClick = { onApply(selectedField, selectedDirection) }),
+        contentAlignment = Alignment.BottomCenter
     ) {
-        // Drag handle (y=1389..1399, top padding = 21px from top of sheet)
-        Box(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = (21 / 2.625).dp)
-                .size(width = (104 / 2.625).dp, height = (10 / 2.625).dp)
-                .clip(CircleShape)
-                .background(Color(0xFF8E9194))
-        )
-
-        // Title "Sort" (y=1445..1474, top padding = 34px from handle)
-        Text(
-            text = "Sort",
-            color = Color.White,
-            fontFamily = AmazonEmberFontFamily,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = (34 / 2.625).dp)
-        )
-
-        Spacer(modifier = Modifier.height((56 / 2.625).dp))
-
-        // Sort Field Rows (Location, Date created, Date modified)
-        AnnotationSortField.entries.forEach { field ->
-            val isSelected = selectedField == field
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height((146 / 2.625).dp)
-                    .clickable {
-                        selectedField = field
-                        onApply(selectedField, selectedDirection)
-                    }
-                    .padding(start = (46 / 2.625).dp, end = (49 / 2.625).dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = field.displayName,
-                    color = Color.White,
-                    fontFamily = AmazonEmberFontFamily,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
-                    style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
-                    modifier = Modifier.weight(1f)
-                )
-                if (isSelected) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = "Selected",
-                        tint = Color.White,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
-            }
-        }
-
-        // Divider 1 (y=1980..1982)
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height((2 / 2.625).dp)
-                .background(Color(0xFF3B3C3D))
-        )
-
-        // Sort Direction Rows (Ascending, Descending)
-        SortDirection.entries.forEach { dir ->
-            val isSelected = selectedDirection == dir
-            Row(
+                .clickable(enabled = false) {}
+        ) {
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height((146 / 2.625).dp)
-                    .clickable {
-                        selectedDirection = dir
-                        onApply(selectedField, selectedDirection)
-                    }
-                    .padding(start = (46 / 2.625).dp, end = (49 / 2.625).dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .height(906.refPx)
+                    .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
+                    .background(Color(0xFF1A1B1C))
             ) {
-                Text(
-                    text = dir.displayName,
-                    color = Color.White,
-                    fontFamily = AmazonEmberFontFamily,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
-                    style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
-                    modifier = Modifier.weight(1f)
-                )
-                if (isSelected) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = "Selected",
-                        tint = Color.White,
-                        modifier = Modifier.size(28.dp)
+                // Header row: centered "Sort" + right Close 'X' at y=[1450, 1474], divider at y=[1536, 1538]
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(166.refPx)
+                        .padding(horizontal = 42.refPx),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Sort",
+                        style = TextStyle(
+                            fontFamily = AmazonEmberFontFamily,
+                            color = OpusTextPrimary,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            platformStyle = NoPaddingPlatformStyle
+                        ),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
                     )
+                    IconButton(
+                        onClick = { onApply(selectedField, selectedDirection) },
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .size(48.refPx)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Close",
+                            tint = OpusTextPrimary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+
+                HorizontalDivider(color = OpusDivider, thickness = 3.refPx)
+
+                // Location (y=1591), Date created (y=1744), Date modified (y=1891)
+                AnnotationSortField.entries.forEach { field ->
+                    val isSelected = selectedField == field
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(147.refPx)
+                            .clickable {
+                                selectedField = field
+                                onApply(field, selectedDirection)
+                            }
+                            .padding(horizontal = 44.refPx),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = field.displayName,
+                            style = TextStyle(
+                                fontFamily = AmazonEmberFontFamily,
+                                color = OpusTextPrimary,
+                                fontSize = 14.sp,
+                                platformStyle = NoPaddingPlatformStyle
+                            ),
+                            modifier = Modifier.weight(1f)
+                        )
+                        if (isSelected) {
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = "Selected",
+                                tint = OpusTextPrimary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+                }
+
+                HorizontalDivider(color = OpusDivider, thickness = 3.refPx)
+
+                // Ascending (y=2035), Descending (y=2188)
+                SortDirection.entries.forEach { dir ->
+                    val isSelected = selectedDirection == dir
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(147.refPx)
+                            .clickable {
+                                selectedDirection = dir
+                                onApply(selectedField, dir)
+                            }
+                            .padding(horizontal = 44.refPx),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = dir.displayName,
+                            style = TextStyle(
+                                fontFamily = AmazonEmberFontFamily,
+                                color = OpusTextPrimary,
+                                fontSize = 14.sp,
+                                platformStyle = NoPaddingPlatformStyle
+                            ),
+                            modifier = Modifier.weight(1f)
+                        )
+                        if (isSelected) {
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = "Selected",
+                                tint = OpusTextPrimary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
                 }
             }
-        }
 
-        // Divider 2 (y=2275..2277)
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height((2 / 2.625).dp)
-                .background(Color(0xFF3B3C3D))
-        )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(63.refPx)
+                    .background(Color(0xFF1A1B1C))
+            )
+        }
     }
 }
 
-@Preview(name = "15 Annotations Sort Sheet Preview", showBackground = true, backgroundColor = 0xFF000000)
+@Preview(name = "15 Annotations Sort Preview", showBackground = true, backgroundColor = 0xFF101112)
 @Composable
 fun AnnotationsSortSheetPreview() {
     OpusReaderTheme {

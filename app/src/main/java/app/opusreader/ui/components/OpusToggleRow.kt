@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,13 +26,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.opusreader.ui.theme.AmazonEmberFontFamily
+import app.opusreader.ui.theme.NoPaddingPlatformStyle
 import app.opusreader.ui.theme.OpusAccentBlue
 import app.opusreader.ui.theme.OpusReaderTheme
 import app.opusreader.ui.theme.OpusSpacing
 import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
+import app.opusreader.ui.theme.refPx
+import androidx.compose.ui.text.TextStyle
 
 enum class ToggleType {
     SWITCH, CHECKBOX, RADIO, CHECKMARK_ONLY, CHEVRON, NONE
@@ -47,13 +51,14 @@ fun OpusToggleRow(
     checked: Boolean = false,
     toggleType: ToggleType = ToggleType.SWITCH,
     enabled: Boolean = true,
+    horizontalPadding: Dp = 56.refPx,
+    verticalPadding: Dp = 48.refPx,
     onCheckedChange: ((Boolean) -> Unit)? = null,
     onClick: (() -> Unit)? = null
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .defaultMinSize(minHeight = OpusSpacing.minTouchTarget)
             .clickable(enabled = enabled) {
                 if (onClick != null) {
                     onClick()
@@ -61,7 +66,7 @@ fun OpusToggleRow(
                     onCheckedChange(!checked)
                 }
             }
-            .padding(horizontal = OpusSpacing.standard, vertical = OpusSpacing.medium),
+            .padding(horizontal = horizontalPadding, vertical = verticalPadding),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
@@ -69,18 +74,27 @@ fun OpusToggleRow(
         ) {
             Text(
                 text = title,
-                color = OpusTextPrimary,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Normal
+                style = TextStyle(
+                    fontFamily = AmazonEmberFontFamily,
+                    color = OpusTextPrimary,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    platformStyle = NoPaddingPlatformStyle
+                )
             )
 
             if (subtitle != null) {
-                Spacer(modifier = Modifier.height(OpusSpacing.xxsmall))
+                Spacer(modifier = Modifier.height(14.refPx))
                 Text(
                     text = subtitle,
-                    color = OpusTextSecondary,
-                    fontSize = 13.sp,
-                    lineHeight = 17.sp
+                    style = TextStyle(
+                        fontFamily = AmazonEmberFontFamily,
+                        color = OpusTextSecondary,
+                        fontSize = 12.5.sp,
+                        lineHeight = 16.5.sp,
+                        fontWeight = FontWeight.Normal,
+                        platformStyle = NoPaddingPlatformStyle
+                    )
                 )
             }
         }
@@ -96,7 +110,7 @@ fun OpusToggleRow(
                         checkedThumbColor = Color.White,
                         checkedTrackColor = OpusAccentBlue,
                         uncheckedThumbColor = OpusTextSecondary,
-                        uncheckedTrackColor = Color(0xFF333333)
+                        uncheckedTrackColor = Color(0xFF4A4B4D)
                     )
                 )
             }
@@ -126,7 +140,7 @@ fun OpusToggleRow(
                     Icon(
                         imageVector = Icons.Default.Check,
                         contentDescription = "Selected",
-                        tint = OpusTextPrimary,
+                        tint = OpusAccentBlue,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -144,7 +158,7 @@ fun OpusToggleRow(
     }
 }
 
-@Preview(name = "OpusToggleRow Switch Preview", showBackground = true, backgroundColor = 0xFF232323)
+@Preview(name = "OpusToggleRow Switch Preview", showBackground = true, backgroundColor = 0xFF2C2C2E)
 @Composable
 fun OpusToggleRowSwitchPreview() {
     OpusReaderTheme {
@@ -153,18 +167,6 @@ fun OpusToggleRowSwitchPreview() {
             subtitle = "Read by scrolling vertically.",
             checked = true,
             toggleType = ToggleType.SWITCH
-        )
-    }
-}
-
-@Preview(name = "OpusToggleRow Checkmark Preview", showBackground = true, backgroundColor = 0xFF232323)
-@Composable
-fun OpusToggleRowCheckmarkPreview() {
-    OpusReaderTheme {
-        OpusToggleRow(
-            title = "Most Recent",
-            checked = true,
-            toggleType = ToggleType.CHECKMARK_ONLY
         )
     }
 }

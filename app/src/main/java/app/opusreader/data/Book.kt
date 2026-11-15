@@ -1,5 +1,7 @@
 package app.opusreader.data
 
+import app.opusreader.R
+
 import androidx.compose.ui.graphics.Color
 
 data class Book(
@@ -34,6 +36,7 @@ enum class LibraryViewMode {
 }
 
 data class LibraryFilterState(
+    val showDownloaded: Boolean = false,
     val showRead: Boolean = false,
     val showUnread: Boolean = false,
     val showBooks: Boolean = false,
@@ -53,15 +56,14 @@ data class NotificationItem(
     val title: String,
     val description: String,
     val dateText: String,
-    val isRead: Boolean = false,
-    val coverDrawableRes: Int? = null,
-    val isAvatar: Boolean = false
+    val isRead: Boolean = false
 )
 
 object SampleBooks {
     val sampleList = listOf(
         Book(
             id = "gardens_of_the_moon",
+            coverDrawableRes = R.drawable.cover_book_4,
             title = "Gardens of the Moon: Book One of The Malazan Book of the Fallen",
             author = "Erikson, Steven",
             series = "The Malazan Book of the Fallen",
@@ -69,14 +71,14 @@ object SampleBooks {
             isDownloaded = true,
             fileSize = "15 MB",
             coverColor = Color(0xFF4C3E28),
-            coverDrawableRes = app.opusreader.R.drawable.cover_0,
             isRead = false,
             contentType = ContentType.BOOK,
             collectionIds = listOf("favorites"),
-            lastReadTimestamp = 1700000012000L
+            lastReadTimestamp = 1700000000000L
         ),
         Book(
             id = "complete_works_kafka",
+            coverDrawableRes = R.drawable.cover_book_0,
             title = "Complete Works (Kafka, Franz)",
             author = "Kafka, Franz",
             series = null,
@@ -84,14 +86,14 @@ object SampleBooks {
             isDownloaded = true,
             fileSize = "8 MB",
             coverColor = Color(0xFF2E3A42),
-            coverDrawableRes = app.opusreader.R.drawable.cover_1,
             isRead = false,
             contentType = ContentType.BOOK,
             collectionIds = emptyList(),
-            lastReadTimestamp = 1700000011000L
+            lastReadTimestamp = 1690000000000L
         ),
         Book(
             id = "odyssey_homer",
+            coverDrawableRes = R.drawable.cover_book_1,
             title = "The Odyssey",
             author = "Homer",
             series = null,
@@ -99,14 +101,14 @@ object SampleBooks {
             isDownloaded = true,
             fileSize = "4 MB",
             coverColor = Color(0xFF3C2E3F),
-            coverDrawableRes = app.opusreader.R.drawable.cover_2,
             isRead = false,
             contentType = ContentType.BOOK,
             collectionIds = listOf("classics"),
-            lastReadTimestamp = 1700000010000L
+            lastReadTimestamp = 1695000000000L
         ),
         Book(
             id = "hyperion_simmons",
+            coverDrawableRes = R.drawable.cover_book_6,
             title = "Hyperion",
             author = "Simmons, Dan",
             series = "Hyperion Cantos",
@@ -114,14 +116,14 @@ object SampleBooks {
             isDownloaded = true,
             fileSize = "12 MB",
             coverColor = Color(0xFF4A2B2B),
-            coverDrawableRes = app.opusreader.R.drawable.cover_3,
             isRead = true,
             contentType = ContentType.BOOK,
             collectionIds = listOf("favorites", "scifi"),
-            lastReadTimestamp = 1700000009000L
+            lastReadTimestamp = 1692000000000L
         ),
         Book(
             id = "the_road_mccarthy",
+            coverDrawableRes = R.drawable.cover_book_5,
             title = "The Road",
             author = "McCarthy, Cormac",
             series = null,
@@ -129,14 +131,14 @@ object SampleBooks {
             isDownloaded = false,
             fileSize = "3 MB",
             coverColor = Color(0xFF3E3D2A),
-            coverDrawableRes = app.opusreader.R.drawable.cover_4,
             isRead = false,
             contentType = ContentType.SAMPLE,
             collectionIds = emptyList(),
-            lastReadTimestamp = 1700000008000L
+            lastReadTimestamp = 1680000000000L
         ),
         Book(
             id = "notes_underground_dostoevsky",
+            coverDrawableRes = R.drawable.cover_book_2,
             title = "Notes from Underground",
             author = "Dostoevsky, Fyodor",
             series = null,
@@ -144,14 +146,14 @@ object SampleBooks {
             isDownloaded = true,
             fileSize = "2 MB",
             coverColor = Color(0xFF243A3A),
-            coverDrawableRes = app.opusreader.R.drawable.cover_5,
             isRead = true,
             contentType = ContentType.DOC,
             collectionIds = listOf("classics"),
-            lastReadTimestamp = 1700000007000L
+            lastReadTimestamp = 1691000000000L
         ),
         Book(
             id = "frankenstein_shelley",
+            coverDrawableRes = R.drawable.cover_book_3,
             title = "Frankenstein",
             author = "Shelley, Mary",
             series = null,
@@ -159,14 +161,14 @@ object SampleBooks {
             isDownloaded = true,
             fileSize = "3.5 MB",
             coverColor = Color(0xFF1E3A2F),
-            coverDrawableRes = app.opusreader.R.drawable.cover_6,
             isRead = false,
             contentType = ContentType.BOOK,
             collectionIds = listOf("classics"),
-            lastReadTimestamp = 1700000006000L
+            lastReadTimestamp = 1685000000000L
         ),
         Book(
             id = "pride_and_prejudice_austen",
+            coverDrawableRes = R.drawable.cover_book_7,
             title = "Pride and Prejudice",
             author = "Austen, Jane",
             series = null,
@@ -174,14 +176,14 @@ object SampleBooks {
             isDownloaded = true,
             fileSize = "4.2 MB",
             coverColor = Color(0xFF4A344A),
-            coverDrawableRes = app.opusreader.R.drawable.cover_7,
             isRead = true,
             contentType = ContentType.BOOK,
             collectionIds = listOf("classics"),
-            lastReadTimestamp = 1700000005000L
+            lastReadTimestamp = 1689000000000L
         ),
         Book(
             id = "moby_dick_melville",
+            coverDrawableRes = R.drawable.cover_book_8,
             title = "Moby-Dick",
             author = "Melville, Herman",
             series = null,
@@ -189,14 +191,14 @@ object SampleBooks {
             isDownloaded = false,
             fileSize = "6 MB",
             coverColor = Color(0xFF22364A),
-            coverDrawableRes = app.opusreader.R.drawable.cover_8,
             isRead = false,
             contentType = ContentType.SAMPLE,
             collectionIds = emptyList(),
-            lastReadTimestamp = 1700000004000L
+            lastReadTimestamp = 1675000000000L
         ),
         Book(
             id = "the_metamorphosis_kafka",
+            coverDrawableRes = R.drawable.cover_book_9,
             title = "The Metamorphosis",
             author = "Kafka, Franz",
             series = null,
@@ -204,41 +206,10 @@ object SampleBooks {
             isDownloaded = true,
             fileSize = "1.8 MB",
             coverColor = Color(0xFF3A3026),
-            coverDrawableRes = app.opusreader.R.drawable.cover_9,
             isRead = false,
             contentType = ContentType.DOC,
             collectionIds = listOf("favorites"),
-            lastReadTimestamp = 1700000003000L
-        ),
-        Book(
-            id = "crime_and_punishment",
-            title = "Crime and Punishment",
-            author = "Dostoevsky, Fyodor",
-            series = null,
-            progressPercent = 80,
-            isDownloaded = true,
-            fileSize = "4.5 MB",
-            coverColor = Color(0xFF332222),
-            coverDrawableRes = app.opusreader.R.drawable.cover_10,
-            isRead = false,
-            contentType = ContentType.BOOK,
-            collectionIds = listOf("classics"),
-            lastReadTimestamp = 1700000002000L
-        ),
-        Book(
-            id = "dracula_stoker",
-            title = "Dracula",
-            author = "Stoker, Bram",
-            series = null,
-            progressPercent = 0,
-            isDownloaded = true,
-            fileSize = "3.8 MB",
-            coverColor = Color(0xFF1F1F2E),
-            coverDrawableRes = app.opusreader.R.drawable.cover_11,
-            isRead = false,
-            contentType = ContentType.BOOK,
-            collectionIds = listOf("classics"),
-            lastReadTimestamp = 1700000001000L
+            lastReadTimestamp = 1682000000000L
         )
     )
 
@@ -269,64 +240,21 @@ object SampleBooks {
             title = "Library Synchronized",
             description = "Reading positions and annotations synced across all devices.",
             dateText = "Today, 7:43 PM",
-            isRead = true,
-            isAvatar = true
+            isRead = true
         ),
         NotificationItem(
             id = "notif_2",
             title = "Download Complete",
-            description = "Frankenstein is ready to read offline.",
+            description = "Gardens of the Moon (Book One) is ready to read offline.",
             dateText = "Yesterday, 3:15 PM",
-            isRead = true,
-            coverDrawableRes = app.opusreader.R.drawable.cover_0
+            isRead = true
         ),
         NotificationItem(
             id = "notif_3",
-            title = "New Collection",
-            description = "Added 'Classics' collection with 4 titles.",
-            dateText = "Nov 14, 2026",
-            isRead = true,
-            isAvatar = true
-        ),
-        NotificationItem(
-            id = "notif_4",
-            title = "Import Complete",
-            description = "The Picture of Dorian Gray imported.",
-            dateText = "Nov 12, 2026",
-            isRead = true,
-            isAvatar = true
-        ),
-        NotificationItem(
-            id = "notif_5",
-            title = "Download Complete",
-            description = "Pride and Prejudice is ready to read offline. Tap to begin reading.",
-            dateText = "Nov 10, 2026",
-            isRead = true,
-            coverDrawableRes = app.opusreader.R.drawable.cover_2
-        ),
-        NotificationItem(
-            id = "notif_6",
             title = "Welcome to Opus Reader",
-            description = "Your personal EPUB reader is configured. Explore the Project Gutenberg catalog.",
-            dateText = "Nov 8, 2026",
-            isRead = false,
-            isAvatar = true
-        ),
-        NotificationItem(
-            id = "notif_7",
-            title = "Download Complete",
-            description = "The Adventures of Sherlock Holmes is ready to read offline. Tap to open.",
-            dateText = "Nov 5, 2026",
-            isRead = true,
-            isAvatar = true
-        ),
-        NotificationItem(
-            id = "notif_8",
-            title = "Download Complete",
-            description = "Moby Dick; or, The Whale is ready to read offline.",
-            dateText = "Nov 1, 2026",
-            isRead = true,
-            isAvatar = true
+            description = "Your personal EPUB reader is configured and ready.",
+            dateText = "Nov 14, 2026",
+            isRead = false
         )
     )
 }
