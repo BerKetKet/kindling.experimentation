@@ -50,7 +50,7 @@ data class ReaderSettings(
     val updatePageWithSystemTheme: Boolean = true,
     val continuousScrolling: Boolean = false,
     val orientationLock: Boolean = false,
-    val brightness: Float = 0.8f,
+    val brightness: Float = 0.71f,
     val autoBrightness: Boolean = true,
     val assistiveReaderEnabled: Boolean = false,
     val readingProgressDisplay: String = "LOCATION_PERCENT", // LOCATION_PERCENT, TIME_IN_CHAPTER, TIME_IN_BOOK, OFF

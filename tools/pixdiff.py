@@ -23,6 +23,8 @@ offs = []
 for (s, e) in rb:
     if s < a.status or (a.bottom and e >= r.shape[0] - a.bottom):
         continue
+    if not keep[s:e+1].any():
+        continue
     c = (s + e) / 2
     if pb:
         j = min(pb, key=lambda q: abs((q[0] + q[1]) / 2 - c)); offs.append(dict(ref=[s, e], app=list(j), dy_top=j[0] - s, dh=(j[1] - j[0]) - (e - s)))

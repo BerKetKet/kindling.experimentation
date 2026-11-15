@@ -18,6 +18,12 @@ D12: 0,1290,1080,2340
 # D16: Annotations share sheet (Mask name and email address per privacy rule)
 D16: 40,1675,1040,1715 40,1980,620,2060
 
+# D17-D20: Display settings sheet (Mask reading text area above the sheet)
+D17: 0,0,1080,1186
+D18: 0,0,1080,284
+D19: 0,0,1080,284
+D20: 0,0,1080,284
+
 # R03-R06: Reading Canvas (Mask reading text area to compare page background, margins, and header/footer only)
 R03: 50,180,1030,2200
 R04: 50,180,1030,2200

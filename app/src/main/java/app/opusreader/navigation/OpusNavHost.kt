@@ -477,38 +477,66 @@ fun OpusNavHost(
 
                 // 17 Display Settings: Font
                 composable(NavRoutes.DISPLAY_FONT) {
-                    DisplaySettingsSheet(
-                        engine = readerEngine,
-                        initialTab = 0,
-                        onDismiss = { navController.popBackStack() }
-                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black)
+                    ) {
+                        DisplaySettingsSheet(
+                            engine = readerEngine,
+                            initialTab = 0,
+                            onDismiss = { navController.popBackStack() },
+                            modifier = Modifier.align(Alignment.BottomCenter)
+                        )
+                    }
                 }
 
                 // 18 Display Settings: Layout
                 composable(NavRoutes.DISPLAY_LAYOUT) {
-                    DisplaySettingsSheet(
-                        engine = readerEngine,
-                        initialTab = 1,
-                        onDismiss = { navController.popBackStack() }
-                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black)
+                    ) {
+                        DisplaySettingsSheet(
+                            engine = readerEngine,
+                            initialTab = 1,
+                            onDismiss = { navController.popBackStack() },
+                            modifier = Modifier.align(Alignment.BottomCenter)
+                        )
+                    }
                 }
 
                 // 19 Display Settings: Themes
                 composable(NavRoutes.DISPLAY_THEMES) {
-                    DisplaySettingsSheet(
-                        engine = readerEngine,
-                        initialTab = 2,
-                        onDismiss = { navController.popBackStack() }
-                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black)
+                    ) {
+                        DisplaySettingsSheet(
+                            engine = readerEngine,
+                            initialTab = 2,
+                            onDismiss = { navController.popBackStack() },
+                            modifier = Modifier.align(Alignment.BottomCenter)
+                        )
+                    }
                 }
 
                 // 20 Display Settings: More
                 composable(NavRoutes.DISPLAY_MORE) {
-                    DisplaySettingsSheet(
-                        engine = readerEngine,
-                        initialTab = 3,
-                        onDismiss = { navController.popBackStack() }
-                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black)
+                    ) {
+                        DisplaySettingsSheet(
+                            engine = readerEngine,
+                            initialTab = 3,
+                            onDismiss = { navController.popBackStack() },
+                            modifier = Modifier.align(Alignment.BottomCenter)
+                        )
+                    }
                 }
             }
         }
