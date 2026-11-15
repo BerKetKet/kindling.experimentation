@@ -49,23 +49,36 @@ fun OpusReaderTheme(
     darkTheme: Boolean = true,
     navigationBarColor: Color? = null,
     statusBarColor: Color? = null,
+    fontScale: Float = 1.0f,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) OpusDarkColorScheme else OpusLightColorScheme
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as? Activity)?.window ?: return@SideEffect
-            window.statusBarColor = (statusBarColor ?: if (darkTheme) OpusTopBar else OpusLightTopBar).toArgb()
-            window.navigationBarColor = (navigationBarColor ?: if (darkTheme) OpusBottomBar else OpusLightBottomBar).toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
-            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !darkTheme
-        }
+    val currentDensity = androidx.compose.ui.platform.LocalDensity.current
+    val customDensity = androidx.compose.runtime.remember(currentDensity, fontScale) {
+        androidx.compose.ui.unit.Density(
+            density = currentDensity.density,
+            fontScale = currentDensity.fontScale * fontScale
+        )
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = OpusTypography,
-        content = content
-    )
+    androidx.compose.runtime.CompositionLocalProvider(
+        androidx.compose.ui.platform.LocalDensity provides customDensity
+    ) {
+        val colorScheme = if (darkTheme) OpusDarkColorScheme else OpusLightColorScheme
+        val view = LocalView.current
+        if (!view.isInEditMode) {
+            SideEffect {
+                val window = (view.context as? Activity)?.window ?: return@SideEffect
+                window.statusBarColor = (statusBarColor ?: if (darkTheme) OpusTopBar else OpusLightTopBar).toArgb()
+                window.navigationBarColor = (navigationBarColor ?: if (darkTheme) OpusBottomBar else OpusLightBottomBar).toArgb()
+                WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+                WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !darkTheme
+            }
+        }
+
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = OpusTypography,
+            content = content
+        )
+    }
 }

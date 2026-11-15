@@ -67,10 +67,11 @@ object SampleBooks {
             isDownloaded = true,
             fileSize = "15 MB",
             coverColor = Color(0xFF4C3E28),
+            coverDrawableRes = app.opusreader.R.drawable.cover_0,
             isRead = false,
             contentType = ContentType.BOOK,
             collectionIds = listOf("favorites"),
-            lastReadTimestamp = 1700000000000L
+            lastReadTimestamp = 1700000012000L
         ),
         Book(
             id = "complete_works_kafka",
@@ -81,10 +82,11 @@ object SampleBooks {
             isDownloaded = true,
             fileSize = "8 MB",
             coverColor = Color(0xFF2E3A42),
+            coverDrawableRes = app.opusreader.R.drawable.cover_1,
             isRead = false,
             contentType = ContentType.BOOK,
             collectionIds = emptyList(),
-            lastReadTimestamp = 1690000000000L
+            lastReadTimestamp = 1700000011000L
         ),
         Book(
             id = "odyssey_homer",
@@ -95,10 +97,11 @@ object SampleBooks {
             isDownloaded = true,
             fileSize = "4 MB",
             coverColor = Color(0xFF3C2E3F),
+            coverDrawableRes = app.opusreader.R.drawable.cover_2,
             isRead = false,
             contentType = ContentType.BOOK,
             collectionIds = listOf("classics"),
-            lastReadTimestamp = 1695000000000L
+            lastReadTimestamp = 1700000010000L
         ),
         Book(
             id = "hyperion_simmons",
@@ -109,10 +112,11 @@ object SampleBooks {
             isDownloaded = true,
             fileSize = "12 MB",
             coverColor = Color(0xFF4A2B2B),
+            coverDrawableRes = app.opusreader.R.drawable.cover_3,
             isRead = true,
             contentType = ContentType.BOOK,
             collectionIds = listOf("favorites", "scifi"),
-            lastReadTimestamp = 1692000000000L
+            lastReadTimestamp = 1700000009000L
         ),
         Book(
             id = "the_road_mccarthy",
@@ -123,10 +127,11 @@ object SampleBooks {
             isDownloaded = false,
             fileSize = "3 MB",
             coverColor = Color(0xFF3E3D2A),
+            coverDrawableRes = app.opusreader.R.drawable.cover_4,
             isRead = false,
             contentType = ContentType.SAMPLE,
             collectionIds = emptyList(),
-            lastReadTimestamp = 1680000000000L
+            lastReadTimestamp = 1700000008000L
         ),
         Book(
             id = "notes_underground_dostoevsky",
@@ -137,10 +142,11 @@ object SampleBooks {
             isDownloaded = true,
             fileSize = "2 MB",
             coverColor = Color(0xFF243A3A),
+            coverDrawableRes = app.opusreader.R.drawable.cover_5,
             isRead = true,
             contentType = ContentType.DOC,
             collectionIds = listOf("classics"),
-            lastReadTimestamp = 1691000000000L
+            lastReadTimestamp = 1700000007000L
         ),
         Book(
             id = "frankenstein_shelley",
@@ -151,10 +157,11 @@ object SampleBooks {
             isDownloaded = true,
             fileSize = "3.5 MB",
             coverColor = Color(0xFF1E3A2F),
+            coverDrawableRes = app.opusreader.R.drawable.cover_6,
             isRead = false,
             contentType = ContentType.BOOK,
             collectionIds = listOf("classics"),
-            lastReadTimestamp = 1685000000000L
+            lastReadTimestamp = 1700000006000L
         ),
         Book(
             id = "pride_and_prejudice_austen",
@@ -165,10 +172,11 @@ object SampleBooks {
             isDownloaded = true,
             fileSize = "4.2 MB",
             coverColor = Color(0xFF4A344A),
+            coverDrawableRes = app.opusreader.R.drawable.cover_7,
             isRead = true,
             contentType = ContentType.BOOK,
             collectionIds = listOf("classics"),
-            lastReadTimestamp = 1689000000000L
+            lastReadTimestamp = 1700000005000L
         ),
         Book(
             id = "moby_dick_melville",
@@ -179,10 +187,11 @@ object SampleBooks {
             isDownloaded = false,
             fileSize = "6 MB",
             coverColor = Color(0xFF22364A),
+            coverDrawableRes = app.opusreader.R.drawable.cover_8,
             isRead = false,
             contentType = ContentType.SAMPLE,
             collectionIds = emptyList(),
-            lastReadTimestamp = 1675000000000L
+            lastReadTimestamp = 1700000004000L
         ),
         Book(
             id = "the_metamorphosis_kafka",
@@ -193,10 +202,41 @@ object SampleBooks {
             isDownloaded = true,
             fileSize = "1.8 MB",
             coverColor = Color(0xFF3A3026),
+            coverDrawableRes = app.opusreader.R.drawable.cover_9,
             isRead = false,
             contentType = ContentType.DOC,
             collectionIds = listOf("favorites"),
-            lastReadTimestamp = 1682000000000L
+            lastReadTimestamp = 1700000003000L
+        ),
+        Book(
+            id = "crime_and_punishment",
+            title = "Crime and Punishment",
+            author = "Dostoevsky, Fyodor",
+            series = null,
+            progressPercent = 80,
+            isDownloaded = true,
+            fileSize = "4.5 MB",
+            coverColor = Color(0xFF332222),
+            coverDrawableRes = app.opusreader.R.drawable.cover_10,
+            isRead = false,
+            contentType = ContentType.BOOK,
+            collectionIds = listOf("classics"),
+            lastReadTimestamp = 1700000002000L
+        ),
+        Book(
+            id = "dracula_stoker",
+            title = "Dracula",
+            author = "Stoker, Bram",
+            series = null,
+            progressPercent = 0,
+            isDownloaded = true,
+            fileSize = "3.8 MB",
+            coverColor = Color(0xFF1F1F2E),
+            coverDrawableRes = app.opusreader.R.drawable.cover_11,
+            isRead = false,
+            contentType = ContentType.BOOK,
+            collectionIds = listOf("classics"),
+            lastReadTimestamp = 1700000001000L
         )
     )
 

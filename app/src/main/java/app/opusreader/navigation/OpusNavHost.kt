@@ -105,6 +105,13 @@ fun OpusNavHost(
         NavRoutes.MORE
     )
 
+    val showFloatingCover = currentRoute in listOf(
+        NavRoutes.HOME,
+        NavRoutes.LIBRARY_LIST,
+        NavRoutes.COLLECTIONS,
+        NavRoutes.MORE
+    )
+
     val currentTab = when (currentRoute) {
         NavRoutes.HOME -> MainTab.HOME
         NavRoutes.MORE -> MainTab.MORE
@@ -419,7 +426,7 @@ fun OpusNavHost(
         }
 
         // Floating resume cover pinned at bottom left over the bottom navigation bar
-        if (isMainTab) {
+        if (showFloatingCover) {
             FloatingResumeCover(
                 title = currentBook.title,
                 author = currentBook.author,

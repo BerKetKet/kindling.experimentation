@@ -31,6 +31,7 @@ class MainActivity : ComponentActivity() {
     private val catalogRepository: CatalogRepository = FakeCatalogRepository()
     private var fixtureId by androidx.compose.runtime.mutableStateOf<String?>(null)
     private var fixtureTrigger by androidx.compose.runtime.mutableIntStateOf(0)
+    private var isLiveness by androidx.compose.runtime.mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +54,11 @@ class MainActivity : ComponentActivity() {
                 "D17", "D18", "D19", "D20", "R11", "R12", "R13", "R14" -> Color.Black
                 else -> null
             }
-            OpusReaderTheme(navigationBarColor = navBarColor, statusBarColor = statusBarColor) {
+            OpusReaderTheme(
+                navigationBarColor = navBarColor,
+                statusBarColor = statusBarColor,
+                fontScale = if (isLiveness) 1.25f else 1.0f
+            ) {
                 OpusNavHost(
                     bookRepository = bookRepository,
                     catalogRepository = catalogRepository,
@@ -87,6 +92,16 @@ class MainActivity : ComponentActivity() {
 
         if (uri?.scheme == "opus" && uri.host == "fixture") {
             val sid = uri.lastPathSegment ?: uri.pathSegments.firstOrNull()
+            this.isLiveness = uri.getQueryParameter("liveness") == "1"
+            if (isLiveness) {
+                bookRepository.updateProgress("gardens_of_the_moon", 99)
+                bookRepository.updateTitle("gardens_of_the_moon", "Liveness Test Title Changed")
+                bookRepository.updateNotificationTitle("notif_1", "Liveness Notification Test")
+            } else {
+                bookRepository.updateProgress("gardens_of_the_moon", 10)
+                bookRepository.updateTitle("gardens_of_the_moon", "Gardens of the Moon: Book One of The Malazan Book of the Fallen")
+                bookRepository.updateNotificationTitle("notif_1", "Library Synchronized")
+            }
             if (sid != null) {
                 fixtureId = sid
                 fixtureTrigger++

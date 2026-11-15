@@ -57,8 +57,8 @@ fun LibraryGridScreen(
             .background(OpusBackground)
             .verticalScroll(rememberScrollState())
     ) {
-        // Distance below status bar (y=90) to title band top (y=145): 145 - 90 = 55 px + 1 px adjustment = 56 px
-        Spacer(modifier = Modifier.height(56.refPx))
+        // Distance below status bar (y=90) to title band top (y=145): 145 - 90 = 55 px (adjusted to 54 px for exact top offset)
+        Spacer(modifier = Modifier.height(54.refPx))
 
         // Top bar placed precisely: y=[145, 196], start x=44, end icons at x=[855, 1031]
         Row(
@@ -93,8 +93,8 @@ fun LibraryGridScreen(
             }
         }
 
-        // Distance from top bar bottom (196 px) to search bar top (254 px): 64 px
-        Spacer(modifier = Modifier.height(64.refPx))
+        // Distance from top bar bottom (196 px) to search bar top (254 px): 64 px + 2 px = 66 px
+        Spacer(modifier = Modifier.height(66.refPx))
 
         // Search pill: y=[254, 359], height=105 px
         OpusSearchBar(

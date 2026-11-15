@@ -65,14 +65,15 @@ fun OpusCoverTile(
             .clip(shape)
             .background(coverColor)
             .clickable { onClick() },
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.TopCenter
     ) {
         if (coverDrawableRes != null) {
             Image(
                 painter = painterResource(id = coverDrawableRes),
                 contentDescription = title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+                contentScale = ContentScale.FillWidth,
+                alignment = Alignment.TopCenter,
+                modifier = Modifier.fillMaxWidth()
             )
         } else {
             // Book cover title placeholder

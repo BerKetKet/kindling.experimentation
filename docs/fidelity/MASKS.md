@@ -3,6 +3,9 @@
 Format:
 `<id>: <x0>,<y0>,<x1>,<y1> [<x0>,<y0>,<x1>,<y1> ...]`
 
+# D01: Library grid (Mask 17px strip where bottom row covers are cut off by nav bar at y=2094..2111)
+D01: 0,2094,1080,2111
+
 # D12: In-book search (Mask virtual software keyboard)
 D12: 0,1290,1080,2340
 
