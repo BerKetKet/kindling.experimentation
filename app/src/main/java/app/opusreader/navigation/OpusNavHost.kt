@@ -490,6 +490,7 @@ private fun handleFixtureDeepLink(
             }
         }
         "D08", "L08" -> {
+            bookRepository.setCollections(emptyList())
             navController.navigate(NavRoutes.COLLECTIONS) {
                 popUpTo(0) { inclusive = true }
             }

@@ -3,6 +3,7 @@ package app.opusreader.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -198,7 +199,7 @@ fun CollectionsScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 72.refPx),
+                    .padding(top = 60.refPx),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -210,35 +211,37 @@ fun CollectionsScreen(
                     textAlign = TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(49.refPx))
+                Spacer(modifier = Modifier.height(45.refPx))
 
-                Box(
+                HorizontalDivider(
+                    modifier = Modifier.width(788.refPx),
+                    color = Color(0xFF404040),
+                    thickness = 3.refPx
+                )
+
+                Spacer(modifier = Modifier.height(82.refPx))
+
+                Row(
                     modifier = Modifier
-                        .width(787.refPx)
-                        .height(144.refPx)
-                        .clip(RoundedCornerShape(4.refPx))
-                        .border(width = 3.refPx, color = Color(0xFF404040), shape = RoundedCornerShape(4.refPx))
                         .clickable { showCreateDialog = true },
-                    contentAlignment = Alignment.Center
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = null,
-                            tint = OpusTextPrimary,
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(modifier = Modifier.width(16.refPx))
-                        Text(
-                            text = "CREATE A NEW COLLECTION",
-                            fontFamily = AmazonEmberFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 13.5.sp,
-                            color = OpusTextPrimary
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                        tint = Color(0xFF2491FF),
+                        modifier = Modifier.size(44.refPx)
+                    )
+                    Spacer(modifier = Modifier.width(16.refPx))
+                    Text(
+                        text = "CREATE A NEW COLLECTION",
+                        fontFamily = AmazonEmberFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF2491FF),
+                        fontSize = 14.sp,
+                        letterSpacing = 1.sp
+                    )
                 }
             }
         } else {

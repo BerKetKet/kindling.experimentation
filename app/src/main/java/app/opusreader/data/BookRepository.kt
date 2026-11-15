@@ -16,6 +16,7 @@ interface BookRepository {
     fun setFilter(filter: LibraryFilterState)
     fun setSortOrder(sortOrder: LibrarySortOrder)
     fun setViewMode(viewMode: LibraryViewMode)
+    fun setCollections(collections: List<CollectionItem>)
     fun createCollection(name: String): CollectionItem
     fun deleteCollection(id: String)
     fun toggleBookInCollection(bookId: String, collectionId: String)
@@ -31,7 +32,7 @@ interface BookRepository {
 
 class FakeBookRepository(
     initialBooks: List<Book> = SampleBooks.sampleList,
-    initialCollections: List<CollectionItem> = SampleBooks.sampleCollections,
+    initialCollections: List<CollectionItem> = emptyList(),
     initialNotifications: List<NotificationItem> = SampleBooks.sampleNotifications
 ) : BookRepository {
 
@@ -49,6 +50,10 @@ class FakeBookRepository(
 
     private val _collections = MutableStateFlow(initialCollections)
     override val collections: StateFlow<List<CollectionItem>> = _collections.asStateFlow()
+
+    override fun setCollections(collections: List<CollectionItem>) {
+        _collections.value = collections
+    }
 
     private val _notifications = MutableStateFlow(initialNotifications)
     override val notifications: StateFlow<List<NotificationItem>> = _notifications.asStateFlow()

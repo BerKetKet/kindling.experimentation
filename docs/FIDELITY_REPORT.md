@@ -8,7 +8,7 @@ Thresholds per screen (outside masks):
 
 | ID | Screen Name | Reference File | Diff % | Worst Offset (px) | Liveness | Scroll | Status | Notes |
 |---|---|---|---|---|---|---|---|---|
-| D07 | Library list | `docs/reference/07_library-list.png` | 16.49% | 28 px | PASS | PASS | FAIL | bad: 16.49%, dy: 28px |
+| D08 | Collections (empty) | `docs/reference/08_collections.png` | 3.11% | 21 px | PASS | N/A | FAIL | bad: 3.11%, dy: 21px |
 
 ## Summary
 - **Total canonical screens evaluated**: 1
