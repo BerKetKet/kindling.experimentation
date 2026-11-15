@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -52,6 +53,7 @@ fun OpusListRow(
     progressPercent: Int = 0,
     isDownloaded: Boolean = true,
     coverColor: Color = OpusSurfaceVariant,
+    coverDrawableRes: Int = 0,
     onClick: () -> Unit = {},
     onMoreClick: (() -> Unit)? = null,
     onDownloadClick: (() -> Unit)? = null
@@ -78,19 +80,27 @@ fun OpusListRow(
                     .background(coverColor),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                // Book title placeholder
-                Text(
-                    text = title.take(24),
-                    fontFamily = BookerlyFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    color = OpusTextPrimary.copy(alpha = 0.9f),
-                    fontSize = 10.sp,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(4.dp)
-                )
+                if (coverDrawableRes != 0) {
+                    androidx.compose.foundation.Image(
+                        painter = androidx.compose.ui.res.painterResource(coverDrawableRes),
+                        contentDescription = title,
+                        contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Text(
+                        text = title.take(24),
+                        fontFamily = BookerlyFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        color = OpusTextPrimary.copy(alpha = 0.9f),
+                        fontSize = 10.sp,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(4.dp)
+                    )
+                }
 
                 // Progress line
                 if (progressPercent > 0) {
