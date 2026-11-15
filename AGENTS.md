@@ -41,3 +41,10 @@ He does not write code. Plain, short language. Explanations first, then all inst
 - **Never copy viewport cutoffs into item sizes**: A screenshot is a 2D slice of a 3D layered, scrollable screen. Elements partially cut off at the bottom edge or behind the bottom bar/sheet scrim must be built at their full, uniform size inside a scrollable container (`LazyVerticalGrid`, `LazyColumn`, `Column(Modifier.verticalScroll())`) with `Modifier.clipToBounds()`, letting the parent `Scaffold` or sheet clip them naturally.
 - **No `isFixture` UI branches or `fixture_*.png` screen slices**: `ui/screens/` and `ui/components/` must never accept `isFixture` or render cropped UI screenshot drawables (`R.drawable.fixture_*`). Only book cover art (`cover_book_*.png`) is permitted in drawables.
 - **No `ContentScale.FillBounds`**: Always preserve aspect ratio using `ContentScale.Crop` or `ContentScale.Fit`.
+
+## Interaction Completeness (Mandatory)
+- Work from `docs/INTERACTION_SPEC.md`: Every visible control, gesture, and state transition must actually function.
+- State is managed in ViewModels backed by Room and DataStore. Composables are stateless and take state and hoisted callbacks. Defaulting callbacks to `{}` without functional wiring is forbidden.
+- Full gesture support: swipe page-turn, draggable sheets, long-press contextual menus, swipe-to-dismiss items, and pull-to-sync.
+- Live settings effects: Display settings must immediately alter the reader canvas rather than only their internal controls.
+- Rigorous verification: Every interaction must have a Compose UI test or an automated adb smoke flow, recorded in `docs/INTERACTION_REPORT.md`. Resting-state pixel fidelity must not regress.

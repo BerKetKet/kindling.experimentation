@@ -72,7 +72,7 @@ fun SettingsScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    var deviceName by remember { mutableStateOf("bereket's 11th Android Device") }
+    var deviceName by remember { mutableStateOf("Opus Reader Device") }
     var showDeviceNameDialog by remember { mutableStateOf(false) }
     var editedName by remember { mutableStateOf(deviceName) }
 
