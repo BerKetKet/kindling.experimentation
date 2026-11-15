@@ -44,6 +44,8 @@ private val OpusLightColorScheme = lightColorScheme(
     outlineVariant = OpusLightDivider
 )
 
+val LocalFixtureTrigger = androidx.compose.runtime.compositionLocalOf { 0 }
+
 @Composable
 fun OpusReaderTheme(
     darkTheme: Boolean = true,

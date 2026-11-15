@@ -46,7 +46,7 @@ fun OpusCoverTile(
     title: String,
     author: String,
     modifier: Modifier = Modifier,
-    tileWidth: Dp = OpusSpacing.gridCoverWidth,
+    tileWidth: Dp = Dp.Unspecified,
     tileHeight: Dp = OpusSpacing.gridCoverHeight,
     progressPercent: Int = 0,
     isDownloaded: Boolean = true,
@@ -58,22 +58,24 @@ fun OpusCoverTile(
 ) {
     val shape = RoundedCornerShape(3.dp)
 
+    val boxModifier = modifier
+        .then(if (tileWidth != Dp.Unspecified) Modifier.width(tileWidth) else Modifier)
+        .height(tileHeight)
+        .clip(shape)
+        .background(coverColor)
+        .clickable { onClick() }
+
     Box(
-        modifier = modifier
-            .width(tileWidth)
-            .height(tileHeight)
-            .clip(shape)
-            .background(coverColor)
-            .clickable { onClick() },
+        modifier = boxModifier,
         contentAlignment = Alignment.TopCenter
     ) {
         if (coverDrawableRes != null) {
             Image(
                 painter = painterResource(id = coverDrawableRes),
                 contentDescription = title,
-                contentScale = ContentScale.FillWidth,
+                contentScale = if (tileWidth != Dp.Unspecified) ContentScale.FillWidth else ContentScale.FillHeight,
                 alignment = Alignment.TopCenter,
-                modifier = Modifier.fillMaxWidth()
+                modifier = if (tileWidth != Dp.Unspecified) Modifier.fillMaxWidth() else Modifier.fillMaxHeight()
             )
         } else {
             // Book cover title placeholder

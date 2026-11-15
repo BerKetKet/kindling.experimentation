@@ -54,17 +54,21 @@ class MainActivity : ComponentActivity() {
                 "D17", "D18", "D19", "D20", "R11", "R12", "R13", "R14" -> Color.Black
                 else -> null
             }
-            OpusReaderTheme(
-                navigationBarColor = navBarColor,
-                statusBarColor = statusBarColor,
-                fontScale = if (isLiveness) 1.25f else 1.0f
+            androidx.compose.runtime.CompositionLocalProvider(
+                app.opusreader.ui.theme.LocalFixtureTrigger provides fixtureTrigger
             ) {
-                OpusNavHost(
-                    bookRepository = bookRepository,
-                    catalogRepository = catalogRepository,
-                    fixtureId = fixtureId,
-                    fixtureTrigger = fixtureTrigger
-                )
+                OpusReaderTheme(
+                    navigationBarColor = navBarColor,
+                    statusBarColor = statusBarColor,
+                    fontScale = if (isLiveness) 1.25f else 1.0f
+                ) {
+                    OpusNavHost(
+                        bookRepository = bookRepository,
+                        catalogRepository = catalogRepository,
+                        fixtureId = fixtureId,
+                        fixtureTrigger = fixtureTrigger
+                    )
+                }
             }
         }
     }

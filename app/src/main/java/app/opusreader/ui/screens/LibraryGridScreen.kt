@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,12 +51,17 @@ fun LibraryGridScreen(
     modifier: Modifier = Modifier
 ) {
     var searchQuery by remember { mutableStateOf("") }
+    val fixtureTrigger = app.opusreader.ui.theme.LocalFixtureTrigger.current
+    val scrollState = rememberScrollState()
+    LaunchedEffect(fixtureTrigger) {
+        scrollState.scrollTo(0)
+    }
 
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(OpusBackground)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(scrollState)
     ) {
         // Distance below status bar (y=90) to title band top (y=145): 145 - 90 = 55 px (adjusted to 54 px for exact top offset)
         Spacer(modifier = Modifier.height(54.refPx))

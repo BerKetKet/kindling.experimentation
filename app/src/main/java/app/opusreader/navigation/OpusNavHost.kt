@@ -126,7 +126,7 @@ fun OpusNavHost(
     val collections by bookRepository.collections.collectAsState()
     val notifications by bookRepository.notifications.collectAsState()
 
-    val currentBook = allBooks.firstOrNull { it.id == "gardens_of_the_moon" } ?: allBooks.first()
+    val currentBook = allBooks.firstOrNull { it.id == "frankenstein_shelley" } ?: allBooks.first()
 
     // Annotation filter and sort states
     var annotationFilterTypes by remember { mutableStateOf(emptySet<String>()) }
@@ -436,7 +436,7 @@ fun OpusNavHost(
                 onClick = { navController.navigate(NavRoutes.READER) },
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(start = 40.refPx, bottom = 97.refPx)
+                    .padding(start = 73.refPx, bottom = OpusSpacing.floatingCoverFloatOffset)
             )
         }
     }
