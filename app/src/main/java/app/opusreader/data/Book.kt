@@ -53,7 +53,9 @@ data class NotificationItem(
     val title: String,
     val description: String,
     val dateText: String,
-    val isRead: Boolean = false
+    val isRead: Boolean = false,
+    val coverDrawableRes: Int? = null,
+    val isAvatar: Boolean = false
 )
 
 object SampleBooks {
@@ -267,21 +269,64 @@ object SampleBooks {
             title = "Library Synchronized",
             description = "Reading positions and annotations synced across all devices.",
             dateText = "Today, 7:43 PM",
-            isRead = true
+            isRead = true,
+            isAvatar = true
         ),
         NotificationItem(
             id = "notif_2",
             title = "Download Complete",
-            description = "Gardens of the Moon (Book One) is ready to read offline.",
+            description = "Frankenstein is ready to read offline.",
             dateText = "Yesterday, 3:15 PM",
-            isRead = true
+            isRead = true,
+            coverDrawableRes = app.opusreader.R.drawable.cover_0
         ),
         NotificationItem(
             id = "notif_3",
-            title = "Welcome to Opus Reader",
-            description = "Your personal EPUB reader is configured and ready.",
+            title = "New Collection",
+            description = "Added 'Classics' collection with 4 titles.",
             dateText = "Nov 14, 2026",
-            isRead = false
+            isRead = true,
+            isAvatar = true
+        ),
+        NotificationItem(
+            id = "notif_4",
+            title = "Import Complete",
+            description = "The Picture of Dorian Gray imported.",
+            dateText = "Nov 12, 2026",
+            isRead = true,
+            isAvatar = true
+        ),
+        NotificationItem(
+            id = "notif_5",
+            title = "Download Complete",
+            description = "Pride and Prejudice is ready to read offline. Tap to begin reading.",
+            dateText = "Nov 10, 2026",
+            isRead = true,
+            coverDrawableRes = app.opusreader.R.drawable.cover_2
+        ),
+        NotificationItem(
+            id = "notif_6",
+            title = "Welcome to Opus Reader",
+            description = "Your personal EPUB reader is configured. Explore the Project Gutenberg catalog.",
+            dateText = "Nov 8, 2026",
+            isRead = false,
+            isAvatar = true
+        ),
+        NotificationItem(
+            id = "notif_7",
+            title = "Download Complete",
+            description = "The Adventures of Sherlock Holmes is ready to read offline. Tap to open.",
+            dateText = "Nov 5, 2026",
+            isRead = true,
+            isAvatar = true
+        ),
+        NotificationItem(
+            id = "notif_8",
+            title = "Download Complete",
+            description = "Moby Dick; or, The Whale is ready to read offline.",
+            dateText = "Nov 1, 2026",
+            isRead = true,
+            isAvatar = true
         )
     )
 }
