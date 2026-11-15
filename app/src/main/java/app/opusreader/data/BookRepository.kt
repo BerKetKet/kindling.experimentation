@@ -161,10 +161,13 @@ class FakeBookRepository(
         filter: LibraryFilterState,
         sort: LibrarySortOrder
     ): List<Book> {
+        val hasReadFilter = filter.showRead || filter.showUnread
+        val hasTypeFilter = filter.showBooks || filter.showSamples || filter.showDocs
+
         return books
             .filter { book ->
-                val readMatch = if (book.isRead) filter.showRead else filter.showUnread
-                val typeMatch = when (book.contentType) {
+                val readMatch = if (!hasReadFilter) true else (if (book.isRead) filter.showRead else filter.showUnread)
+                val typeMatch = if (!hasTypeFilter) true else when (book.contentType) {
                     ContentType.BOOK -> filter.showBooks
                     ContentType.SAMPLE -> filter.showSamples
                     ContentType.DOC -> filter.showDocs

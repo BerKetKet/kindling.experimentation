@@ -234,7 +234,8 @@ fun OpusNavHost(
                             onApplyFilter = { newFilter ->
                                 bookRepository.setFilter(newFilter)
                                 navController.popBackStack()
-                            }
+                            },
+                            modifier = Modifier.align(Alignment.BottomCenter)
                         )
                     }
                 }
@@ -272,7 +273,8 @@ fun OpusNavHost(
                                     LibraryViewMode.LIST -> navController.navigate(NavRoutes.LIBRARY_LIST)
                                     LibraryViewMode.COLLECTIONS -> navController.navigate(NavRoutes.COLLECTIONS)
                                 }
-                            }
+                            },
+                            modifier = Modifier.align(Alignment.BottomCenter)
                         )
                     }
                 }

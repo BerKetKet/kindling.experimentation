@@ -34,11 +34,11 @@ enum class LibraryViewMode {
 }
 
 data class LibraryFilterState(
-    val showRead: Boolean = true,
-    val showUnread: Boolean = true,
-    val showBooks: Boolean = true,
-    val showSamples: Boolean = true,
-    val showDocs: Boolean = true
+    val showRead: Boolean = false,
+    val showUnread: Boolean = false,
+    val showBooks: Boolean = false,
+    val showSamples: Boolean = false,
+    val showDocs: Boolean = false
 )
 
 data class CollectionItem(
