@@ -81,13 +81,13 @@ fun DisplaySettingsFontTab(
                         contentAlignment = Alignment.TopCenter,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height((115 / 2.625).dp)
+                            .height((80 / 2.625).dp)
                     ) {
                         Text(
                             text = "Aa",
                             color = if (isSelected) Color(0xFFA3D7F5) else Color.White,
                             fontFamily = fontOpt.fontFamily,
-                            fontSize = 60.sp,
+                            fontSize = 42.sp,
                             fontWeight = FontWeight.Normal,
                             style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
                         )

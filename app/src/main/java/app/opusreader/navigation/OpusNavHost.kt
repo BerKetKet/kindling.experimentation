@@ -662,6 +662,16 @@ private fun handleFixtureDeepLink(
             }
         }
         "D18", "R12" -> {
+            readerEngine.updateSettings {
+                it.copy(
+                    updatePageWithSystemTheme = false,
+                    pageColor = "BLACK",
+                    marginPreset = 1,
+                    isJustified = true,
+                    continuousScrolling = false,
+                    orientationLock = false
+                )
+            }
             navController.navigate(NavRoutes.DISPLAY_LAYOUT) {
                 popUpTo(0) { inclusive = true }
             }

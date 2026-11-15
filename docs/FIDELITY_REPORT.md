@@ -8,7 +8,7 @@ Thresholds per screen (outside masks):
 
 | ID | Screen Name | Reference File | Diff % | Worst Offset (px) | Liveness | Scroll | Status | Notes |
 |---|---|---|---|---|---|---|---|---|
-| D17 | Display settings: Font | `docs/reference/17_display-settings-font-tab.png` | 10.86% | 0 px | PASS | N/A | FAIL | bad: 10.86%, dy: 0px |
+| D18 | Display settings: Layout | `docs/reference/18_display-settings-layout-tab.png` | 13.46% | 134 px | PASS | N/A | FAIL | bad: 13.46%, dy: 134px |
 
 ## Summary
 - **Total canonical screens evaluated**: 1
