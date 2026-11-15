@@ -27,9 +27,13 @@ import app.opusreader.navigation.OpusNavHost
 import app.opusreader.ui.theme.OpusBottomBar
 import app.opusreader.ui.theme.OpusReaderTheme
 
+import app.opusreader.data.RoomBookRepository
+
 class MainActivity : ComponentActivity() {
 
-    private val bookRepository: BookRepository = FakeBookRepository()
+    private val bookRepository: BookRepository by lazy {
+        RoomBookRepository.create(applicationContext)
+    }
     private val catalogRepository: CatalogRepository = FakeCatalogRepository()
     private var fixtureId by mutableStateOf<String?>(null)
     private var fixtureTrigger by mutableIntStateOf(0)

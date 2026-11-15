@@ -42,6 +42,16 @@ import app.opusreader.ui.theme.OpusSurface
 import app.opusreader.ui.theme.OpusTextPrimary
 import app.opusreader.ui.theme.OpusTextSecondary
 import app.opusreader.ui.theme.refPx
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.Animatable
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.layout.offset
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.IntOffset
+import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 @Composable
 fun OpusBottomSheetHeader(
@@ -180,14 +190,48 @@ fun OpusModalBottomSheet(
     surfaceColor: Color = OpusSurface,
     content: @Composable ColumnScope.() -> Unit
 ) {
+    BackHandler(onBack = onDismissRequest)
+
+    val coroutineScope = rememberCoroutineScope()
+    val offsetY = remember { Animatable(0f) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(OpusScrim)
+            .background(OpusScrim.copy(alpha = (1f - (offsetY.value / 1000f).coerceIn(0f, 0.7f)) * OpusScrim.alpha))
             .clickable(onClick = onDismissRequest),
         contentAlignment = Alignment.BottomCenter
     ) {
-        Box(modifier = Modifier.clickable(enabled = false) {}) {
+        Box(
+            modifier = Modifier
+                .clickable(enabled = false) {}
+                .offset { IntOffset(0, offsetY.value.roundToInt().coerceAtLeast(0)) }
+                .pointerInput(Unit) {
+                    detectVerticalDragGestures(
+                        onDragEnd = {
+                            if (offsetY.value > 250f) {
+                                coroutineScope.launch {
+                                    offsetY.animateTo(1500f)
+                                    onDismissRequest()
+                                }
+                            } else {
+                                coroutineScope.launch {
+                                    offsetY.animateTo(0f)
+                                }
+                            }
+                        },
+                        onDragCancel = {
+                            coroutineScope.launch { offsetY.animateTo(0f) }
+                        },
+                        onVerticalDrag = { change, dragAmount ->
+                            change.consume()
+                            coroutineScope.launch {
+                                offsetY.snapTo((offsetY.value + dragAmount).coerceAtLeast(0f))
+                            }
+                        }
+                    )
+                }
+        ) {
             OpusBottomSheetContainer(
                 title = title,
                 centerTitle = centerTitle,
