@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -61,6 +62,8 @@ fun CollectionsScreen(
     collections: List<CollectionItem> = emptyList(),
     onBackClick: () -> Unit = {},
     onCreateCollection: (String) -> Unit = {},
+    onRenameCollection: (String, String) -> Unit = { _, _ -> },
+    onDeleteCollection: (String) -> Unit = {},
     onFilterClick: () -> Unit = {},
     onSortClick: () -> Unit = {},
     onCollectionClick: (CollectionItem) -> Unit = {},
@@ -69,6 +72,10 @@ fun CollectionsScreen(
     var searchQuery by remember { mutableStateOf("") }
     var showCreateDialog by remember { mutableStateOf(false) }
     var newCollectionName by remember { mutableStateOf("") }
+    var collectionForMenu by remember { mutableStateOf<CollectionItem?>(null) }
+    var collectionToRename by remember { mutableStateOf<CollectionItem?>(null) }
+    var collectionToDelete by remember { mutableStateOf<CollectionItem?>(null) }
+    var renameValue by remember { mutableStateOf("") }
 
     val filteredCollections = remember(collections, searchQuery) {
         if (searchQuery.isBlank()) collections
@@ -124,6 +131,141 @@ fun CollectionsScreen(
                         newCollectionName = ""
                     }
                 ) {
+                    Text("CANCEL", color = OpusTextSecondary)
+                }
+            },
+            containerColor = OpusSurface
+        )
+    }
+
+    if (collectionForMenu != null) {
+        val col = collectionForMenu!!
+        AlertDialog(
+            onDismissRequest = { collectionForMenu = null },
+            title = {
+                Text(
+                    text = col.name,
+                    color = OpusTextPrimary,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            },
+            text = {
+                Column {
+                    Text(
+                        text = "Rename Collection",
+                        color = OpusAccentBlue,
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                renameValue = col.name
+                                collectionToRename = col
+                                collectionForMenu = null
+                            }
+                            .padding(vertical = 12.dp)
+                    )
+                    Text(
+                        text = "Delete Collection",
+                        color = Color(0xFFE53935),
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                collectionToDelete = col
+                                collectionForMenu = null
+                            }
+                            .padding(vertical = 12.dp)
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { collectionForMenu = null }) {
+                    Text("CANCEL", color = OpusTextSecondary)
+                }
+            },
+            containerColor = OpusSurface
+        )
+    }
+
+    if (collectionToRename != null) {
+        val col = collectionToRename!!
+        AlertDialog(
+            onDismissRequest = { collectionToRename = null },
+            title = {
+                Text(
+                    text = "Rename Collection",
+                    color = OpusTextPrimary,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            },
+            text = {
+                OutlinedTextField(
+                    value = renameValue,
+                    onValueChange = { renameValue = it },
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = OpusTextPrimary,
+                        unfocusedTextColor = OpusTextPrimary,
+                        focusedBorderColor = OpusAccentBlue,
+                        unfocusedBorderColor = OpusDivider
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        if (renameValue.isNotBlank()) {
+                            onRenameCollection(col.id, renameValue.trim())
+                            collectionToRename = null
+                        }
+                    }
+                ) {
+                    Text("RENAME", color = OpusAccentBlue, fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { collectionToRename = null }) {
+                    Text("CANCEL", color = OpusTextSecondary)
+                }
+            },
+            containerColor = OpusSurface
+        )
+    }
+
+    if (collectionToDelete != null) {
+        val col = collectionToDelete!!
+        AlertDialog(
+            onDismissRequest = { collectionToDelete = null },
+            title = {
+                Text(
+                    text = "Delete Collection?",
+                    color = OpusTextPrimary,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            },
+            text = {
+                Text(
+                    text = "Are you sure you want to delete '${col.name}'? Books in this collection will remain in your library.",
+                    color = OpusTextSecondary,
+                    fontSize = 14.sp
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDeleteCollection(col.id)
+                        collectionToDelete = null
+                    }
+                ) {
+                    Text("DELETE", color = Color(0xFFE53935), fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { collectionToDelete = null }) {
                     Text("CANCEL", color = OpusTextSecondary)
                 }
             },
@@ -258,7 +400,7 @@ fun CollectionsScreen(
                                 fontSize = 13.sp
                             )
                         }
-                        IconButton(onClick = { onCollectionClick(col) }) {
+                        IconButton(onClick = { collectionForMenu = col }) {
                             Icon(
                                 imageVector = Icons.Default.MoreVert,
                                 contentDescription = "Collection options",

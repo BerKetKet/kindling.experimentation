@@ -19,12 +19,15 @@ interface BookRepository {
     fun createCollection(name: String): CollectionItem
     fun deleteCollection(id: String)
     fun toggleBookInCollection(bookId: String, collectionId: String)
+    fun renameCollection(id: String, newName: String)
     fun toggleDownload(bookId: String)
+    fun toggleRead(bookId: String)
     fun updateProgress(bookId: String, progress: Int)
     fun addBook(book: Book)
     fun addNotification(notification: NotificationItem)
     fun deleteNotification(id: String)
     fun clearAllNotifications()
+    fun markAllNotificationsRead()
 }
 
 class FakeBookRepository(
@@ -91,9 +94,22 @@ class FakeBookRepository(
         }
     }
 
+    override fun renameCollection(id: String, newName: String) {
+        _collections.value = _collections.value.map {
+            if (it.id == id) it.copy(name = newName) else it
+        }
+    }
+
     override fun toggleDownload(bookId: String) {
         _allBooks.value = _allBooks.value.map {
             if (it.id == bookId) it.copy(isDownloaded = !it.isDownloaded) else it
+        }
+        refreshFilteredBooks()
+    }
+
+    override fun toggleRead(bookId: String) {
+        _allBooks.value = _allBooks.value.map {
+            if (it.id == bookId) it.copy(isRead = !it.isRead) else it
         }
         refreshFilteredBooks()
     }
@@ -131,6 +147,10 @@ class FakeBookRepository(
 
     override fun clearAllNotifications() {
         _notifications.value = emptyList()
+    }
+
+    override fun markAllNotificationsRead() {
+        _notifications.value = _notifications.value.map { it.copy(isRead = true) }
     }
 
     private fun refreshFilteredBooks() {

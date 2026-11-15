@@ -80,6 +80,16 @@ fun SettingsScreen(
     var autoDownloadAudiobooks by remember { mutableStateOf(false) }
     var syncEnabled by remember { mutableStateOf(true) }
     var pushNotificationsEnabled by remember { mutableStateOf(true) }
+    var showFontManagerDialog by remember { mutableStateOf(false) }
+
+    val fontPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            val fileName = queryDisplayName(context, uri) ?: "custom_font.ttf"
+            Toast.makeText(context, "Added font: $fileName", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
@@ -147,6 +157,70 @@ fun SettingsScreen(
             dismissButton = {
                 TextButton(onClick = { showDeviceNameDialog = false }) {
                     Text("CANCEL", color = OpusTextSecondary)
+                }
+            },
+            containerColor = OpusSurface
+        )
+    }
+
+    if (showFontManagerDialog) {
+        val fonts = listOf("Bookerly", "Amazon Ember", "Caecilia", "Droid Serif", "Georgia", "Baskerville", "OpenDyslexic")
+        AlertDialog(
+            onDismissRequest = { showFontManagerDialog = false },
+            title = {
+                Text(
+                    text = "Manage Additional Fonts",
+                    fontFamily = BookerlyFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    color = OpusTextPrimary,
+                    fontSize = 18.sp
+                )
+            },
+            text = {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Installed reading fonts:",
+                        fontFamily = AmazonEmberFontFamily,
+                        color = OpusTextSecondary,
+                        fontSize = 13.sp,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    fonts.forEach { fontName ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = fontName,
+                                fontFamily = AmazonEmberFontFamily,
+                                color = OpusTextPrimary,
+                                fontSize = 14.sp,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = "Installed",
+                                tint = OpusAccentBlue,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    TextButton(
+                        onClick = {
+                            fontPickerLauncher.launch(arrayOf("*/*", "font/ttf", "font/otf"))
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("+ ADD CUSTOM FONT (.TTF / .OTF)", color = OpusAccentBlue, fontWeight = FontWeight.Bold)
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showFontManagerDialog = false }) {
+                    Text("DONE", color = OpusAccentBlue, fontWeight = FontWeight.Bold)
                 }
             },
             containerColor = OpusSurface
@@ -294,7 +368,10 @@ fun SettingsScreen(
             title = "Manage additional fonts",
             subtitle = "Download or remove reading fonts with large file sizes.",
             rowHeight = 172.refPx,
-            onClick = onFontManagerClick
+            onClick = {
+                onFontManagerClick()
+                showFontManagerDialog = true
+            }
         )
     }
 }

@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.HorizontalDivider
@@ -23,8 +24,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -61,6 +64,16 @@ fun ContentsTocScreen(
     val bookTitle by engine.bookTitle.collectAsState()
     val bookAuthor by engine.bookAuthor.collectAsState()
     val isDark = isOpusDarkTheme
+
+    val listState = rememberLazyListState()
+    val activeIndex = remember(tocList, currentLocation.chapterTitle) {
+        tocList.indexOfFirst { it.title == currentLocation.chapterTitle }
+    }
+    LaunchedEffect(activeIndex) {
+        if (activeIndex > 0) {
+            listState.scrollToItem(activeIndex)
+        }
+    }
 
     Column(
         modifier = modifier
@@ -132,6 +145,7 @@ fun ContentsTocScreen(
 
         // Chapter list starting at y = 280 with exact 132.refPx (50.29 dp) row pitch
         LazyColumn(
+            state = listState,
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()

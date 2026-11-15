@@ -13,6 +13,8 @@ object NavRoutes {
     const val LIBRARY_LIST = "library_list"       // 07
     const val COLLECTIONS = "collections"         // 08
     const val NOTIFICATIONS = "notifications"     // 09
+    const val CHALLENGES = "challenges"
+    const val YOUR_LISTS = "your_lists"
 
     // Reader screens
     const val READER = "reader"                   // 10

@@ -122,7 +122,7 @@ class RoomBookRepository(
         }
     }
 
-    fun renameCollection(id: String, newName: String) {
+    override fun renameCollection(id: String, newName: String) {
         scope.launch {
             db.collectionDao().renameCollection(id, newName)
         }
@@ -145,6 +145,15 @@ class RoomBookRepository(
             val book = db.bookDao().getBookById(bookId)
             if (book != null) {
                 db.bookDao().updateDownloadState(bookId, !book.isDownloaded)
+            }
+        }
+    }
+
+    override fun toggleRead(bookId: String) {
+        scope.launch {
+            val book = db.bookDao().getBookById(bookId)
+            if (book != null) {
+                db.bookDao().updateReadState(bookId, !book.isRead)
             }
         }
     }
@@ -185,6 +194,12 @@ class RoomBookRepository(
     override fun clearAllNotifications() {
         scope.launch {
             db.notificationDao().clearAll()
+        }
+    }
+
+    override fun markAllNotificationsRead() {
+        scope.launch {
+            db.notificationDao().markAllAsRead()
         }
     }
 

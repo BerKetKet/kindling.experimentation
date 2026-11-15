@@ -123,4 +123,28 @@ class FakeBookRepositoryTest {
         assertEquals(initialNotifs + 1, repository.notifications.value.size)
         assertEquals("test_notif", repository.notifications.value.first().id)
     }
+
+    @Test
+    fun testToggleRead() {
+        val bookId = "gardens_of_the_moon"
+        val initialRead = repository.allBooks.value.first { it.id == bookId }.isRead
+        repository.toggleRead(bookId)
+        val toggled = repository.allBooks.value.first { it.id == bookId }.isRead
+        assertEquals(!initialRead, toggled)
+    }
+
+    @Test
+    fun testRenameCollection() {
+        val created = repository.createCollection("Old Name")
+        repository.renameCollection(created.id, "New Name")
+        val updated = repository.collections.value.first { it.id == created.id }
+        assertEquals("New Name", updated.name)
+    }
+
+    @Test
+    fun testMarkAllNotificationsRead() {
+        repository.markAllNotificationsRead()
+        val allRead = repository.notifications.value.all { it.isRead }
+        assertTrue(allRead)
+    }
 }
