@@ -2,6 +2,7 @@ package app.opusreader.navigation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -129,8 +130,8 @@ fun OpusNavHost(
     val currentBook = allBooks.firstOrNull { it.id == "frankenstein_shelley" } ?: allBooks.first()
 
     // Annotation filter and sort states
-    var annotationFilterTypes by remember { mutableStateOf(emptySet<String>()) }
-    var annotationFilterColors by remember { mutableStateOf(emptySet<String>()) }
+    var annotationFilterTypes by remember { mutableStateOf(setOf("Highlight", "Bookmark")) }
+    var annotationFilterColors by remember { mutableStateOf(setOf("YELLOW", "BLUE")) }
     var annotationSortField by remember { mutableStateOf(AnnotationSortField.LOCATION) }
     var annotationSortDirection by remember { mutableStateOf(SortDirection.ASCENDING) }
 
@@ -374,16 +375,37 @@ fun OpusNavHost(
 
                 // 14 Annotations Filter Sheet
                 composable(NavRoutes.ANNOTATIONS_FILTER) {
-                    AnnotationsFilterSheet(
-                        initialTypes = annotationFilterTypes,
-                        initialColors = annotationFilterColors,
-                        onCloseClick = { navController.popBackStack() },
-                        onApply = { types, colors ->
-                            annotationFilterTypes = types
-                            annotationFilterColors = colors
-                            navController.popBackStack()
-                        }
-                    )
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        AnnotationsScreen(
+                            engine = readerEngine,
+                            filterTypes = annotationFilterTypes,
+                            filterColors = annotationFilterColors,
+                            sortField = annotationSortField,
+                            sortDirection = annotationSortDirection,
+                            onBackClick = { navController.popBackStack() },
+                            onFilterClick = {},
+                            onSortClick = {},
+                            onExportClick = {},
+                            onItemClick = {}
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color(0xFF444648).copy(alpha = 0.60f))
+                                .clickable { navController.popBackStack() }
+                        )
+                        AnnotationsFilterSheet(
+                            initialTypes = annotationFilterTypes,
+                            initialColors = annotationFilterColors,
+                            onCloseClick = { navController.popBackStack() },
+                            onApply = { types, colors ->
+                                annotationFilterTypes = types
+                                annotationFilterColors = colors
+                                navController.popBackStack()
+                            },
+                            modifier = Modifier.align(Alignment.BottomCenter)
+                        )
+                    }
                 }
 
                 // 15 Annotations Sort Sheet
