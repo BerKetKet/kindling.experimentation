@@ -3,26 +3,15 @@
 Format:
 `<id>: <x0>,<y0>,<x1>,<y1> [<x0>,<y0>,<x1>,<y1> ...]`
 
-# D01: Library grid (Mask 17px strip where bottom row covers are cut off by nav bar at y=2094..2111)
-D01: 0,2094,1080,2111
-
-# D04: Settings (Mask device name and email address per privacy rule)
-D04: 45,355,650,395 45,1190,680,1235
-
-# D10: Reader Chrome (Mask reading text area to compare chrome bars)
-D10: 0,251,1080,2040
-
 # D12: In-book search (Mask virtual software keyboard)
 D12: 0,1290,1080,2340
 
-# D16: Annotations share sheet (Mask name and email address per privacy rule)
-D16: 40,1675,1040,1715 40,1980,620,2060
-
-# D17-D20: Display settings sheet (Mask reading text area above the sheet)
-D17: 0,0,1080,1186
-D18: 0,0,1080,284
-D19: 0,0,1080,284
-D20: 0,0,1080,284
+# D17 & R11-R14: Mask background reading text above half-height Display Settings sheet
+D17: 0,90,1080,1176
+R11: 0,90,1080,1176
+R12: 0,90,1080,1176
+R13: 0,90,1080,1176
+R14: 0,90,1080,1176
 
 # R03-R06: Reading Canvas (Mask reading text area to compare page background, margins, and header/footer only)
 R03: 50,180,1030,2200
