@@ -249,4 +249,46 @@ Paran stood, buckling his sword-belt. Outside, the sky burned with the unnatural
             list.map { if (it.id == id) it.copy(isFavorite = !it.isFavorite) else it }
         }
     }
+
+    override fun hitTest(charOffset: Int): HitTestResult? {
+        val text = _currentText.value
+        if (charOffset !in text.indices) return null
+        var start = charOffset
+        while (start > 0 && !text[start - 1].isWhitespace()) {
+            start--
+        }
+        var end = charOffset
+        while (end < text.length && !text[end].isWhitespace()) {
+            end++
+        }
+        val word = text.substring(start, end).trim(' ', '.', ',', ';', ':', '!', '?', '"', '“', '”', '‘', '’')
+        val existing = _annotations.value.firstOrNull { ann ->
+            ann.selectedText.contains(word, ignoreCase = true)
+        }
+        return HitTestResult(charOffset = charOffset, word = word, existingAnnotation = existing)
+    }
+
+    override fun getSelectionText(range: TextSelectionRange): String {
+        val text = _currentText.value
+        val s = range.start.coerceIn(0, text.length)
+        val e = range.end.coerceIn(s, text.length)
+        return text.substring(s, e)
+    }
+
+    override fun createHighlight(range: TextSelectionRange, color: String, note: String?): AnnotationItem {
+        val selected = getSelectionText(range)
+        val ann = AnnotationItem(
+            id = "ann_${System.currentTimeMillis()}",
+            location = _currentLocation.value.current,
+            sectionTitle = _currentLocation.value.chapterTitle,
+            selectedText = if (selected.isNotBlank()) selected else "Highlighted passage",
+            note = note,
+            highlightColor = color,
+            type = if (note != null) AnnotationType.NOTE else AnnotationType.HIGHLIGHT,
+            isFavorite = false,
+            dateAdded = "Just now"
+        )
+        addAnnotation(ann)
+        return ann
+    }
 }

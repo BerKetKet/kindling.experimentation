@@ -59,6 +59,17 @@ data class ReaderSettings(
     val pageTurnAnimation: Boolean = true
 )
 
+data class TextSelectionRange(
+    val start: Int,
+    val end: Int
+)
+
+data class HitTestResult(
+    val charOffset: Int,
+    val word: String,
+    val existingAnnotation: AnnotationItem? = null
+)
+
 interface ReaderEngine {
     val bookTitle: StateFlow<String>
     val bookAuthor: StateFlow<String>
@@ -79,4 +90,7 @@ interface ReaderEngine {
     fun addAnnotation(annotation: AnnotationItem)
     fun removeAnnotation(id: String)
     fun toggleFavoriteAnnotation(id: String)
+    fun hitTest(charOffset: Int): HitTestResult?
+    fun getSelectionText(range: TextSelectionRange): String
+    fun createHighlight(range: TextSelectionRange, color: String, note: String? = null): AnnotationItem
 }

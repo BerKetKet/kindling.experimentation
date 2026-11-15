@@ -24,6 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import app.opusreader.R
+import app.opusreader.data.Book
 import app.opusreader.data.BookRepository
 import app.opusreader.data.CatalogRepository
 import app.opusreader.data.FakeBookRepository
@@ -33,6 +34,9 @@ import app.opusreader.data.NotificationItem
 import app.opusreader.data.ReaderSettingsDataStore
 import app.opusreader.engine.FakeReaderEngine
 import app.opusreader.engine.ReaderEngine
+import app.opusreader.ui.components.AddToCollectionDialog
+import app.opusreader.ui.components.BookContextMenuSheet
+import app.opusreader.ui.components.BookDetailsDialog
 import app.opusreader.ui.components.FloatingResumeCover
 import app.opusreader.ui.components.MainTab
 import app.opusreader.ui.components.OpusBottomNavBar
@@ -51,11 +55,13 @@ import app.opusreader.ui.screens.LibraryListScreen
 import app.opusreader.ui.screens.LibraryViewSortSheet
 import app.opusreader.ui.screens.MoreScreen
 import app.opusreader.ui.screens.NotificationsScreen
+import app.opusreader.ui.screens.ReadingChallengesScreen
 import app.opusreader.ui.screens.ReaderScreen
 import app.opusreader.ui.screens.ReaderSearchScreen
 import app.opusreader.ui.screens.SettingsScreen
 import app.opusreader.ui.screens.SortDirection
 import app.opusreader.ui.screens.ViewSortState
+import app.opusreader.ui.screens.YourListsScreen
 import app.opusreader.ui.theme.OpusBackground
 
 @Composable
@@ -125,6 +131,10 @@ fun OpusNavHost(
         fixtureId !in listOf("R02", "R03", "R04", "R05", "R06")
     }
 
+    var selectedBookForMenu by remember { mutableStateOf<Book?>(null) }
+    var selectedBookForCollection by remember { mutableStateOf<Book?>(null) }
+    var selectedBookForDetails by remember { mutableStateOf<Book?>(null) }
+
     Box(modifier = modifier.fillMaxSize()) {
         Scaffold(
             containerColor = OpusBackground,
@@ -169,7 +179,8 @@ fun OpusNavHost(
                             navController.navigate(NavRoutes.READER)
                         },
                         onFilterClick = { navController.navigate(NavRoutes.LIBRARY_FILTER) },
-                        onSortClick = { navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) }
+                        onSortClick = { navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) },
+                        onBookLongClick = { book -> selectedBookForMenu = book }
                     )
                 }
 
@@ -184,7 +195,10 @@ fun OpusNavHost(
                             navController.navigate(NavRoutes.READER)
                         },
                         onSeeAllLibraryClick = { navController.navigate(NavRoutes.LIBRARY_GRID) },
-                        onNotificationsClick = { navController.navigate(NavRoutes.NOTIFICATIONS) }
+                        onNotificationsClick = {
+                            bookRepository.markAllNotificationsRead()
+                            navController.navigate(NavRoutes.NOTIFICATIONS)
+                        }
                     )
                 }
 
@@ -192,7 +206,9 @@ fun OpusNavHost(
                 composable(NavRoutes.MORE) {
                     MoreScreen(
                         onSettingsClick = { navController.navigate(NavRoutes.SETTINGS) },
-                        onNotebooksClick = { navController.navigate(NavRoutes.ANNOTATIONS) }
+                        onNotebooksClick = { navController.navigate(NavRoutes.ANNOTATIONS) },
+                        onChallengesClick = { navController.navigate(NavRoutes.CHALLENGES) },
+                        onListsClick = { navController.navigate(NavRoutes.YOUR_LISTS) }
                     )
                 }
 
@@ -267,7 +283,8 @@ fun OpusNavHost(
                         },
                         onFilterClick = { navController.navigate(NavRoutes.LIBRARY_FILTER) },
                         onSortClick = { navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) },
-                        onDownloadClick = { book -> bookRepository.toggleDownload(book.id) }
+                        onDownloadClick = { book -> bookRepository.toggleDownload(book.id) },
+                        onMoreOptionsClick = { book -> selectedBookForMenu = book }
                     )
                 }
 
@@ -277,6 +294,8 @@ fun OpusNavHost(
                         collections = collections,
                         onBackClick = { navController.popBackStack() },
                         onCreateCollection = { bookRepository.createCollection(it) },
+                        onRenameCollection = { id, name -> bookRepository.renameCollection(id, name) },
+                        onDeleteCollection = { id -> bookRepository.deleteCollection(id) },
                         onSortClick = { navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) },
                         onCollectionClick = { navController.navigate(NavRoutes.LIBRARY_GRID) }
                     )
@@ -288,7 +307,29 @@ fun OpusNavHost(
                         notifications = notifications,
                         onBackClick = { navController.popBackStack() },
                         onClearAll = { bookRepository.clearAllNotifications() },
-                        onDeleteNotification = { bookRepository.deleteNotification(it) }
+                        onDeleteNotification = { bookRepository.deleteNotification(it) },
+                        onItemClick = {
+                            navController.navigate(NavRoutes.READER)
+                        }
+                    )
+                }
+
+                // Reading Challenges
+                composable(NavRoutes.CHALLENGES) {
+                    ReadingChallengesScreen(
+                        onBackClick = { navController.popBackStack() }
+                    )
+                }
+
+                // Your Lists
+                composable(NavRoutes.YOUR_LISTS) {
+                    YourListsScreen(
+                        books = allBooks,
+                        onBackClick = { navController.popBackStack() },
+                        onBookClick = { book ->
+                            readerEngine.openBook(book.title, book.author)
+                            navController.navigate(NavRoutes.READER)
+                        }
                     )
                 }
 
@@ -464,6 +505,35 @@ fun OpusNavHost(
                     .align(Alignment.BottomStart)
                     .navigationBarsPadding()
                     .padding(start = 16.dp, bottom = 8.dp)
+            )
+        }
+
+        selectedBookForMenu?.let { book ->
+            BookContextMenuSheet(
+                book = book,
+                onDismissRequest = { selectedBookForMenu = null },
+                onToggleRead = { bookRepository.toggleRead(book.id) },
+                onAddToCollection = { selectedBookForCollection = book },
+                onToggleDownload = { bookRepository.toggleDownload(book.id) },
+                onBookDetails = { selectedBookForDetails = book }
+            )
+        }
+
+        selectedBookForCollection?.let { book ->
+            AddToCollectionDialog(
+                book = book,
+                collections = collections,
+                onDismissRequest = { selectedBookForCollection = null },
+                onToggleCollection = { colId ->
+                    bookRepository.toggleBookInCollection(book.id, colId)
+                }
+            )
+        }
+
+        selectedBookForDetails?.let { book ->
+            BookDetailsDialog(
+                book = book,
+                onDismissRequest = { selectedBookForDetails = null }
             )
         }
     }

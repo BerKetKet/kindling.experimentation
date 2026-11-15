@@ -1,5 +1,6 @@
 package app.opusreader.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
@@ -20,6 +21,7 @@ object Haptics {
         view?.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
     }
 
+    @SuppressLint("MissingPermission")
     fun tick(context: Context) {
         val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator ?: return
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

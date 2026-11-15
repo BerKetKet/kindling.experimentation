@@ -60,4 +60,24 @@ class FakeReaderEngineTest {
         val nowFav = engine.annotations.value.first { it.id == firstId }.isFavorite
         assertEquals(!wasFav, nowFav)
     }
+
+    @Test
+    fun testHitTestAndSelection() {
+        val range = app.opusreader.engine.TextSelectionRange(0, 7)
+        val selected = engine.getSelectionText(range)
+        assertEquals("Preface", selected)
+
+        val hit = engine.hitTest(3)
+        org.junit.Assert.assertNotNull(hit)
+        assertEquals("Preface", hit?.word)
+    }
+
+    @Test
+    fun testCreateHighlight() {
+        val range = app.opusreader.engine.TextSelectionRange(0, 20)
+        val created = engine.createHighlight(range, "YELLOW", "Note on ambition")
+        assertEquals("YELLOW", created.highlightColor)
+        assertEquals("Note on ambition", created.note)
+        assertTrue(engine.annotations.value.any { it.id == created.id })
+    }
 }
