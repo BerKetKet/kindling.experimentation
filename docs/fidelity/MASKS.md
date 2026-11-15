@@ -15,6 +15,9 @@ D10: 0,251,1080,2040
 # D12: In-book search (Mask virtual software keyboard)
 D12: 0,1290,1080,2340
 
+# D16: Annotations share sheet (Mask name and email address per privacy rule)
+D16: 40,1675,1040,1715 40,1980,620,2060
+
 # R03-R06: Reading Canvas (Mask reading text area to compare page background, margins, and header/footer only)
 R03: 50,180,1030,2200
 R04: 50,180,1030,2200

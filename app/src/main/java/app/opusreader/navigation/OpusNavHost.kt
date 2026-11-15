@@ -140,6 +140,9 @@ fun OpusNavHost(
         NavRoutes.CONTENTS,
         NavRoutes.READER_SEARCH,
         NavRoutes.ANNOTATIONS,
+        NavRoutes.ANNOTATIONS_FILTER,
+        NavRoutes.ANNOTATIONS_SORT,
+        NavRoutes.ANNOTATIONS_SHARE,
         NavRoutes.DISPLAY_FONT,
         NavRoutes.DISPLAY_LAYOUT,
         NavRoutes.DISPLAY_THEMES,
@@ -445,9 +448,31 @@ fun OpusNavHost(
 
                 // 16 Annotations Share Sheet
                 composable(NavRoutes.ANNOTATIONS_SHARE) {
-                    AnnotationsShareSheet(
-                        onCloseClick = { navController.popBackStack() }
-                    )
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        AnnotationsScreen(
+                            engine = readerEngine,
+                            filterTypes = emptySet(),
+                            filterColors = emptySet(),
+                            sortField = annotationSortField,
+                            sortDirection = annotationSortDirection,
+                            onBackClick = { navController.popBackStack() },
+                            onFilterClick = {},
+                            onSortClick = {},
+                            onExportClick = {},
+                            onItemClick = {}
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color(0xFF444648).copy(alpha = 0.60f))
+                                .clickable { navController.popBackStack() }
+                        )
+                        AnnotationsShareSheet(
+                            bookTitle = currentBook.title,
+                            onCloseClick = { navController.popBackStack() },
+                            modifier = Modifier.align(Alignment.BottomCenter)
+                        )
+                    }
                 }
 
                 // 17 Display Settings: Font

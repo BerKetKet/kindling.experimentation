@@ -8,7 +8,7 @@ Thresholds per screen (outside masks):
 
 | ID | Screen Name | Reference File | Diff % | Worst Offset (px) | Liveness | Scroll | Status | Notes |
 |---|---|---|---|---|---|---|---|---|
-| D15 | Annotations sort sheet | `docs/reference/15_annotations-sort-sheet.png` | 9.11% | 0 px | PASS | N/A | FAIL | bad: 9.11%, dy: 0px |
+| D16 | Annotations share sheet | `docs/reference/16_annotations-share-via-email.png` | 6.16% | 3 px | PASS | N/A | FAIL | bad: 6.16%, dy: 3px |
 
 ## Summary
 - **Total canonical screens evaluated**: 1
