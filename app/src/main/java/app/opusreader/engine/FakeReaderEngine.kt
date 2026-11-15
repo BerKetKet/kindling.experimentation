@@ -138,33 +138,22 @@ Paran stood, buckling his sword-belt. Outside, the sky burned with the unnatural
                 location = 3971,
                 sectionTitle = "Book Two: Darujhistan",
                 selectedText = "soft knock diverted his attention. “Yes?”",
-                note = "Crucial character turning point.",
+                note = null,
                 highlightColor = "YELLOW",
                 type = AnnotationType.HIGHLIGHT,
-                isFavorite = true,
+                isFavorite = false,
                 dateAdded = "November 12, 2026"
             ),
             AnnotationItem(
                 id = "ann_2",
-                location = 1204,
-                sectionTitle = "Book One: Pale",
-                selectedText = "Sorcery crackled in the afternoon sky, smelling of ozone and crushed stone.",
+                location = 11240,
+                sectionTitle = "Book One: Raraku",
+                selectedText = "“Question,” Mallick Rel said. “Has the council begun?” “Not yet,” Coltaine said slowly. “We await my warlock.” The priest of",
                 note = null,
                 highlightColor = "BLUE",
-                type = AnnotationType.HIGHLIGHT,
+                type = AnnotationType.BOOKMARK,
                 isFavorite = false,
                 dateAdded = "November 10, 2026"
-            ),
-            AnnotationItem(
-                id = "ann_3",
-                location = 250,
-                sectionTitle = "Prologue",
-                selectedText = "The stains of rust seemed to map the world.",
-                note = "Opening imagery.",
-                highlightColor = "PINK",
-                type = AnnotationType.NOTE,
-                isFavorite = true,
-                dateAdded = "November 9, 2026"
             )
         )
     )
