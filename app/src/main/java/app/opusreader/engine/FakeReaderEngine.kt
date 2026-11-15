@@ -72,41 +72,42 @@ Paran stood, buckling his sword-belt. Outside, the sky burned with the unnatural
                 id = "toc_1",
                 title = "Preface to Gardens of the Moon — redux",
                 level = 0,
-                targetLocation = 91
+                targetLocation = 1
             ),
             TocItem(
                 id = "toc_2",
-                title = "Foreword to Gardens of the Moon — 10th Anniversary Edition",
+                title = "Foreword to Gardens of the Moon — 10th Anniversary",
                 level = 0,
-                targetLocation = 140
+                targetLocation = 91
             ),
             TocItem(
                 id = "toc_3",
                 title = "Maps",
                 level = 0,
-                targetLocation = 180
+                targetLocation = 140
             ),
             TocItem(
                 id = "toc_4",
                 title = "Dramatis Personae",
                 level = 0,
-                targetLocation = 220
+                targetLocation = 180
             ),
             TocItem(
                 id = "toc_5",
                 title = "Prologue",
                 level = 0,
-                targetLocation = 250
+                targetLocation = 220
             ),
             TocItem(
                 id = "toc_6",
                 title = "Book One: Pale",
                 level = 0,
-                targetLocation = 320,
+                targetLocation = 250,
                 children = listOf(
                     TocItem("toc_6_1", "Chapter One", 1, 330),
                     TocItem("toc_6_2", "Chapter Two", 1, 410),
-                    TocItem("toc_6_3", "Chapter Three", 1, 520)
+                    TocItem("toc_6_3", "Chapter Three", 1, 520),
+                    TocItem("toc_6_4", "Chapter Four", 1, 600)
                 )
             ),
             TocItem(
@@ -115,9 +116,16 @@ Paran stood, buckling his sword-belt. Outside, the sky burned with the unnatural
                 level = 0,
                 targetLocation = 640,
                 children = listOf(
-                    TocItem("toc_7_1", "Chapter Four", 1, 650),
-                    TocItem("toc_7_2", "Chapter Five", 1, 740)
+                    TocItem("toc_7_1", "Chapter Five", 1, 650),
+                    TocItem("toc_7_2", "Chapter Six", 1, 740),
+                    TocItem("toc_7_3", "Chapter Seven", 1, 800)
                 )
+            ),
+            TocItem(
+                id = "toc_8",
+                title = "Epilogue",
+                level = 0,
+                targetLocation = 850
             )
         )
     )

@@ -8,7 +8,7 @@ Thresholds per screen (outside masks):
 
 | ID | Screen Name | Reference File | Diff % | Worst Offset (px) | Liveness | Scroll | Status | Notes |
 |---|---|---|---|---|---|---|---|---|
-| D10 | Reader chrome visible (dark) | `docs/reference/10_reader-chrome-visible.png` | 4.30% | 0 px | PASS | N/A | FAIL | bad: 4.3%, dy: 0px |
+| D11 | Contents | `docs/reference/11_contents-toc.png` | 4.81% | 56 px | PASS | PASS | FAIL | bad: 4.81%, dy: 56px |
 
 ## Summary
 - **Total canonical screens evaluated**: 1
