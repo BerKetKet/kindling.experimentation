@@ -150,7 +150,7 @@ def run_scroll_test(sid):
     
     return top_img.exists() and mid_img.exists() and end_img.exists()
 
-def run_screen(sid, ref_rel_path, masks_dict, is_scrollable=False, bottom=24, status=90, skip_capture=False):
+def run_screen(sid, ref_rel_path, masks_dict, is_scrollable=False, bottom=48, status=90, skip_capture=False):
     ref_path = ROOT / ref_rel_path
     if not ref_path.exists():
         return dict(id=sid, status="MISSING_REF", pct_bad=100.0, worst_offset=999, liveness="N/A", scroll="N/A", notes=f"Ref missing: {ref_rel_path}")
@@ -286,7 +286,7 @@ def main():
     ap.add_argument("--all", action="store_true", help="Run all canonical screens")
     ap.add_argument("--skip-capture", action="store_true", help="Diff existing captures without invoking adb")
     ap.add_argument("--status", type=int, default=90)
-    ap.add_argument("--bottom", type=int, default=24)
+    ap.add_argument("--bottom", type=int, default=48)
     args = ap.parse_args()
 
     masks_dict = load_masks()

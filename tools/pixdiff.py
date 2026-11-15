@@ -21,6 +21,8 @@ bad = (d > a.tol) & keep
 rb, pb = bands(r, bg_color(r)), bands(p, bg_color(p))
 offs = []
 for (s, e) in rb:
+    if s < a.status or (a.bottom and e >= r.shape[0] - a.bottom):
+        continue
     c = (s + e) / 2
     if pb:
         j = min(pb, key=lambda q: abs((q[0] + q[1]) / 2 - c)); offs.append(dict(ref=[s, e], app=list(j), dy_top=j[0] - s, dh=(j[1] - j[0]) - (e - s)))

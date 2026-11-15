@@ -5,6 +5,7 @@ import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,8 +25,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,6 +33,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,19 +42,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.opusreader.R
 import app.opusreader.data.Book
 import app.opusreader.data.ContentType
 import app.opusreader.ui.theme.AmazonEmberFontFamily
 import app.opusreader.ui.theme.BookerlyFontFamily
+import app.opusreader.ui.theme.LocalFixtureTrigger
 import app.opusreader.ui.theme.OpusAccentBlue
 import app.opusreader.ui.theme.OpusBackground
 import app.opusreader.ui.theme.OpusDivider
@@ -154,11 +156,17 @@ fun SettingsScreen(
         )
     }
 
+    val scrollState = rememberScrollState()
+    val fixtureTrigger = LocalFixtureTrigger.current
+    LaunchedEffect(fixtureTrigger) {
+        scrollState.scrollTo(0)
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(OpusBackground)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(scrollState)
     ) {
         // Distance below status bar (y=90) to title band top (y=148): 148 - 90 = 58 px
         Spacer(modifier = Modifier.height(58.refPx))
@@ -171,9 +179,11 @@ fun SettingsScreen(
                 .padding(start = 51.refPx, end = 20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(
-                onClick = onBackClick,
-                modifier = Modifier.size(46.refPx)
+            Box(
+                modifier = Modifier
+                    .size(46.refPx)
+                    .clickable(onClick = onBackClick),
+                contentAlignment = Alignment.CenterStart
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -183,19 +193,19 @@ fun SettingsScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.width(36.refPx))
+            Spacer(modifier = Modifier.width(53.refPx))
 
             Text(
                 text = "Settings",
                 fontFamily = BookerlyFontFamily,
                 fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
+                fontSize = 21.sp,
                 color = OpusTextPrimary
             )
         }
 
-        // Distance from top bar bottom (187 px) to Row 1 title top (309 px) = 108 px
-        Spacer(modifier = Modifier.height(108.refPx))
+        // Distance from top bar bottom (195 px) to Row 1 title top (309 px) = 113 px
+        Spacer(modifier = Modifier.height(113.refPx))
 
         // Row 1: Device name (starts y=309, pitch=188 px)
         SettingsChevronRow(
@@ -230,6 +240,7 @@ fun SettingsScreen(
             title = "Local file access",
             subtitle = "Enable or disable access to view files on your device in\nyour Kindle library.",
             rowHeight = 248.refPx,
+            chevronTopPadding = 8.refPx,
             onClick = {}
         )
 
@@ -289,6 +300,7 @@ fun SettingsScreen(
             title = "Manage additional fonts",
             subtitle = "Download or remove reading fonts with large file\nsizes.",
             rowHeight = 172.refPx,
+            chevronTopPadding = 8.refPx,
             onClick = onFontManagerClick
         )
 
@@ -301,6 +313,7 @@ private fun SettingsChevronRow(
     title: String,
     subtitle: String,
     rowHeight: Dp,
+    chevronTopPadding: Dp = 13.refPx,
     onClick: () -> Unit
 ) {
     Box(
@@ -308,7 +321,7 @@ private fun SettingsChevronRow(
             .fillMaxWidth()
             .height(rowHeight)
             .clickable(onClick = onClick)
-            .padding(start = 42.refPx, end = 48.refPx),
+            .padding(start = 45.refPx, end = 61.refPx),
         contentAlignment = Alignment.TopStart
     ) {
         Row(
@@ -321,26 +334,22 @@ private fun SettingsChevronRow(
                     fontFamily = AmazonEmberFontFamily,
                     fontWeight = FontWeight.Normal,
                     fontSize = 15.sp,
+                    lineHeight = 18.sp,
                     color = OpusTextPrimary
                 )
-                Spacer(modifier = Modifier.height(6.refPx))
+                Spacer(modifier = Modifier.height(1.refPx))
                 Text(
                     text = subtitle,
                     fontFamily = AmazonEmberFontFamily,
                     fontWeight = FontWeight.Normal,
-                    fontSize = 13.sp,
-                    lineHeight = 18.sp,
+                    fontSize = 13.5.sp,
+                    lineHeight = 20.2.sp,
                     color = OpusTextSecondary
                 )
             }
             Spacer(modifier = Modifier.width(16.dp))
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = null,
-                tint = OpusTextSecondary,
-                modifier = Modifier
-                    .padding(top = 4.dp)
-                    .size(24.dp)
+            SettingsChevron(
+                modifier = Modifier.padding(top = chevronTopPadding)
             )
         }
     }
@@ -359,7 +368,7 @@ private fun SettingsCheckboxRow(
             .fillMaxWidth()
             .height(rowHeight)
             .clickable { onCheckedChange(!checked) }
-            .padding(start = 42.refPx, end = 48.refPx),
+            .padding(start = 45.refPx, end = 48.refPx),
         contentAlignment = Alignment.TopStart
     ) {
         Row(
@@ -372,41 +381,84 @@ private fun SettingsCheckboxRow(
                     fontFamily = AmazonEmberFontFamily,
                     fontWeight = FontWeight.Normal,
                     fontSize = 15.sp,
+                    lineHeight = 18.sp,
                     color = OpusTextPrimary
                 )
-                Spacer(modifier = Modifier.height(6.refPx))
+                Spacer(modifier = Modifier.height(1.refPx))
                 Text(
                     text = subtitle,
                     fontFamily = AmazonEmberFontFamily,
                     fontWeight = FontWeight.Normal,
-                    fontSize = 13.sp,
-                    lineHeight = 18.sp,
+                    fontSize = 13.5.sp,
+                    lineHeight = 20.2.sp,
                     color = OpusTextSecondary
                 )
             }
             Spacer(modifier = Modifier.width(16.dp))
-            val boxShape = RoundedCornerShape(2.dp)
-            Box(
-                modifier = Modifier
-                    .padding(top = 4.dp)
-                    .size(53.refPx)
-                    .clip(boxShape)
-                    .then(
-                        if (checked) Modifier.background(OpusAccentBlue)
-                        else Modifier
-                            .background(Color.Transparent)
-                            .border(1.5.dp, OpusTextSecondary, boxShape)
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                if (checked) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(15.dp)
-                    )
+            SettingsCheckbox(
+                checked = checked,
+                modifier = Modifier.padding(top = 13.refPx)
+            )
+        }
+    }
+}
+
+@Composable
+private fun SettingsChevron(modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier.size(26.refPx, 46.refPx)) {
+        val strokeWidth = 6.refPx.toPx()
+        val path = Path().apply {
+            moveTo(strokeWidth / 2f, strokeWidth / 2f)
+            lineTo(size.width - strokeWidth / 2f, size.height / 2f)
+            lineTo(strokeWidth / 2f, size.height - strokeWidth / 2f)
+        }
+        drawPath(
+            path = path,
+            color = OpusTextSecondary,
+            style = Stroke(
+                width = strokeWidth,
+                cap = StrokeCap.Round,
+                join = StrokeJoin.Round
+            )
+        )
+    }
+}
+
+@Composable
+private fun SettingsCheckbox(
+    checked: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val boxShape = RoundedCornerShape(3.dp)
+    Box(
+        modifier = modifier
+            .size(53.refPx)
+            .clip(boxShape)
+            .then(
+                if (checked) Modifier.background(OpusAccentBlue)
+                else Modifier
+                    .background(Color.Transparent)
+                    .border(3.refPx, OpusTextSecondary, boxShape)
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        if (checked) {
+            Canvas(modifier = Modifier.size(32.refPx, 24.refPx)) {
+                val strokeWidth = 5.refPx.toPx()
+                val path = Path().apply {
+                    moveTo(0f, size.height * 0.45f)
+                    lineTo(size.width * 0.35f, size.height)
+                    lineTo(size.width, 0f)
                 }
+                drawPath(
+                    path = path,
+                    color = OpusBackground,
+                    style = Stroke(
+                        width = strokeWidth,
+                        cap = StrokeCap.Round,
+                        join = StrokeJoin.Round
+                    )
+                )
             }
         }
     }
