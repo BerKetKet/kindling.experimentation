@@ -134,6 +134,17 @@ fun OpusNavHost(
     var annotationSortField by remember { mutableStateOf(AnnotationSortField.LOCATION) }
     var annotationSortDirection by remember { mutableStateOf(SortDirection.ASCENDING) }
 
+    val isFullScreen = currentRoute in listOf(
+        NavRoutes.READER,
+        NavRoutes.CONTENTS,
+        NavRoutes.READER_SEARCH,
+        NavRoutes.ANNOTATIONS,
+        NavRoutes.DISPLAY_FONT,
+        NavRoutes.DISPLAY_LAYOUT,
+        NavRoutes.DISPLAY_THEMES,
+        NavRoutes.DISPLAY_MORE
+    )
+
     Box(modifier = modifier.fillMaxSize()) {
         Scaffold(
             containerColor = if (fixtureId in listOf("D13", "D14", "D15", "D16", "R06")) Color.Black else OpusBackground,
@@ -159,7 +170,14 @@ fun OpusNavHost(
             NavHost(
                 navController = navController,
                 startDestination = NavRoutes.LIBRARY_GRID,
-                modifier = Modifier.padding(innerPadding)
+                modifier = if (isFullScreen) {
+                    Modifier.fillMaxSize()
+                } else {
+                    Modifier.padding(
+                        top = innerPadding.calculateTopPadding(),
+                        bottom = if (isMainTab) innerPadding.calculateBottomPadding() else 0.dp
+                    )
+                }
             ) {
                 // 01 Library Grid
                 composable(NavRoutes.LIBRARY_GRID) {
