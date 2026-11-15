@@ -77,43 +77,8 @@ fun ReaderScreen(
     onAnnotationsClick: () -> Unit = {},
     onDisplaySettingsClick: () -> Unit = {},
     onOverflowClick: () -> Unit = {},
-    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    if (isFixture) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .background(Color(0xFF080808))
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.fixture_reader_top),
-                contentDescription = "Reader Top Chrome",
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(168.refPx)
-                    .clickable(onClick = onBackClick)
-            )
-            Image(
-                painter = painterResource(id = R.drawable.fixture_reader_canvas),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1741.refPx)
-            )
-            Image(
-                painter = painterResource(id = R.drawable.fixture_reader_scrubber),
-                contentDescription = "Reader Scrubber",
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(285.refPx)
-            )
-        }
-        return
-    }
     var chromeVisible by remember { mutableStateOf(true) }
     val location by engine.currentLocation.collectAsState()
     val text by engine.currentText.collectAsState()

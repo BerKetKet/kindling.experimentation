@@ -59,36 +59,8 @@ fun AnnotationsFilterSheet(
     initialColors: Set<String> = emptySet(),
     onCloseClick: () -> Unit = {},
     onApply: (Set<String>, Set<String>) -> Unit = { _, _ -> },
-    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    if (isFixture) {
-        Box(
-            modifier = modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.fixture_annotations_filter_bg),
-                contentDescription = null,
-                contentScale = ContentScale.FillWidth,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.TopCenter)
-                    .clickable(onClick = onCloseClick)
-            )
-            Image(
-                painter = painterResource(id = R.drawable.fixture_annotations_filter_sheet),
-                contentDescription = "Filter Sheet",
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1088.refPx)
-                    .clickable(onClick = onCloseClick)
-            )
-        }
-        return
-    }
-
     var selectedTypes by remember { mutableStateOf(initialTypes) }
     var selectedColors by remember { mutableStateOf(initialColors) }
 

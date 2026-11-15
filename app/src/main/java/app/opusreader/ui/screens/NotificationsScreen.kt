@@ -51,35 +51,8 @@ fun NotificationsScreen(
     onClearAll: () -> Unit = {},
     onDeleteNotification: (String) -> Unit = {},
     onItemClick: (NotificationItem) -> Unit = {},
-    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    if (isFixture) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .background(OpusBackground)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.fixture_notifications_header),
-                contentDescription = "Notifications Header",
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(168.refPx)
-                    .clickable(onClick = onBackClick)
-            )
-            Image(
-                painter = painterResource(id = R.drawable.fixture_notifications_body),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(2026.refPx)
-            )
-        }
-        return
-    }
     Column(
         modifier = modifier
             .fillMaxSize()

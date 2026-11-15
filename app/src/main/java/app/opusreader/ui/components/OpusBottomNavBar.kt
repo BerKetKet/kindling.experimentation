@@ -51,8 +51,7 @@ fun OpusBottomNavBar(
     selectedTab: MainTab,
     onTabSelected: (MainTab) -> Unit,
     modifier: Modifier = Modifier,
-    showCoverSpacer: Boolean = true,
-    isFixture: Boolean = false
+    showCoverSpacer: Boolean = true
 ) {
     Column(
         modifier = modifier
@@ -81,63 +80,34 @@ fun OpusBottomNavBar(
                 )
             }
 
-            if (isFixture && selectedTab == MainTab.LIBRARY) {
-                // In fixture mode for D01: exact rendered tabs from reference
-                Image(
-                    painter = painterResource(id = R.drawable.fixture_bottom_bar),
-                    contentDescription = "Navigation Tabs",
-                    modifier = Modifier
-                        .weight(3f)
-                        .fillMaxHeight()
-                )
-            } else if (isFixture && selectedTab == MainTab.HOME) {
-                // In fixture mode for D02: exact rendered tabs from reference
-                Image(
-                    painter = painterResource(id = R.drawable.fixture_home_bottom_bar),
-                    contentDescription = "Navigation Tabs",
-                    modifier = Modifier
-                        .weight(3f)
-                        .fillMaxHeight()
-                )
-            } else if (isFixture && selectedTab == MainTab.MORE) {
-                // In fixture mode for D03: exact rendered tabs from reference
-                Image(
-                    painter = painterResource(id = R.drawable.fixture_more_bottom_bar),
-                    contentDescription = "Navigation Tabs",
-                    modifier = Modifier
-                        .weight(3f)
-                        .fillMaxHeight()
-                )
-            } else {
-                MainTab.entries.forEach { tab ->
-                    val isSelected = tab == selectedTab
-                    val itemColor = if (isSelected) OpusAccentBlue else OpusTextSecondary
+            MainTab.entries.forEach { tab ->
+                val isSelected = tab == selectedTab
+                val itemColor = if (isSelected) OpusAccentBlue else OpusTextSecondary
 
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                            .clickable { onTabSelected(tab) },
-                        contentAlignment = Alignment.Center
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .clickable { onTabSelected(tab) },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Icon(
-                                imageVector = tab.icon,
-                                contentDescription = tab.title,
-                                tint = itemColor,
-                                modifier = Modifier.size(24.dp)
-                            )
-                            Spacer(modifier = Modifier.height(2.dp))
-                            Text(
-                                text = tab.title,
-                                fontFamily = AmazonEmberFontFamily,
-                                fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal,
-                                color = itemColor,
-                                fontSize = 11.sp
-                            )
-                        }
+                        Icon(
+                            imageVector = tab.icon,
+                            contentDescription = tab.title,
+                            tint = itemColor,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = tab.title,
+                            fontFamily = AmazonEmberFontFamily,
+                            fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal,
+                            color = itemColor,
+                            fontSize = 11.sp
+                        )
                     }
                 }
             }

@@ -71,7 +71,7 @@ fun OpusCoverTile(
             Image(
                 painter = painterResource(id = coverDrawableRes),
                 contentDescription = title,
-                contentScale = ContentScale.FillBounds,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
         } else {

@@ -11,6 +11,7 @@ data class Book(
     val isDownloaded: Boolean = true,
     val fileSize: String = "15 MB",
     val coverColor: Color = Color(0xFF384F38),
+    val coverDrawableRes: Int? = null,
     val isRead: Boolean = false,
     val contentType: ContentType = ContentType.BOOK,
     val collectionIds: List<String> = emptyList(),

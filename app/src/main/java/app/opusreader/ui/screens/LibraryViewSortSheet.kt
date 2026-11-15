@@ -59,26 +59,8 @@ fun LibraryViewSortSheet(
     initialState: ViewSortState = ViewSortState(),
     onCloseClick: () -> Unit = {},
     onApplyViewSort: (ViewSortState) -> Unit = {},
-    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    if (isFixture) {
-        Box(
-            modifier = modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.fixture_view_sort_sheet),
-                contentDescription = "View and Sort Sheet",
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1519.refPx)
-                    .clickable(onClick = onCloseClick)
-            )
-        }
-        return
-    }
     var state by remember { mutableStateOf(initialState) }
 
     OpusBottomSheetContainer(

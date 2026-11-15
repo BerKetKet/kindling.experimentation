@@ -50,7 +50,7 @@ fun FloatingResumeCover(
     coverDrawableRes: Int? = null
 ) {
     val shape = RoundedCornerShape(3.dp)
-    val elevation = if (coverDrawableRes != null) 0.dp else 8.dp
+    val elevation = 8.dp
 
     Box(
         modifier = modifier
@@ -66,7 +66,7 @@ fun FloatingResumeCover(
             Image(
                 painter = painterResource(id = coverDrawableRes),
                 contentDescription = title,
-                contentScale = ContentScale.FillBounds,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
         } else {

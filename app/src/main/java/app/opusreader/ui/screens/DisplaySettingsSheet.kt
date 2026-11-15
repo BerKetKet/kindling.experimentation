@@ -60,34 +60,8 @@ fun DisplaySettingsSheet(
     engine: ReaderEngine,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    initialTab: Int = 0,
-    fixtureId: String? = null
+    initialTab: Int = 0
 ) {
-    if (fixtureId in listOf("D17", "D18", "D19", "D20", "R11", "R12", "R13", "R14")) {
-        val drawableId = when (fixtureId) {
-            "D17", "R11" -> R.drawable.fixture_display_font
-            "D18", "R12" -> R.drawable.fixture_display_layout
-            "D19", "R13" -> R.drawable.fixture_display_themes
-            else -> R.drawable.fixture_display_more
-        }
-        Box(
-            modifier = modifier
-                .fillMaxSize()
-                .background(Color.Black)
-        ) {
-            Image(
-                painter = painterResource(id = drawableId),
-                contentDescription = "Display Settings Sheet",
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(2194.refPx)
-                    .clickable(onClick = onDismiss)
-            )
-        }
-        return
-    }
-
     var selectedTab by remember { mutableIntStateOf(initialTab) }
     val tabs = listOf("Font", "Layout", "Themes", "More")
     val settings by engine.settings.collectAsState()

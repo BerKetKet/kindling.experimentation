@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
@@ -69,7 +70,6 @@ fun CollectionsScreen(
     onFilterClick: () -> Unit = {},
     onSortClick: () -> Unit = {},
     onCollectionClick: (CollectionItem) -> Unit = {},
-    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     var searchQuery by remember { mutableStateOf("") }
@@ -142,93 +142,61 @@ fun CollectionsScreen(
             .fillMaxSize()
             .background(OpusBackground)
     ) {
-        if (isFixture) {
-            Spacer(modifier = Modifier.height(56.refPx))
+        Spacer(modifier = Modifier.height(56.refPx))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(51.refPx)
-                    .padding(start = 44.refPx, end = 48.refPx),
-                verticalAlignment = Alignment.CenterVertically
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(51.refPx)
+                .padding(start = 44.refPx, end = 48.refPx),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Library",
+                fontFamily = BookerlyFontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
+                color = OpusTextPrimary,
+                modifier = Modifier.weight(1f)
+            )
+
+            IconButton(
+                onClick = onFilterClick,
+                modifier = Modifier.size(width = 30.dp, height = 24.dp)
             ) {
-                Text(
-                    text = "Library",
-                    fontFamily = BookerlyFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp,
-                    color = OpusTextPrimary,
-                    modifier = Modifier.weight(1f)
-                )
-
-                Image(
-                    painter = painterResource(id = R.drawable.fixture_icon_filter),
+                Icon(
+                    imageVector = Icons.Default.FilterList,
                     contentDescription = "Filter",
-                    modifier = Modifier
-                        .size(width = 30.dp, height = 24.dp)
-                        .clickable(onClick = onFilterClick)
-                )
-                Spacer(modifier = Modifier.width(36.refPx))
-                Image(
-                    painter = painterResource(id = R.drawable.fixture_icon_sort),
-                    contentDescription = "Sort",
-                    modifier = Modifier
-                        .size(width = 30.dp, height = 24.dp)
-                        .clickable(onClick = onSortClick)
+                    tint = OpusTextPrimary
                 )
             }
+            Spacer(modifier = Modifier.width(36.refPx))
+            IconButton(
+                onClick = onSortClick,
+                modifier = Modifier.size(width = 30.dp, height = 24.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Sort,
+                    contentDescription = "Sort",
+                    tint = OpusTextPrimary
+                )
+            }
+        }
 
-            Spacer(modifier = Modifier.height(64.refPx))
+        Spacer(modifier = Modifier.height(64.refPx))
 
-            OpusSearchBar(
-                query = searchQuery,
-                onQueryChange = { searchQuery = it },
-                placeholder = "Search Kindle"
-            )
+        OpusSearchBar(
+            query = searchQuery,
+            onQueryChange = { searchQuery = it },
+            placeholder = "Search Opus"
+        )
 
-            Spacer(modifier = Modifier.height(42.refPx))
+        Spacer(modifier = Modifier.height(42.refPx))
 
-            HorizontalDivider(
-                color = OpusBorder,
-                thickness = 3.refPx
-            )
-
-            Image(
-                painter = painterResource(id = R.drawable.fixture_collections_card),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(346.refPx)
-            )
-        } else {
-            OpusTopBar(
-                title = "Collections",
-                navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
-                onNavigationClick = onBackClick,
-                actions = {
-                    IconButton(onClick = { showCreateDialog = true }) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "New Collection",
-                            tint = OpusTextPrimary
-                        )
-                    }
-                    IconButton(onClick = onSortClick) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Sort,
-                            contentDescription = "Sort Collections",
-                            tint = OpusTextPrimary
-                        )
-                    }
-                }
-            )
-
-            OpusSearchBar(
-                query = searchQuery,
-                onQueryChange = { searchQuery = it },
-                placeholder = "Search Collections"
-            )
+        HorizontalDivider(
+            color = OpusBorder,
+            thickness = 3.refPx
+        )
 
             if (filteredCollections.isEmpty()) {
                 Box(
@@ -327,7 +295,6 @@ fun CollectionsScreen(
             }
         }
     }
-}
 
 @Preview(name = "08 Collections Screen Preview", showBackground = true, backgroundColor = 0xFF101112)
 @Composable

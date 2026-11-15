@@ -51,36 +51,8 @@ fun ContentsTocScreen(
     bookTitle: String = "Gardens of the Moon",
     bookAuthor: String = "Steven Erikson",
     onCloseClick: () -> Unit = {},
-    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    if (isFixture) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .background(OpusSurface)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.fixture_contents_header),
-                contentDescription = "Contents Header",
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(198.refPx)
-                    .clickable(onClick = onCloseClick)
-            )
-            Image(
-                painter = painterResource(id = R.drawable.fixture_contents_body),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1996.refPx)
-            )
-        }
-        return
-    }
-
     val tocList by engine.tableOfContents.collectAsState()
     val currentLocation by engine.currentLocation.collectAsState()
 

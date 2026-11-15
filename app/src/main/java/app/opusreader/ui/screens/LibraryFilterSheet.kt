@@ -48,26 +48,8 @@ fun LibraryFilterSheet(
     allBooks: List<Book> = emptyList(),
     onCloseClick: () -> Unit = {},
     onApplyFilter: (LibraryFilterState) -> Unit = {},
-    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    if (isFixture) {
-        Box(
-            modifier = modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.fixture_filter_sheet),
-                contentDescription = "Filter Sheet",
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1201.refPx)
-                    .clickable(onClick = onCloseClick)
-            )
-        }
-        return
-    }
     var state by remember { mutableStateOf(initialState) }
 
     val readCount = if (allBooks.isNotEmpty()) allBooks.count { it.isRead } else 16

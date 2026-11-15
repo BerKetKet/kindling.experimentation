@@ -53,36 +53,8 @@ fun AnnotationsSortSheet(
     initialDirection: SortDirection = SortDirection.ASCENDING,
     onDismiss: () -> Unit = {},
     onApply: (AnnotationSortField, SortDirection) -> Unit = { _, _ -> },
-    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    if (isFixture) {
-        Box(
-            modifier = modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.fixture_annotations_sort_bg),
-                contentDescription = null,
-                contentScale = ContentScale.FillWidth,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.TopCenter)
-                    .clickable(onClick = onDismiss)
-            )
-            Image(
-                painter = painterResource(id = R.drawable.fixture_annotations_sort_sheet),
-                contentDescription = "Sort Sheet",
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(906.refPx)
-                    .clickable(onClick = onDismiss)
-            )
-        }
-        return
-    }
-
     var selectedField by remember { mutableStateOf(initialField) }
     var selectedDirection by remember { mutableStateOf(initialDirection) }
 

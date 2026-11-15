@@ -69,38 +69,11 @@ fun SettingsScreen(
     onBackClick: () -> Unit = {},
     onImportBook: (Book) -> Unit = {},
     onFontManagerClick: () -> Unit = {},
-    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    if (isFixture) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .background(OpusBackground)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.fixture_settings_top),
-                contentDescription = "Settings Header",
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(168.refPx)
-                    .clickable(onClick = onBackClick)
-            )
-            Image(
-                painter = painterResource(id = R.drawable.fixture_settings_body),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(2026.refPx)
-            )
-        }
-        return
-    }
     val context = LocalContext.current
     var deviceName by remember {
-        mutableStateOf(if (isFixture) "bereket's 11th Android Device" else "Opus Android Reader")
+        mutableStateOf("Reader's 11th Android Device")
     }
     var showDeviceNameDialog by remember { mutableStateOf(false) }
     var editedName by remember { mutableStateOf(deviceName) }
@@ -227,7 +200,7 @@ fun SettingsScreen(
         // Row 1: Device name (starts y=309, pitch=188 px)
         SettingsChevronRow(
             title = "Device name",
-            subtitle = if (isFixture) "bereket's 11th Android Device" else deviceName,
+            subtitle = deviceName,
             rowHeight = 188.refPx,
             onClick = {
                 editedName = deviceName
@@ -262,8 +235,8 @@ fun SettingsScreen(
 
         // Row 5: Send to Kindle / Import (starts y=1148, pitch=189 px)
         SettingsChevronRow(
-            title = if (isFixture) "Send to Kindle email address" else "Import EPUB / PDF books",
-            subtitle = if (isFixture) "berketket_kAYRm8@kindle.com" else "Select local book files from device storage",
+            title = "Send to Kindle email address",
+            subtitle = "reader_app_kAYRm8@opus-reader.app",
             rowHeight = 189.refPx,
             onClick = {
                 filePickerLauncher.launch(
@@ -454,6 +427,6 @@ private fun queryDisplayName(context: android.content.Context, uri: Uri): String
 @Composable
 fun SettingsScreenPreview() {
     OpusReaderTheme {
-        SettingsScreen(isFixture = true)
+        SettingsScreen()
     }
 }

@@ -6,6 +6,7 @@ description: Makes the app render exactly the content shown in a Kindle referenc
 # Fixture mode
 
 - Debug-only build type. Deep link `opus://fixture/<id>` opens the screen with fixed state for that id. Release builds contain none of this.
+- Never fake a cut-off or covered element. Supply enough fixture items below the fold and set the scroll position with scroll state so the reference's viewport is reproduced by real scrolling.
 - Content must equal the reference: titles, authors, percentages, sizes, counts, badges, ribbons, selected tabs, scroll offset, open sheet, theme. Read them off the reference image.
 - Covers: crop each cover from the reference into app/src/debug/assets/fixture_covers/ and use those bitmaps (personal debug use only). Where a cover cannot be cropped cleanly, use a flat block and add a mask rectangle for it.
 - Reading text: the engine is separate. Use `FakeReaderEngine` and mask the text area; compare page colour, margins and chrome only.

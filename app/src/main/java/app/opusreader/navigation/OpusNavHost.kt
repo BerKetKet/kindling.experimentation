@@ -134,7 +134,6 @@ fun OpusNavHost(
                 if (isMainTab) {
                     OpusBottomNavBar(
                         selectedTab = currentTab,
-                        isFixture = fixtureId != null,
                         onTabSelected = { tab ->
                             if (tab.route != currentRoute) {
                                 navController.navigate(tab.route) {
@@ -159,7 +158,6 @@ fun OpusNavHost(
                 composable(NavRoutes.LIBRARY_GRID) {
                     LibraryGridScreen(
                         books = filteredBooks,
-                        isFixture = fixtureId == "D01" || fixtureId == "L01",
                         onBookClick = { navController.navigate(NavRoutes.READER) },
                         onFilterClick = { navController.navigate(NavRoutes.LIBRARY_FILTER) },
                         onSortClick = { navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) }
@@ -174,16 +172,14 @@ fun OpusNavHost(
                         bookRepository = bookRepository,
                         onBookClick = { navController.navigate(NavRoutes.READER) },
                         onSeeAllLibraryClick = { navController.navigate(NavRoutes.LIBRARY_GRID) },
-                        onNotificationsClick = { navController.navigate(NavRoutes.NOTIFICATIONS) },
-                        isFixture = fixtureId == "D02" || fixtureId == "L02"
+                        onNotificationsClick = { navController.navigate(NavRoutes.NOTIFICATIONS) }
                     )
                 }
 
                 // 03 More
                 composable(NavRoutes.MORE) {
                     MoreScreen(
-                        onSettingsClick = { navController.navigate(NavRoutes.SETTINGS) },
-                        isFixture = fixtureId == "D03" || fixtureId == "L03"
+                        onSettingsClick = { navController.navigate(NavRoutes.SETTINGS) }
                     )
                 }
 
@@ -191,7 +187,6 @@ fun OpusNavHost(
                 composable(NavRoutes.SETTINGS) {
                     SettingsScreen(
                         onBackClick = { navController.popBackStack() },
-                        isFixture = fixtureId == "D04" || fixtureId == "L04",
                         onImportBook = { newBook ->
                             bookRepository.addBook(newBook)
                             bookRepository.addNotification(
@@ -214,22 +209,20 @@ fun OpusNavHost(
                             .fillMaxSize()
                             .background(Color(0xFF080808))
                     ) {
-                        if (fixtureId == "D05" || fixtureId == "L05") {
-                            Image(
-                                painter = painterResource(id = R.drawable.fixture_filter_bg_90),
-                                contentDescription = null,
-                                contentScale = ContentScale.FillWidth,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .align(Alignment.TopCenter)
-                            )
-                        } else {
-                            LibraryGridScreen(isFixture = false)
-                        }
+                        LibraryGridScreen(
+                            books = filteredBooks,
+                            onBookClick = { navController.navigate(NavRoutes.READER) },
+                            onFilterClick = { navController.navigate(NavRoutes.LIBRARY_FILTER) },
+                            onSortClick = { navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) }
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black.copy(alpha = 0.6f))
+                        )
                         LibraryFilterSheet(
                             initialState = filterState,
                             allBooks = allBooks,
-                            isFixture = fixtureId == "D05" || fixtureId == "L05",
                             onCloseClick = { navController.popBackStack() },
                             onApplyFilter = { newFilter ->
                                 bookRepository.setFilter(newFilter)
@@ -246,24 +239,22 @@ fun OpusNavHost(
                             .fillMaxSize()
                             .background(Color(0xFF080808))
                     ) {
-                        if (fixtureId == "D06" || fixtureId == "L06") {
-                            Image(
-                                painter = painterResource(id = R.drawable.fixture_filter_bg_90),
-                                contentDescription = null,
-                                contentScale = ContentScale.FillWidth,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .align(Alignment.TopCenter)
-                            )
-                        } else {
-                            LibraryGridScreen(isFixture = false)
-                        }
+                        LibraryGridScreen(
+                            books = filteredBooks,
+                            onBookClick = { navController.navigate(NavRoutes.READER) },
+                            onFilterClick = { navController.navigate(NavRoutes.LIBRARY_FILTER) },
+                            onSortClick = { navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) }
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black.copy(alpha = 0.6f))
+                        )
                         LibraryViewSortSheet(
                             initialState = ViewSortState(
                                 viewMode = viewMode,
                                 sortOrder = sortOrder
                             ),
-                            isFixture = fixtureId == "D06" || fixtureId == "L06",
                             onCloseClick = { navController.popBackStack() },
                             onApplyViewSort = { viewSortState ->
                                 bookRepository.setSortOrder(viewSortState.sortOrder)
@@ -283,7 +274,6 @@ fun OpusNavHost(
                 composable(NavRoutes.LIBRARY_LIST) {
                     LibraryListScreen(
                         books = filteredBooks,
-                        isFixture = fixtureId == "D07" || fixtureId == "L07",
                         onBookClick = { navController.navigate(NavRoutes.READER) },
                         onFilterClick = { navController.navigate(NavRoutes.LIBRARY_FILTER) },
                         onSortClick = { navController.navigate(NavRoutes.LIBRARY_VIEW_SORT) }
@@ -294,7 +284,6 @@ fun OpusNavHost(
                 composable(NavRoutes.COLLECTIONS) {
                     CollectionsScreen(
                         collections = collections,
-                        isFixture = fixtureId == "D08" || fixtureId == "L08",
                         onBackClick = { navController.popBackStack() },
                         onCreateCollection = { bookRepository.createCollection(it) },
                         onCollectionClick = { /* Open collection */ }
@@ -305,7 +294,6 @@ fun OpusNavHost(
                 composable(NavRoutes.NOTIFICATIONS) {
                     NotificationsScreen(
                         notifications = notifications,
-                        isFixture = fixtureId == "D09" || fixtureId == "L09",
                         onBackClick = { navController.popBackStack() },
                         onClearAll = { bookRepository.clearAllNotifications() },
                         onDeleteNotification = { bookRepository.deleteNotification(it) }
@@ -316,7 +304,6 @@ fun OpusNavHost(
                 composable(NavRoutes.READER) {
                     ReaderScreen(
                         engine = readerEngine,
-                        isFixture = fixtureId == "D10",
                         onBackClick = { navController.popBackStack() },
                         onContentsClick = { navController.navigate(NavRoutes.CONTENTS) },
                         onSearchClick = { navController.navigate(NavRoutes.READER_SEARCH) },
@@ -329,7 +316,6 @@ fun OpusNavHost(
                 composable(NavRoutes.CONTENTS) {
                     ContentsTocScreen(
                         engine = readerEngine,
-                        isFixture = fixtureId == "D11",
                         onCloseClick = { navController.popBackStack() }
                     )
                 }
@@ -338,7 +324,6 @@ fun OpusNavHost(
                 composable(NavRoutes.READER_SEARCH) {
                     ReaderSearchScreen(
                         engine = readerEngine,
-                        isFixture = fixtureId == "D12",
                         onBackClick = { navController.popBackStack() },
                         onResultClick = { navController.navigate(NavRoutes.READER) }
                     )
@@ -352,7 +337,6 @@ fun OpusNavHost(
                         filterColors = annotationFilterColors,
                         sortField = annotationSortField,
                         sortDirection = annotationSortDirection,
-                        isFixture = fixtureId == "D13",
                         onBackClick = { navController.popBackStack() },
                         onFilterClick = { navController.navigate(NavRoutes.ANNOTATIONS_FILTER) },
                         onSortClick = { navController.navigate(NavRoutes.ANNOTATIONS_SORT) },
@@ -366,7 +350,6 @@ fun OpusNavHost(
                     AnnotationsFilterSheet(
                         initialTypes = annotationFilterTypes,
                         initialColors = annotationFilterColors,
-                        isFixture = fixtureId == "D14",
                         onCloseClick = { navController.popBackStack() },
                         onApply = { types, colors ->
                             annotationFilterTypes = types
@@ -381,7 +364,6 @@ fun OpusNavHost(
                     AnnotationsSortSheet(
                         initialField = annotationSortField,
                         initialDirection = annotationSortDirection,
-                        isFixture = fixtureId == "D15",
                         onDismiss = { navController.popBackStack() },
                         onApply = { field, direction ->
                             annotationSortField = field
@@ -394,7 +376,6 @@ fun OpusNavHost(
                 // 16 Annotations Share Sheet
                 composable(NavRoutes.ANNOTATIONS_SHARE) {
                     AnnotationsShareSheet(
-                        isFixture = fixtureId == "D16",
                         onCloseClick = { navController.popBackStack() }
                     )
                 }
@@ -404,7 +385,6 @@ fun OpusNavHost(
                     DisplaySettingsSheet(
                         engine = readerEngine,
                         initialTab = 0,
-                        fixtureId = fixtureId,
                         onDismiss = { navController.popBackStack() }
                     )
                 }
@@ -414,7 +394,6 @@ fun OpusNavHost(
                     DisplaySettingsSheet(
                         engine = readerEngine,
                         initialTab = 1,
-                        fixtureId = fixtureId,
                         onDismiss = { navController.popBackStack() }
                     )
                 }
@@ -424,7 +403,6 @@ fun OpusNavHost(
                     DisplaySettingsSheet(
                         engine = readerEngine,
                         initialTab = 2,
-                        fixtureId = fixtureId,
                         onDismiss = { navController.popBackStack() }
                     )
                 }
@@ -434,7 +412,6 @@ fun OpusNavHost(
                     DisplaySettingsSheet(
                         engine = readerEngine,
                         initialTab = 3,
-                        fixtureId = fixtureId,
                         onDismiss = { navController.popBackStack() }
                     )
                 }
@@ -443,24 +420,12 @@ fun OpusNavHost(
 
         // Floating resume cover pinned at bottom left over the bottom navigation bar
         if (isMainTab) {
-            val floatingCoverDrawable = when (fixtureId) {
-                "D02", "L02" -> app.opusreader.R.drawable.fixture_home_floating_cover
-                "D03", "L03" -> app.opusreader.R.drawable.fixture_more_floating_cover
-                "D07", "L07" -> app.opusreader.R.drawable.fixture_list_floating_cover
-                "D08", "L08" -> app.opusreader.R.drawable.fixture_collections_floating_cover
-                else -> if (fixtureId != null) app.opusreader.R.drawable.fixture_floating_cover else null
-            }
-            val floatingCoverHeight = when (fixtureId) {
-                "D02", "L02" -> 360.refPx
-                else -> OpusSpacing.floatingCoverHeight
-            }
-
             FloatingResumeCover(
                 title = currentBook.title,
                 author = currentBook.author,
                 progressPercent = currentBook.progressPercent,
-                coverDrawableRes = floatingCoverDrawable,
-                height = floatingCoverHeight,
+                coverDrawableRes = currentBook.coverDrawableRes,
+                height = OpusSpacing.floatingCoverHeight,
                 onClick = { navController.navigate(NavRoutes.READER) },
                 modifier = Modifier
                     .align(Alignment.BottomStart)

@@ -77,36 +77,8 @@ fun AnnotationsScreen(
     onSortClick: () -> Unit = {},
     onExportClick: () -> Unit = {},
     onItemClick: (AnnotationItem) -> Unit = {},
-    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    if (isFixture) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .background(OpusBackground)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.fixture_annotations_top),
-                contentDescription = "Annotations Header",
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(329.refPx)
-                    .clickable(onClick = onBackClick)
-            )
-            Image(
-                painter = painterResource(id = R.drawable.fixture_annotations_body),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1865.refPx)
-            )
-        }
-        return
-    }
-
     val rawAnnotations by engine.annotations.collectAsState()
 
     val annotations = remember(rawAnnotations, filterTypes, filterColors, sortField, sortDirection) {

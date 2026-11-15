@@ -1,9 +1,6 @@
 package app.opusreader.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,10 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Sort
@@ -30,12 +25,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.opusreader.R
 import app.opusreader.data.Book
 import app.opusreader.data.SampleBooks
 import app.opusreader.ui.components.OpusCoverTile
@@ -44,9 +37,7 @@ import app.opusreader.ui.theme.BookerlyFontFamily
 import app.opusreader.ui.theme.OpusBackground
 import app.opusreader.ui.theme.OpusBorder
 import app.opusreader.ui.theme.OpusReaderTheme
-import app.opusreader.ui.theme.OpusSpacing
 import app.opusreader.ui.theme.OpusTextPrimary
-import app.opusreader.ui.theme.OpusTextSecondary
 import app.opusreader.ui.theme.refPx
 
 @Composable
@@ -56,25 +47,9 @@ fun LibraryGridScreen(
     onFilterClick: () -> Unit = {},
     onSortClick: () -> Unit = {},
     onBookLongClick: (Book) -> Unit = {},
-    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     var searchQuery by remember { mutableStateOf("") }
-
-    val fixtureDrawables = listOf(
-        R.drawable.fixture_cover_0,
-        R.drawable.fixture_cover_1,
-        R.drawable.fixture_cover_2,
-        R.drawable.fixture_cover_3,
-        R.drawable.fixture_cover_4,
-        R.drawable.fixture_cover_5,
-        R.drawable.fixture_cover_6,
-        R.drawable.fixture_cover_7,
-        R.drawable.fixture_cover_8,
-        R.drawable.fixture_cover_9,
-        R.drawable.fixture_cover_10,
-        R.drawable.fixture_cover_11
-    )
 
     Column(
         modifier = modifier
@@ -102,37 +77,19 @@ fun LibraryGridScreen(
                 modifier = Modifier.weight(1f)
             )
 
-            if (isFixture) {
-                Image(
-                    painter = painterResource(id = R.drawable.fixture_icon_filter),
-                    contentDescription = "Filter",
-                    modifier = Modifier
-                        .size(width = 30.dp, height = 24.dp)
-                        .clickable(onClick = onFilterClick)
+            IconButton(onClick = onFilterClick) {
+                Icon(
+                    imageVector = Icons.Default.FilterList,
+                    contentDescription = "Filter Library",
+                    tint = OpusTextPrimary
                 )
-                Spacer(modifier = Modifier.width(36.refPx))
-                Image(
-                    painter = painterResource(id = R.drawable.fixture_icon_sort),
-                    contentDescription = "Sort",
-                    modifier = Modifier
-                        .size(width = 30.dp, height = 24.dp)
-                        .clickable(onClick = onSortClick)
+            }
+            IconButton(onClick = onSortClick) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Sort,
+                    contentDescription = "View and Sort",
+                    tint = OpusTextPrimary
                 )
-            } else {
-                IconButton(onClick = onFilterClick) {
-                    Icon(
-                        imageVector = Icons.Default.FilterList,
-                        contentDescription = "Filter Library",
-                        tint = OpusTextPrimary
-                    )
-                }
-                IconButton(onClick = onSortClick) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.Sort,
-                        contentDescription = "View and Sort",
-                        tint = OpusTextPrimary
-                    )
-                }
             }
         }
 
@@ -143,7 +100,7 @@ fun LibraryGridScreen(
         OpusSearchBar(
             query = searchQuery,
             onQueryChange = { searchQuery = it },
-            placeholder = if (isFixture) "Search Kindle" else "Search Opus"
+            placeholder = "Search Opus"
         )
 
         // Distance from search pill bottom (359 px) to divider top (401 px) = 42 px
@@ -171,13 +128,13 @@ fun LibraryGridScreen(
                 for (col in 0..2) {
                     val index = row * 3 + col
                     val book = books.getOrNull(index) ?: books.first()
-                    val coverRes = if (isFixture) fixtureDrawables.getOrNull(index) else null
+                    val coverRes = book.coverDrawableRes
 
                     OpusCoverTile(
                         title = book.title,
                         author = book.author,
                         tileWidth = colWidths[col],
-                        tileHeight = if (row == 3) 217.refPx else 427.refPx,
+                        tileHeight = 427.refPx,
                         progressPercent = book.progressPercent,
                         isDownloaded = book.isDownloaded,
                         coverColor = book.coverColor,
@@ -206,6 +163,6 @@ fun LibraryGridScreen(
 @Composable
 fun LibraryGridScreenPreview() {
     OpusReaderTheme {
-        LibraryGridScreen(isFixture = true)
+        LibraryGridScreen()
     }
 }

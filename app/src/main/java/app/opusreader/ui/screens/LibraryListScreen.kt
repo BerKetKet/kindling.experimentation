@@ -57,7 +57,6 @@ fun LibraryListScreen(
     onFilterClick: () -> Unit = {},
     onSortClick: () -> Unit = {},
     onMoreOptionsClick: (Book) -> Unit = {},
-    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     var searchQuery by remember { mutableStateOf("") }
@@ -92,37 +91,26 @@ fun LibraryListScreen(
                 modifier = Modifier.weight(1f)
             )
 
-            if (isFixture) {
-                Image(
-                    painter = painterResource(id = R.drawable.fixture_icon_filter),
+            IconButton(
+                onClick = onFilterClick,
+                modifier = Modifier.size(width = 30.dp, height = 24.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.FilterList,
                     contentDescription = "Filter",
-                    modifier = Modifier
-                        .size(width = 30.dp, height = 24.dp)
-                        .clickable(onClick = onFilterClick)
+                    tint = OpusTextPrimary
                 )
-                Spacer(modifier = Modifier.width(36.refPx))
-                Image(
-                    painter = painterResource(id = R.drawable.fixture_icon_sort),
-                    contentDescription = "Sort",
-                    modifier = Modifier
-                        .size(width = 30.dp, height = 24.dp)
-                        .clickable(onClick = onSortClick)
+            }
+            Spacer(modifier = Modifier.width(36.refPx))
+            IconButton(
+                onClick = onSortClick,
+                modifier = Modifier.size(width = 30.dp, height = 24.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Sort,
+                    contentDescription = "Sort and View",
+                    tint = OpusTextPrimary
                 )
-            } else {
-                IconButton(onClick = onFilterClick) {
-                    Icon(
-                        imageVector = Icons.Default.FilterList,
-                        contentDescription = "Filter",
-                        tint = OpusTextPrimary
-                    )
-                }
-                IconButton(onClick = onSortClick) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.Sort,
-                        contentDescription = "Sort and View",
-                        tint = OpusTextPrimary
-                    )
-                }
             }
         }
 
@@ -131,7 +119,7 @@ fun LibraryListScreen(
         OpusSearchBar(
             query = searchQuery,
             onQueryChange = { searchQuery = it },
-            placeholder = if (isFixture) "Search Kindle" else "Search Library"
+            placeholder = "Search Opus"
         )
 
         Spacer(modifier = Modifier.height(42.refPx))
@@ -141,84 +129,7 @@ fun LibraryListScreen(
             thickness = 3.refPx
         )
 
-        if (isFixture) {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Image(
-                    painter = painterResource(id = R.drawable.fixture_list_r1),
-                    contentDescription = null,
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(317.refPx)
-                )
-                HorizontalDivider(
-                    color = Color(0xFF404040),
-                    thickness = 3.refPx,
-                    modifier = Modifier.padding(start = 52.refPx, end = 52.refPx)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.fixture_list_r2),
-                    contentDescription = null,
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(330.refPx)
-                )
-                HorizontalDivider(
-                    color = Color(0xFF404040),
-                    thickness = 3.refPx,
-                    modifier = Modifier.padding(start = 52.refPx, end = 52.refPx)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.fixture_list_r3),
-                    contentDescription = null,
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(314.refPx)
-                )
-                HorizontalDivider(
-                    color = Color(0xFF404040),
-                    thickness = 3.refPx,
-                    modifier = Modifier.padding(start = 52.refPx, end = 52.refPx)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.fixture_list_r4),
-                    contentDescription = null,
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(315.refPx)
-                )
-                HorizontalDivider(
-                    color = Color(0xFF404040),
-                    thickness = 3.refPx,
-                    modifier = Modifier.padding(start = 52.refPx, end = 52.refPx)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.fixture_list_r5),
-                    contentDescription = null,
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(313.refPx)
-                )
-                HorizontalDivider(
-                    color = Color(0xFF404040),
-                    thickness = 3.refPx,
-                    modifier = Modifier.padding(start = 52.refPx, end = 52.refPx)
-                )
-                Spacer(modifier = Modifier.height(9.refPx))
-                Image(
-                    painter = painterResource(id = R.drawable.fixture_list_r6),
-                    contentDescription = null,
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(128.refPx)
-                )
-            }
-        } else if (filteredBooks.isEmpty()) {
+        if (filteredBooks.isEmpty()) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()

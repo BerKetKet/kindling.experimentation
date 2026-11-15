@@ -52,36 +52,8 @@ fun ReaderSearchScreen(
     engine: ReaderEngine,
     onBackClick: () -> Unit = {},
     onResultClick: (ReaderSearchResult) -> Unit = {},
-    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    if (isFixture) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .background(OpusBackground)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.fixture_reader_search_top),
-                contentDescription = "Search Bar",
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(168.refPx)
-                    .clickable(onClick = onBackClick)
-            )
-            Image(
-                painter = painterResource(id = R.drawable.fixture_reader_search_body),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(2026.refPx)
-            )
-        }
-        return
-    }
-
     var query by remember { mutableStateOf("") }
     var results by remember { mutableStateOf<List<ReaderSearchResult>>(emptyList()) }
 

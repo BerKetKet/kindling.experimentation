@@ -52,36 +52,8 @@ enum class ExportFormat(val displayName: String, val extension: String) {
 fun AnnotationsShareSheet(
     bookTitle: String = "Gardens of the Moon",
     onCloseClick: () -> Unit = {},
-    isFixture: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    if (isFixture) {
-        Box(
-            modifier = modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.fixture_annotations_share_bg),
-                contentDescription = null,
-                contentScale = ContentScale.FillWidth,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.TopCenter)
-                    .clickable(onClick = onCloseClick)
-            )
-            Image(
-                painter = painterResource(id = R.drawable.fixture_annotations_share_sheet),
-                contentDescription = "Share Sheet",
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(920.refPx)
-                    .clickable(onClick = onCloseClick)
-            )
-        }
-        return
-    }
-
     val context = LocalContext.current
     var selectedFormat by remember { mutableStateOf(ExportFormat.MARKDOWN) }
 
