@@ -26,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -66,25 +67,49 @@ fun MoreScreen(
     var searchQuery by remember { mutableStateOf("") }
     var lastSyncedText by remember { mutableStateOf("11/14/2026, 7:43 PM") }
 
+    val fixtureTrigger = app.opusreader.ui.theme.LocalFixtureTrigger.current
+    val scrollState = rememberScrollState()
+    LaunchedEffect(fixtureTrigger) {
+        scrollState.scrollTo(0)
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(OpusBackground)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(scrollState)
             .padding(bottom = 90.dp)
     ) {
-        OpusTopBar(
-            title = "More",
-            actions = {
-                IconButton(onClick = onSettingsClick) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "Settings",
-                        tint = OpusTextPrimary
-                    )
-                }
+        // Distance below status bar (y=90) to title band top (y=138): 48 px
+        Spacer(modifier = Modifier.height(48.refPx))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(58.refPx)
+                .padding(start = 44.refPx, end = 44.refPx),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "More",
+                fontFamily = BookerlyFontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
+                color = OpusTextPrimary,
+                modifier = Modifier.weight(1f)
+            )
+
+            IconButton(onClick = onSettingsClick) {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = "Settings",
+                    tint = OpusTextPrimary
+                )
             }
-        )
+        }
+
+        // Distance from top bar (196) to search bar (251): 55 px
+        Spacer(modifier = Modifier.height(55.refPx))
 
         OpusSearchBar(
             query = searchQuery,
@@ -92,40 +117,242 @@ fun MoreScreen(
             placeholder = "Search Opus"
         )
 
-        // Sync Section
-        SectionHeader("Sync")
-        MoreItemRow(
-            icon = Icons.Default.Sync,
-            title = "Sync now",
-            subtitle = "Last synced on $lastSyncedText",
-            onClick = {
-                val formatter = SimpleDateFormat("MM/dd/yyyy, h:mm a", Locale.getDefault())
-                lastSyncedText = formatter.format(Date())
+        // Spacer from search (355) to Section 1 (499): 144 px (-8 px calibration)
+        Spacer(modifier = Modifier.height(136.refPx))
+
+        // Section 1: Sync (y: 499-538, height 40 px)
+        Text(
+            text = "Sync",
+            color = OpusTextSecondary,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier
+                .height(40.refPx)
+                .padding(start = 44.refPx)
+        )
+
+        // Spacer from Section 1 header (538) to Row 1 (631): 93 px
+        Spacer(modifier = Modifier.height(93.refPx))
+
+        // Row 1: Sync now (y: 631-726, height 96 px)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(96.refPx)
+                .clickable {
+                    val formatter = SimpleDateFormat("MM/dd/yyyy, h:mm a", Locale.getDefault())
+                    lastSyncedText = formatter.format(Date())
+                }
+                .padding(start = 44.refPx, end = 44.refPx),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.Sync,
+                contentDescription = null,
+                tint = OpusTextSecondary,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Sync now",
+                    color = OpusTextPrimary,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Normal
+                )
+                Spacer(modifier = Modifier.height(4.refPx))
+                Text(
+                    text = "Last synced on $lastSyncedText",
+                    color = OpusTextTertiary,
+                    fontSize = 13.sp
+                )
             }
+        }
+
+        // Spacer from Row 1 (726) to Section 2 (865): 139 px
+        Spacer(modifier = Modifier.height(139.refPx))
+
+        // Section 2: Reading Insights (y: 865-906, height 42 px)
+        Text(
+            text = "Reading Insights",
+            color = OpusTextSecondary,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier
+                .height(42.refPx)
+                .padding(start = 44.refPx)
         )
 
-        HorizontalDivider(color = OpusDivider.copy(alpha = 0.5f), thickness = 0.5.dp)
+        // Spacer from Section 2 header (906) to Row 2 (997): 91 px
+        Spacer(modifier = Modifier.height(91.refPx))
 
-        // Features Section
-        SectionHeader("Features")
-        MoreItemRow(
-            icon = Icons.Default.Bookmark,
-            title = "Notebooks",
-            subtitle = "View notes and highlights across your library",
-            onClick = onNotebooksClick
+        // Row 2: Reading Challenges (y: 997-1094, height 98 px)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(98.refPx)
+                .clickable { onChallengesClick() }
+                .padding(start = 44.refPx, end = 44.refPx),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.EmojiEvents,
+                contentDescription = null,
+                tint = OpusTextSecondary,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Reading Challenges",
+                    color = OpusTextPrimary,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Normal
+                )
+                Spacer(modifier = Modifier.height(4.refPx))
+                Text(
+                    text = "Track your reading goals and achievements",
+                    color = OpusTextTertiary,
+                    fontSize = 13.sp
+                )
+            }
+        }
+
+        // Spacer from Row 2 (1094) to Section 3 (1235): 141 px
+        Spacer(modifier = Modifier.height(141.refPx))
+
+        // Section 3: Lists & Notes (y: 1235-1265, height 31 px)
+        Text(
+            text = "Lists & Notes",
+            color = OpusTextSecondary,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier
+                .height(31.refPx)
+                .padding(start = 44.refPx)
         )
-        MoreItemRow(
-            icon = Icons.Default.EmojiEvents,
-            title = "Reading Challenges",
-            subtitle = "Track your reading goals and achievements",
-            onClick = onChallengesClick
+
+        // Spacer from Section 3 header (1265) to Row 3 (1363): 98 px
+        Spacer(modifier = Modifier.height(98.refPx))
+
+        // Row 3: Your Lists (y: 1363-1409, height 47 px)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(47.refPx)
+                .clickable { onListsClick() }
+                .padding(start = 44.refPx, end = 44.refPx),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.FormatListBulleted,
+                contentDescription = null,
+                tint = OpusTextSecondary,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = "Your Lists",
+                color = OpusTextPrimary,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Normal
+            )
+        }
+
+        // Spacer from Row 3 (1409) to Row 4 (1507): 98 px
+        Spacer(modifier = Modifier.height(98.refPx))
+
+        // Row 4: Notebooks (y: 1507-1559, height 53 px)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(53.refPx)
+                .clickable { onNotebooksClick() }
+                .padding(start = 44.refPx, end = 44.refPx),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.Bookmark,
+                contentDescription = null,
+                tint = OpusTextSecondary,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = "Notebooks",
+                color = OpusTextPrimary,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Normal
+            )
+        }
+
+        // Spacer from Row 4 (1559) to Section 4 (1706): 147 px
+        Spacer(modifier = Modifier.height(147.refPx))
+
+        // Section 4: (y: 1706-1746, height 41 px)
+        Text(
+            text = "Account & Devices",
+            color = OpusTextSecondary,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier
+                .height(41.refPx)
+                .padding(start = 44.refPx)
         )
-        MoreItemRow(
-            icon = Icons.AutoMirrored.Filled.FormatListBulleted,
-            title = "Your Lists",
-            subtitle = "Manage reading lists and wishlists",
-            onClick = onListsClick
-        )
+
+        // Spacer from Section 4 header (1746) to Row 5 (1835): 89 px
+        Spacer(modifier = Modifier.height(89.refPx))
+
+        // Row 5 (y: 1835-1883, height 49 px)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(49.refPx)
+                .clickable { onSettingsClick() }
+                .padding(start = 44.refPx, end = 44.refPx),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.Settings,
+                contentDescription = null,
+                tint = OpusTextSecondary,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = "Settings",
+                color = OpusTextPrimary,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Normal
+            )
+        }
+
+        // Spacer from Row 5 (1883) to Row 6 (1985): 102 px
+        Spacer(modifier = Modifier.height(102.refPx))
+
+        // Row 6 (y: 1985-2031, height 47 px)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(47.refPx)
+                .clickable { /* Info */ }
+                .padding(start = 44.refPx, end = 44.refPx),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.MenuBook,
+                contentDescription = null,
+                tint = OpusTextSecondary,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = "About Opus Reader",
+                color = OpusTextPrimary,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Normal
+            )
+        }
     }
 }
 
